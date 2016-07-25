@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Ical.Net.DataTypes;
 using Ical.Net.Evaluation;
-using Ical.Net.Interfaces.Components;
 using Ical.Net.Interfaces.DataTypes;
 
 namespace Ical.Net
@@ -14,7 +13,7 @@ namespace Ical.Net
     /// A class that represents an RFC 5545 VTODO component.
     /// </summary> 
     [DebuggerDisplay("{Summary} - {Status}")]
-    public class Todo : RecurringComponent, ITodo
+    public class Todo : RecurringComponent
     {
         private TodoEvaluator _mEvaluator;
 

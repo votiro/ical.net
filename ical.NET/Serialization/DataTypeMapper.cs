@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ical.Net.DataTypes;
-using Ical.Net.Interfaces.Components;
 using Ical.Net.Interfaces.DataTypes;
 using Ical.Net.Interfaces.General;
 using Ical.Net.Interfaces.Serialization;
@@ -71,7 +70,7 @@ namespace Ical.Net.Serialization
                 {
                     return typeof (EventStatus);
                 }
-                if (obj.Parent is ITodo)
+                if (obj.Parent is Todo)
                 {
                     return typeof (TodoStatus);
                 }
