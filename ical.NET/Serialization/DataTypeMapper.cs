@@ -39,7 +39,7 @@ namespace Ical.Net.Serialization
             AddPropertyMapping("EXDATE", typeof (IPeriodList), false);
             AddPropertyMapping("EXRULE", typeof (IRecurrencePattern), false);
             AddPropertyMapping("FREEBUSY", typeof (FreeBusyEntry), true);
-            AddPropertyMapping("GEO", typeof (IGeographicLocation), false);
+            AddPropertyMapping("GEO", typeof (GeographicLocation), false);
             AddPropertyMapping("LAST-MODIFIED", typeof (IDateTime), false);
             AddPropertyMapping("ORGANIZER", typeof (Organizer), false);
             AddPropertyMapping("PERCENT-COMPLETE", typeof (int), false);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Ical.Net.DataTypes;
 using Ical.Net.Interfaces.DataTypes;
 
 namespace Ical.Net.Interfaces.Components
@@ -34,7 +35,7 @@ namespace Ical.Net.Interfaces.Components
         /// <summary>
         /// The geographic location (lat/long) of the todo item.
         /// </summary>
-        IGeographicLocation GeographicLocation { get; set; }
+        GeographicLocation GeographicLocation { get; set; }
 
         /// <summary>
         /// The location of the todo item.
