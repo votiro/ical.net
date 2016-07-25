@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using Ical.Net.DataTypes;
 using Ical.Net.Interfaces;
-using Ical.Net.Interfaces.DataTypes;
 using Ical.Net.Serialization;
 using Ical.Net.Serialization.iCalendar.Serializers;
 using NUnit.Framework;
@@ -47,7 +46,7 @@ namespace Ical.Net.UnitTests
                 DtStart = new CalDateTime(_nowTime),
                 DtEnd = new CalDateTime(_later),
                 Duration = TimeSpan.FromHours(1),
-                RecurrenceRules = new List<IRecurrencePattern> { rrule },
+                RecurrenceRules = new List<RecurrencePattern> { rrule },
             };
 
             var calendar = new Calendar();

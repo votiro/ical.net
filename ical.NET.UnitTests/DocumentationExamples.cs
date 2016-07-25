@@ -25,7 +25,7 @@ namespace Ical.Net.UnitTests
                 Until = DateTime.Parse("2016-07-31T11:59:59")
             };
 
-            vEvent.RecurrenceRules = new List<IRecurrencePattern> {recurrenceRule};
+            vEvent.RecurrenceRules = new List<RecurrencePattern> {recurrenceRule};
             var calendar = new Calendar();
             calendar.Events.Add(vEvent);
 
@@ -53,7 +53,7 @@ namespace Ical.Net.UnitTests
             {
                 Until = DateTime.Parse("2016-12-31T11:59:59")
             };
-            vEvent.RecurrenceRules = new List<IRecurrencePattern> { rrule };
+            vEvent.RecurrenceRules = new List<RecurrencePattern> { rrule };
 
             // Count every other Tuesday between July 1 and Dec 31.
             // The first Tuesday is July 5. There should be 13 in total
@@ -80,7 +80,7 @@ namespace Ical.Net.UnitTests
             {
                 Until = DateTime.MaxValue
             };
-            vEvent.RecurrenceRules = new List<IRecurrencePattern> { rrule };
+            vEvent.RecurrenceRules = new List<RecurrencePattern> { rrule };
 
             var searchStart = DateTime.Parse("2000-01-01");
             var searchEnd = DateTime.Parse("2017-01-01");
@@ -97,7 +97,7 @@ namespace Ical.Net.UnitTests
             {
                 DtStart = new CalDateTime(DateTime.Parse("2016-01-01T07:00")),
                 DtEnd = new CalDateTime(DateTime.Parse("2016-12-31T08:00")),
-                RecurrenceRules = new List<IRecurrencePattern> { new RecurrencePattern(FrequencyType.Daily, 1)},
+                RecurrenceRules = new List<RecurrencePattern> { new RecurrencePattern(FrequencyType.Daily, 1)},
             };
 
             //Define the exceptions: Sunday
@@ -105,7 +105,7 @@ namespace Ical.Net.UnitTests
             {
                 ByDay = new List<IWeekDay> { new WeekDay(DayOfWeek.Sunday) }
             };
-            vEvent.ExceptionRules = new List<IRecurrencePattern> {exceptionRule};
+            vEvent.ExceptionRules = new List<RecurrencePattern> {exceptionRule};
 
             var calendar = new Calendar();
             calendar.Events.Add(vEvent);

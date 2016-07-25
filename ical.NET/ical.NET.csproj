@@ -188,7 +188,6 @@
     <Compile Include="Interfaces\Components\IAlarm.cs" />
     <Compile Include="Interfaces\Components\ITimeZone.cs" />
     <Compile Include="Interfaces\DataTypes\IPeriodList.cs" />
-    <Compile Include="Interfaces\DataTypes\IRecurrencePattern.cs" />
     <Compile Include="Interfaces\DataTypes\IRequestStatus.cs" />
     <Compile Include="Interfaces\DataTypes\IStatusCode.cs" />
     <Compile Include="Interfaces\DataTypes\ITrigger.cs" />

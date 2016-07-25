@@ -2711,7 +2711,7 @@ namespace Ical.Net.UnitTests
         {
             // NOTE: evaluators are not generally meant to be used directly like this.
             // However, this does make a good test to ensure they behave as they should.
-            IRecurrencePattern pattern = new RecurrencePattern("FREQ=SECONDLY;INTERVAL=10");
+            RecurrencePattern pattern = new RecurrencePattern("FREQ=SECONDLY;INTERVAL=10");
             pattern.RestrictionType = RecurrenceRestrictionType.NoRestriction;
 
             var us = new CultureInfo("en-US");
@@ -2817,7 +2817,7 @@ namespace Ical.Net.UnitTests
             evt.Summary = "Event summary";
             evt.Start = new CalDateTime(DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Utc));
 
-            IRecurrencePattern recur = new RecurrencePattern();
+            RecurrencePattern recur = new RecurrencePattern();
             evt.RecurrenceRules.Add(recur);
 
             try
@@ -2836,7 +2836,7 @@ namespace Ical.Net.UnitTests
             evt.Summary = "Event summary";
             evt.Start = new CalDateTime(DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Utc));
 
-            IRecurrencePattern recur = new RecurrencePattern();
+            RecurrencePattern recur = new RecurrencePattern();
             recur.Frequency = FrequencyType.Daily;
             recur.Count = 3;
             recur.ByDay.Add(new WeekDay(DayOfWeek.Monday));
@@ -2852,7 +2852,7 @@ namespace Ical.Net.UnitTests
         [Test, Category("Recurrence")]
         public void Test4()
         {
-            IRecurrencePattern rpattern = new RecurrencePattern();
+            RecurrencePattern rpattern = new RecurrencePattern();
             rpattern.ByDay.Add(new WeekDay(DayOfWeek.Saturday));
             rpattern.ByDay.Add(new WeekDay(DayOfWeek.Sunday));
 
