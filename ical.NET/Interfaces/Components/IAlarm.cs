@@ -8,7 +8,7 @@ namespace Ical.Net.Interfaces.Components
     public interface IAlarm : ICalendarComponent
     {
         AlarmAction Action { get; set; }
-        IAttachment Attachment { get; set; }
+        Attachment Attachment { get; set; }
         IList<Attendee> Attendees { get; set; }
         string Description { get; set; }
         TimeSpan Duration { get; set; }

@@ -132,7 +132,7 @@ namespace Ical.Net.UnitTests
 
             var calendar = new Calendar();
             var vEvent = GetSimpleEvent();
-            vEvent.Attachments = new List<IAttachment> { binaryAttachment };
+            vEvent.Attachments = new List<Attachment> { binaryAttachment };
             calendar.Events.Add(vEvent);
 
             var serialized = SerializeToString(calendar);
@@ -175,7 +175,7 @@ namespace Ical.Net.UnitTests
 
             var calendar = new Calendar();
             var vEvent = GetSimpleEvent();
-            vEvent.Attachments = new List<IAttachment> { attachment };
+            vEvent.Attachments = new List<Attachment> { attachment };
             calendar.Events.Add(vEvent);
 
             var serialized = SerializeToString(calendar);
