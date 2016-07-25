@@ -1,6 +1,5 @@
 // $ANTLR 2.7.6 (20061021): "iCal.g" -> "iCalParser.cs"$
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
