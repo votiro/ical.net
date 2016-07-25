@@ -27,7 +27,7 @@ namespace antlr
         {
             get
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
 
                 switch (mismatchType)
                 {
@@ -58,8 +58,8 @@ namespace antlr
                     case CharTypeEnum.SetType:
                     case CharTypeEnum.NotSetType:
                         sb.Append("expecting " + (mismatchType == CharTypeEnum.NotSetType ? "NOT " : "") + "one of (");
-                        int[] elems = bset.toArray();
-                        foreach (int t in elems)
+                        var elems = bset.toArray();
+                        foreach (var t in elems)
                         {
                             appendCharName(sb, t);
                         }

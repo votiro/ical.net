@@ -72,10 +72,10 @@ namespace antlr
 		
 		public virtual string getLAChars()
 		{
-			StringBuilder la = new StringBuilder();
+			var la = new StringBuilder();
 
 			// copy buffer contents to array before looping thru contents (it's usually faster)
-			char[] fastBuf = new char[Buffer.Count-markerOffset];
+			var fastBuf = new char[Buffer.Count-markerOffset];
 			Buffer.CopyTo(fastBuf, markerOffset);
 
 			la.Append(fastBuf);
@@ -84,10 +84,10 @@ namespace antlr
 		
 		public virtual string getMarkedChars()
 		{
-			StringBuilder marked = new StringBuilder();
+			var marked = new StringBuilder();
 
 			// copy buffer contents to array before looping thru contents (it's usually faster)
-			char[] fastBuf = new char[Buffer.Count-markerOffset];
+			var fastBuf = new char[Buffer.Count-markerOffset];
 			Buffer.CopyTo(fastBuf, markerOffset);
 
 			marked.Append(fastBuf);

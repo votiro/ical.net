@@ -52,13 +52,13 @@ namespace antlr
         {
             syncConsume();
             // Fill the buffer sufficiently to hold needed characters
-            int bytesToRead = (amount + markerOffset) - Buffer.Count;
+            var bytesToRead = (amount + markerOffset) - Buffer.Count;
 
             while (bytesToRead > 0)
             {
                 // Read a few characters
                 var c = input.Read(buf, 0, BUF_SIZE);
-                for (int i = 0; i < c; i++)
+                for (var i = 0; i < c; i++)
                 {
                     // Append the next character
                     var foo = (char) buf[i];

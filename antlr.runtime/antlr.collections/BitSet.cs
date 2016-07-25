@@ -65,7 +65,7 @@ namespace antlr.collections
 
         private static long bitMask(int bitNumber)
         {
-            int bitPosition = bitNumber & MOD_MASK; // bitNumber mod BITS
+            var bitPosition = bitNumber & MOD_MASK; // bitNumber mod BITS
             return 1L << bitPosition;
         }
 
@@ -78,13 +78,13 @@ namespace antlr.collections
 
         public virtual int degree()
         {
-            int deg = 0;
-            for (int i = dataBits.Length - 1; i >= 0; i--)
+            var deg = 0;
+            for (var i = dataBits.Length - 1; i >= 0; i--)
             {
-                long word = dataBits[i];
+                var word = dataBits[i];
                 if (word != 0L)
                 {
-                    for (int bit = BITS - 1; bit >= 0; bit--)
+                    for (var bit = BITS - 1; bit >= 0; bit--)
                     {
                         if ((word & (1L << bit)) != 0)
                         {
@@ -119,7 +119,7 @@ namespace antlr.collections
 
         public virtual bool member(int el)
         {
-            int n = wordNumber(el);
+            var n = wordNumber(el);
             if (n >= dataBits.Length)
                 return false;
             return (dataBits[n] & bitMask(el)) != 0;
@@ -129,9 +129,9 @@ namespace antlr.collections
 
         public virtual int[] toArray()
         {
-            int[] elems = new int[degree()];
-            int en = 0;
-            for (int i = 0; i < (dataBits.Length << LOG_BITS); i++)
+            var elems = new int[degree()];
+            var en = 0;
+            for (var i = 0; i < (dataBits.Length << LOG_BITS); i++)
             {
                 if (member(i))
                 {
@@ -154,7 +154,7 @@ namespace antlr.collections
         {
             var builder = new StringBuilder(dataBits.Length * 2);
 
-            for (int i = 0; i < dataBits.Length << LOG_BITS; i++)
+            for (var i = 0; i < dataBits.Length << LOG_BITS; i++)
             {
                 if (!member(i))
                 {

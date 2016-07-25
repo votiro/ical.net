@@ -88,7 +88,7 @@ namespace Ical.Net.Serialization.iCalendar
             SerializationUtil.OnDeserializing(iCalendars);
 
             ICalendar cal = null;
-            Type foo = typeof(ISerializationSettings);
+            var foo = typeof(ISerializationSettings);
             var settings = ctx.GetService<ISerializationSettings>();
 
             { // ( ... )*

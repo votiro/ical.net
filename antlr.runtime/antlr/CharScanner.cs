@@ -287,8 +287,8 @@ namespace antlr
 
         public virtual void match(string s)
         {
-            int len = s.Length;
-            for (int i = 0; i < len; i++)
+            var len = s.Length;
+            for (var i = 0; i < len; i++)
             {
                 if (cached_LA1 != s[i])
                 {
@@ -337,8 +337,8 @@ namespace antlr
         */
         public virtual void tab()
         {
-            int c = getColumn();
-            int nc = (((c - 1) / tabsize) + 1) * tabsize + 1; // calculate tab stop
+            var c = getColumn();
+            var nc = (((c - 1) / tabsize) + 1) * tabsize + 1; // calculate tab stop
             setColumn(nc);
         }
 

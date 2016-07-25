@@ -192,7 +192,7 @@ namespace Ical.Net.UnitTests
                 found[s] = true;
             }
 
-            foreach (string item in items)
+            foreach (var item in items)
                 Assert.IsTrue(found.ContainsKey(item), "Event should contain CATEGORY '" + item + "', but it was not found.");
         }
 

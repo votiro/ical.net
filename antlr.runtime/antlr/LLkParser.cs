@@ -42,7 +42,7 @@ namespace antlr
 		public LLkParser(TokenStream lexer, int k_)
 		{
 			k = k_;
-			TokenBuffer tokenBuf = new TokenBuffer(lexer);
+			var tokenBuf = new TokenBuffer(lexer);
 			setTokenBuffer(tokenBuf);
 		}
 		/*Consume another token from the input stream.  Can only write sequentially!
