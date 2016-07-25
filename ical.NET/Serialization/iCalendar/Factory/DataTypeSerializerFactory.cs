@@ -1,4 +1,5 @@
 ﻿using System;
+using Ical.Net.DataTypes;
 using Ical.Net.Interfaces.DataTypes;
 using Ical.Net.Interfaces.Serialization;
 using Ical.Net.Interfaces.Serialization.Factory;
@@ -28,7 +29,7 @@ namespace Ical.Net.Serialization.iCalendar.Factory
                 {
                     s = new AttachmentSerializer();
                 }
-                else if (typeof (IAttendee).IsAssignableFrom(objectType))
+                else if (typeof (Attendee).IsAssignableFrom(objectType))
                 {
                     s = new AttendeeSerializer();
                 }

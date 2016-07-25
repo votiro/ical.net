@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Ical.Net.DataTypes;
 using Ical.Net.Interfaces.Components;
 using Ical.Net.Interfaces.DataTypes;
 using Ical.Net.Interfaces.General;
@@ -24,7 +25,7 @@ namespace Ical.Net.Serialization
         {
             AddPropertyMapping("ACTION", typeof (AlarmAction), false);
             AddPropertyMapping("ATTACH", typeof (IAttachment), false);
-            AddPropertyMapping("ATTENDEE", typeof (IAttendee), false);
+            AddPropertyMapping("ATTENDEE", typeof (Attendee), false);
             AddPropertyMapping("CATEGORIES", typeof (string), true);
             AddPropertyMapping("COMMENT", typeof (string), false);
             AddPropertyMapping("COMPLETED", typeof (IDateTime), false);

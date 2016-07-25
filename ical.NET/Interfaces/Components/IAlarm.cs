@@ -9,7 +9,7 @@ namespace Ical.Net.Interfaces.Components
     {
         AlarmAction Action { get; set; }
         IAttachment Attachment { get; set; }
-        IList<IAttendee> Attendees { get; set; }
+        IList<Attendee> Attendees { get; set; }
         string Description { get; set; }
         TimeSpan Duration { get; set; }
         int Repeat { get; set; }

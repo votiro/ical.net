@@ -7,7 +7,7 @@ using Utility;
 
 namespace Ical.Net.DataTypes
 {
-    public class Attendee : EncodableDataType, IAttendee
+    public class Attendee : EncodableDataType
     {
         private Uri _sentBy;
         /// <summary> SENT-BY, to indicate who is acting on behalf of the ATTENDEE </summary>

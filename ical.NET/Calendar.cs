@@ -496,7 +496,7 @@ namespace Ical.Net
             return Net.FreeBusy.Create(this, Net.FreeBusy.CreateRequest(fromInclusive, toExclusive, null, null));
         }
 
-        public virtual IFreeBusy GetFreeBusy(IOrganizer organizer, IAttendee[] contacts, IDateTime fromInclusive, IDateTime toExclusive)
+        public virtual IFreeBusy GetFreeBusy(IOrganizer organizer, Attendee[] contacts, IDateTime fromInclusive, IDateTime toExclusive)
         {
             return Net.FreeBusy.Create(this, Net.FreeBusy.CreateRequest(fromInclusive, toExclusive, organizer, contacts));
         }
