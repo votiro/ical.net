@@ -93,7 +93,7 @@
     <Compile Include="DataTypes\GeographicLocation.cs" />
     <Compile Include="DataTypes\PeriodList.cs" />
     <Compile Include="DataTypes\RecurrencePattern.cs" />
-    <Compile Include="DataTypes\UTCOffset.cs" />
+    <Compile Include="DataTypes\UtcOffset.cs" />
     <Compile Include="Evaluation\RecurrencePatternEvaluator.cs" />
     <Compile Include="Evaluation\EventEvaluator.cs" />
     <Compile Include="Evaluation\Evaluator.cs" />
@@ -190,7 +190,6 @@
     <Compile Include="Interfaces\DataTypes\IPeriodList.cs" />
     <Compile Include="Interfaces\DataTypes\IRequestStatus.cs" />
     <Compile Include="Interfaces\DataTypes\IStatusCode.cs" />
-    <Compile Include="Interfaces\DataTypes\IUTCOffset.cs" />
     <Compile Include="Interfaces\IICalendarCollection.cs" />
     <Compile Include="Interfaces\Components\IRecurringComponent.cs" />
     <Compile Include="Interfaces\Components\IUniqueComponent.cs" />

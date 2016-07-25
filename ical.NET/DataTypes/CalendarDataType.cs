@@ -86,7 +86,7 @@ namespace Ical.Net.DataTypes
                     case "URI":
                         return typeof (Uri);
                     case "UTC-OFFSET":
-                        return typeof (IUtcOffset);
+                        return typeof (UtcOffset);
                     default:
                         return null;
                 }
