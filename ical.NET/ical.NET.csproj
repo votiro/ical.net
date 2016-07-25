@@ -190,7 +190,6 @@
     <Compile Include="Interfaces\DataTypes\IPeriodList.cs" />
     <Compile Include="Interfaces\DataTypes\IRequestStatus.cs" />
     <Compile Include="Interfaces\DataTypes\IStatusCode.cs" />
-    <Compile Include="Interfaces\DataTypes\ITrigger.cs" />
     <Compile Include="Interfaces\DataTypes\IUTCOffset.cs" />
     <Compile Include="Interfaces\IICalendarCollection.cs" />
     <Compile Include="Interfaces\Components\IRecurringComponent.cs" />

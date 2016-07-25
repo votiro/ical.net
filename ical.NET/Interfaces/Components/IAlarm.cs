@@ -14,7 +14,7 @@ namespace Ical.Net.Interfaces.Components
         TimeSpan Duration { get; set; }
         int Repeat { get; set; }
         string Summary { get; set; }
-        ITrigger Trigger { get; set; }
+        Trigger Trigger { get; set; }
 
         /// <summary>
         /// Gets a list of alarm occurrences for the given recurring component, <paramref name="rc"/>
