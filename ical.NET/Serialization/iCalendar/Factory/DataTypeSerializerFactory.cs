@@ -37,7 +37,7 @@ namespace Ical.Net.Serialization.iCalendar.Factory
                 {
                     s = new DateTimeSerializer();
                 }
-                else if (typeof (IFreeBusyEntry).IsAssignableFrom(objectType))
+                else if (typeof (FreeBusyEntry).IsAssignableFrom(objectType))
                 {
                     s = new FreeBusyEntrySerializer();
                 }

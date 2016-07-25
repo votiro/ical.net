@@ -38,7 +38,7 @@ namespace Ical.Net.Serialization
             AddPropertyMapping("DURATION", typeof (TimeSpan), false);
             AddPropertyMapping("EXDATE", typeof (IPeriodList), false);
             AddPropertyMapping("EXRULE", typeof (IRecurrencePattern), false);
-            AddPropertyMapping("FREEBUSY", typeof (IFreeBusyEntry), true);
+            AddPropertyMapping("FREEBUSY", typeof (FreeBusyEntry), true);
             AddPropertyMapping("GEO", typeof (IGeographicLocation), false);
             AddPropertyMapping("LAST-MODIFIED", typeof (IDateTime), false);
             AddPropertyMapping("ORGANIZER", typeof (IOrganizer), false);

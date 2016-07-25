@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Ical.Net.Interfaces.DataTypes;
 using Ical.Net.Interfaces.General;
 using Utility;
 
