@@ -42,7 +42,7 @@ namespace Ical.Net.Serialization.iCalendar.Factory
                 }
                 else if (typeof (ICalendarComponent).IsAssignableFrom(objectType))
                 {
-                    s = typeof (IEvent).IsAssignableFrom(objectType)
+                    s = typeof (Event).IsAssignableFrom(objectType)
                         ? new EventSerializer()
                         : new ComponentSerializer();
                 }

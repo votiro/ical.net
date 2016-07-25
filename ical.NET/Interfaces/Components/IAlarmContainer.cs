@@ -22,7 +22,7 @@ namespace Ical.Net.Interfaces.Components
         ///  The following is an example of polling alarms for an event.
         ///  <code>
         ///  IICalendar iCal = iCalendar.LoadFromUri(new Uri("http://somesite.com/calendar.ics"));
-        ///  IEvent evt = iCal.Events.First();
+        ///  Event evt = iCal.Events.First();
         /// 
         ///  // Poll the alarms on the event
         ///  List<AlarmOccurrence> alarms = evt.PollAlarms();

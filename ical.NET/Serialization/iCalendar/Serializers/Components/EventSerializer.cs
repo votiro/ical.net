@@ -1,5 +1,4 @@
 ﻿using System;
-using Ical.Net.Interfaces.Components;
 
 namespace Ical.Net.Serialization.iCalendar.Serializers.Components
 {
@@ -9,7 +8,7 @@ namespace Ical.Net.Serialization.iCalendar.Serializers.Components
 
         public override string SerializeToString(object obj)
         {
-            var evt = obj as IEvent;
+            var evt = obj as Event;
 
             // NOTE: DURATION and DTEND cannot co-exist on an event.
             // Some systems do not support DURATION, so we serialize

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Ical.Net.Evaluation;
-using Ical.Net.Interfaces.Components;
 using Ical.Net.Interfaces.DataTypes;
 using Utility;
 
@@ -23,7 +22,7 @@ namespace Ical.Net
     ///         <item>Create a TextCollection DataType for 'text' items separated by commas</item>
     ///     </list>
     /// </note>
-    public class Event : RecurringComponent, IEvent
+    public class Event : RecurringComponent
     {
         internal const string ComponentName = "VEVENT";
 

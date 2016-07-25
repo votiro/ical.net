@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Ical.Net.Interfaces.Components;
 using Ical.Net.Interfaces.DataTypes;
 
 namespace Ical.Net.Evaluation
 {
     public class EventEvaluator : RecurringEvaluator
     {
-        protected IEvent Event
+        protected Event Event
         {
-            get { return Recurrable as IEvent; }
+            get { return Recurrable as Event; }
             set { Recurrable = value; }
         }
 
-        public EventEvaluator(IEvent evt) : base(evt) {}
+        public EventEvaluator(Event evt) : base(evt) {}
 
         /// <summary>
         /// Evaluates this event to determine the dates and times for which the event occurs.

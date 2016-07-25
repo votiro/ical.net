@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using antlr;
 using Ical.Net.DataTypes;
-using Ical.Net.Interfaces.Components;
 using Ical.Net.Interfaces.DataTypes;
 using Ical.Net.Interfaces.General;
 using Ical.Net.Interfaces.Serialization;
@@ -479,7 +478,7 @@ END:VCALENDAR
             var longName = "The Exceptionally Long Named Meeting Room Whose Name Wraps Over Several Lines When Exported From Leading Calendar and Office Software Application Microsoft Office 2007";
             var iCal = Calendar.LoadFromStream(new StringReader(IcsFiles.Outlook2007LineFolds))[0];
             var events = iCal.GetOccurrences<Event>(new CalDateTime(2009, 06, 20), new CalDateTime(2009, 06, 22)).OrderBy(o => o.Period.StartTime).ToList();
-            Assert.AreEqual(longName, ((IEvent)events[0].Source).Location);
+            Assert.AreEqual(longName, ((Event)events[0].Source).Location);
         }
 
         /// <summary>
