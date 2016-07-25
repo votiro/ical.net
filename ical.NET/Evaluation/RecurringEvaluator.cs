@@ -50,7 +50,7 @@ namespace Ical.Net.Evaluation
             {
                 // If no RRULEs were found, then we still need to add
                 // the initial reference date to the results.
-                IPeriod p = new Period(referenceDate);
+                Period p = new Period(referenceDate);
                 Periods.UnionWith(new [] {p});
             }
         }
@@ -105,7 +105,7 @@ namespace Ical.Net.Evaluation
             Periods.ExceptWith(periods);
         }
 
-        public override HashSet<IPeriod> Evaluate(IDateTime referenceDate, DateTime periodStart, DateTime periodEnd, bool includeReferenceDateInResults)
+        public override HashSet<Period> Evaluate(IDateTime referenceDate, DateTime periodStart, DateTime periodEnd, bool includeReferenceDateInResults)
         {
             // Evaluate extra time periods, without re-evaluating ones that were already evaluated
             if ((EvaluationStartBounds == DateTime.MaxValue && EvaluationEndBounds == DateTime.MinValue) || (periodEnd.Equals(EvaluationStartBounds)) ||

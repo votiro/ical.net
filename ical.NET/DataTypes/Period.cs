@@ -8,7 +8,7 @@ namespace Ical.Net.DataTypes
     /// <summary>
     /// Represents an iCalendar period of time.
     /// </summary>    
-    public class Period : EncodableDataType, IPeriod
+    public class Period : EncodableDataType
     {
         private IDateTime _mStartTime;
         private IDateTime _mEndTime;
@@ -43,7 +43,7 @@ namespace Ical.Net.DataTypes
         {
             base.CopyFrom(obj);
 
-            var p = obj as IPeriod;
+            var p = obj as Period;
             if (p != null)
             {
                 StartTime = p.StartTime;
@@ -172,7 +172,7 @@ namespace Ical.Net.DataTypes
             return false;
         }
 
-        public virtual bool CollidesWith(IPeriod period)
+        public virtual bool CollidesWith(Period period)
         {
             if (period != null && ((period.StartTime != null && Contains(period.StartTime)) || (period.EndTime != null && Contains(period.EndTime))))
             {
@@ -181,7 +181,7 @@ namespace Ical.Net.DataTypes
             return false;
         }
 
-        public int CompareTo(IPeriod p)
+        public int CompareTo(Period p)
         {
             if (p == null)
             {
