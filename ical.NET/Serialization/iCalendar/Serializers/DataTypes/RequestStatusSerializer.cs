@@ -18,7 +18,7 @@ namespace Ical.Net.Serialization.iCalendar.Serializers.DataTypes
         {
             try
             {
-                var rs = obj as IRequestStatus;
+                var rs = obj as RequestStatus;
                 if (rs == null)
                 {
                     return null;
@@ -66,7 +66,7 @@ namespace Ical.Net.Serialization.iCalendar.Serializers.DataTypes
         {
             var value = tr.ReadToEnd();
 
-            var rs = CreateAndAssociate() as IRequestStatus;
+            var rs = CreateAndAssociate() as RequestStatus;
             if (rs == null)
             {
                 return null;
