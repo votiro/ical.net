@@ -8,11 +8,11 @@ namespace Ical.Net.DataTypes
     /// <summary>
     /// A class that represents the return status of an iCalendar request.
     /// </summary>
-    public class RequestStatus : EncodableDataType, IRequestStatus
+    public class RequestStatus : EncodableDataType
     {
         private string _mDescription;
         private string _mExtraData;
-        private IStatusCode _mStatusCode;
+        private StatusCode _mStatusCode;
 
         public virtual string Description
         {
@@ -26,7 +26,7 @@ namespace Ical.Net.DataTypes
             set { _mExtraData = value; }
         }
 
-        public virtual IStatusCode StatusCode
+        public virtual StatusCode StatusCode
         {
             get { return _mStatusCode; }
             set { _mStatusCode = value; }

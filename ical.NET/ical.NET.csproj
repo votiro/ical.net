@@ -185,7 +185,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\DataTypes\IRequestStatus.cs" />
-    <Compile Include="Interfaces\DataTypes\IStatusCode.cs" />
     <Compile Include="Interfaces\IICalendarCollection.cs" />
     <Compile Include="Interfaces\Components\IRecurringComponent.cs" />
     <Compile Include="Interfaces\Components\IUniqueComponent.cs" />
