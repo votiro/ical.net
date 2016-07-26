@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ical.Net.DataTypes;
-using Ical.Net.Interfaces.DataTypes;
 using NUnit.Framework;
 
 namespace Ical.Net.UnitTests
@@ -103,7 +102,7 @@ namespace Ical.Net.UnitTests
             //Define the exceptions: Sunday
             var exceptionRule = new RecurrencePattern(FrequencyType.Weekly, 1)
             {
-                ByDay = new List<IWeekDay> { new WeekDay(DayOfWeek.Sunday) }
+                ByDay = new List<WeekDay> { new WeekDay(DayOfWeek.Sunday) }
             };
             vEvent.ExceptionRules = new List<RecurrencePattern> {exceptionRule};
 

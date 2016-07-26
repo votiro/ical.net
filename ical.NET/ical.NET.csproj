@@ -112,7 +112,6 @@
     <Compile Include="Interfaces\Evaluation\IGetOccurrences.cs" />
     <Compile Include="Interfaces\DataTypes\ICalendarDataType.cs" />
     <Compile Include="Interfaces\DataTypes\IDateTime.cs" />
-    <Compile Include="Interfaces\DataTypes\IWeekDay.cs" />
     <Compile Include="Interfaces\DataTypes\IEncodableDataType.cs" />
     <Compile Include="Interfaces\Evaluation\IEvaluator.cs" />
     <Compile Include="Interfaces\Evaluation\IRecurrable.cs" />
@@ -184,7 +183,6 @@
     <Compile Include="CalendarCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\DataTypes\IRequestStatus.cs" />
     <Compile Include="Interfaces\IICalendarCollection.cs" />
     <Compile Include="Interfaces\Components\IRecurringComponent.cs" />
     <Compile Include="Interfaces\Components\IUniqueComponent.cs" />

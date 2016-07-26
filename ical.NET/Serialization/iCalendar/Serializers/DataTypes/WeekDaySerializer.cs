@@ -2,7 +2,6 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using Ical.Net.DataTypes;
-using Ical.Net.Interfaces.DataTypes;
 
 namespace Ical.Net.Serialization.iCalendar.Serializers.DataTypes
 {
@@ -12,19 +11,20 @@ namespace Ical.Net.Serialization.iCalendar.Serializers.DataTypes
 
         public override string SerializeToString(object obj)
         {
-            var ds = obj as IWeekDay;
-            if (ds != null)
+            var ds = obj as WeekDay;
+            if (ds == null)
             {
-                var value = string.Empty;
-                if (ds.Offset != int.MinValue)
-                {
-                    value += ds.Offset;
-                }
-                value += Enum.GetName(typeof (DayOfWeek), ds.DayOfWeek).ToUpper().Substring(0, 2);
-
-                return Encode(ds, value);
+                return null;
             }
-            return null;
+
+            var value = string.Empty;
+            if (ds.Offset != int.MinValue)
+            {
+                value += ds.Offset;
+            }
+            value += Enum.GetName(typeof (DayOfWeek), ds.DayOfWeek).ToUpper().Substring(0, 2);
+
+            return Encode(ds, value);
         }
 
         internal static readonly Regex DayOfWeek = new Regex(@"(\+|-)?(\d{1,2})?(\w{2})", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -34,7 +34,7 @@ namespace Ical.Net.Serialization.iCalendar.Serializers.DataTypes
             var value = tr.ReadToEnd();
 
             // Create the day specifier and associate it with a calendar object
-            var ds = CreateAndAssociate() as IWeekDay;
+            var ds = CreateAndAssociate() as WeekDay;
 
             // Decode the value, if necessary
             value = Decode(ds, value);
