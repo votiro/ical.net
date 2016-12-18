@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Ical.Net.DataTypes;
+using Ical.Net.Interfaces.DataTypes;
 using NUnit.Framework;
 
 namespace Ical.Net.UnitTests
@@ -167,6 +170,55 @@ END:VCALENDAR
             var occurrences = collection.GetOccurrences<Event>(startCheck, startCheck.AddMonths(1));
 
             Assert.IsTrue(occurrences.Count == 4);
+        }
+
+        [Test]
+        public void MissingOccurrence()
+        {
+            var eventStart = new DateTime(2012, 10, 12, 7, 00, 00);
+            
+            var duration = TimeSpan.FromHours(10.5);
+
+            var r = new RecurrencePattern(FrequencyType.Weekly, 1)
+            {
+                Until = DateTime.Parse("2013-04-30 23:59:59"),
+                ByDay = new List<IWeekDay> {new WeekDay(DayOfWeek.Friday)}
+            };
+
+            var evt2 = new Event
+            {
+                Start = new CalDateTime(eventStart),
+                Duration = duration,
+                RecurrenceRules = new List<IRecurrencePattern> { r },
+            };
+
+            // Both statements below return the same results, but they skip Jan 4 2013. Happens in 2.2.14 and in 2.2.15
+            //var occurences2 = Utility.RecurrenceUtil.GetOccurrences(evt2, new CalDateTime(startdate.AddHours(-1)),
+            //    new CalDateTime(until), false);
+
+            var searchStart = eventStart.AddHours(-1);
+            var searchEnd = new DateTime(2013, 4, 30, 17, 30, 00);
+            var occurrences = evt2.GetOccurrences(searchStart, searchEnd);
+            Assert.AreEqual(29, occurrences.Count);
+
+            var missingPeriod = new Period(new CalDateTime(DateTime.Parse("2013-01-04 07:00:00")));
+            Assert.IsTrue(occurrences.Select(o => o.Period).Contains(missingPeriod));
+
+            //occurences2.All(x =>
+            //{
+            //    Debug.WriteLine(x.Period.StartTime.Value);
+            //    return true;
+            //});
+
+            //Debug.Assert(occurences2.Count == 29);
+            //start = new DateTime(2012, 10, 12, 7, 00, 00);
+            //foreach (var rec in occurences2.OrderBy(x => x.Period.StartTime.Value))
+            //{
+            //    Debug.Assert(DayOfWeek.Friday == rec.Period.StartTime.DayOfWeek);
+            //    Debug.Assert(start == rec.Period.StartTime.Value);
+            //    Debug.Assert(start.AddMinutes(630) == rec.Period.EndTime.Value);
+            //    start = start.AddDays(7);
+            //}
         }
     }
 }
