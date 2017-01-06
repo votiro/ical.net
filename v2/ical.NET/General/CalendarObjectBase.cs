@@ -33,24 +33,24 @@ namespace Ical.Net.General
         public virtual T Copy<T>()
         {
             var type = GetType();
-            var obj = Activator.CreateInstance(type) as ICloneable;
-            try
-            {
-                var clone = (T) obj.Clone();
-                return clone;
-            }
-            catch (Exception e)
-            {
-                return default(T);
-            }
-
-            //// Duplicate our values
-            //if (obj is T)
+            var obj = Activator.CreateInstance(type) as ICopyable;
+            //try
             //{
-            //    obj.CopyFrom(this);
-            //    return (T)obj;
+            //    var clone = (T) Clone();
+            //    return clone;
             //}
-            //return default(T);
+            //catch (Exception e)
+            //{
+            //    return default(T);
+            //}
+
+            // Duplicate our values
+            if (obj is T)
+            {
+                obj.CopyFrom(this);
+                return (T)obj;
+            }
+            return default(T);
         }
 
         public virtual bool IsLoaded => _mIsLoaded;

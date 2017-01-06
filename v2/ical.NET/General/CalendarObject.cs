@@ -49,11 +49,12 @@ namespace Ical.Net.General
             //Parent = other.Parent?.Clone() as CalendarObject;
             Parent = other.Parent;
 
-            var clonedChildren = CollectionHelpers.Clone(other.Children).ToList();
+            //var clonedChildren = CollectionHelpers.Clone(other.Children).ToList();
             Children.Clear();
-            foreach (var child in clonedChildren)
+            foreach (var child in other.Children)
             {
-                Children.Add(child);
+                var cloned = child.Clone() as CalendarObject;
+                Children.Add(cloned);
             }
         }
 

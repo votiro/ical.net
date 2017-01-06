@@ -5,11 +5,12 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Ical.Net.Collections.Interfaces;
 using Ical.Net.Interfaces.General;
+using Ical.Net.Utility;
 
 namespace Ical.Net.General
 {
     [DebuggerDisplay("{Name}={string.Join(\",\", Values)}")]
-    public class CalendarParameter : CalendarObject, IValueObject<string>
+    public class CalendarParameter : CalendarObject, IValueObject<string>, ICloneable
     {
         private HashSet<string> _values;
 
@@ -38,6 +39,17 @@ namespace Ical.Net.General
             }
         }
 
+        protected CalendarParameter(CalendarParameter other) : base(other)
+        {
+            Initialize();
+            Value = other.Value == null
+                ? null
+                : string.Copy(other.Value);
+
+            var otherValues = CollectionHelpers.Clone(other.Values).ToList();
+            _values.UnionWith(otherValues);
+        }
+
         private void Initialize()
         {
             _values = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -63,6 +75,8 @@ namespace Ical.Net.General
             _values = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             _values.UnionWith(p.Values);
         }
+
+        public override object Clone() => new CalendarParameter(this);
 
         public virtual IEnumerable<string> Values => _values;
 
