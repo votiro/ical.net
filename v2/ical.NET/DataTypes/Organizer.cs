@@ -84,6 +84,25 @@ namespace Ical.Net.DataTypes
             }
         }
 
+        protected Organizer(Organizer other) : base(other)
+        {
+            CommonName = other.CommonName == null
+                ? null
+                : string.Copy(other.CommonName);
+
+            DirectoryEntry = other.DirectoryEntry == null
+                ? null
+                : new Uri(other.DirectoryEntry.OriginalString);
+
+            SentBy = other.SentBy == null
+                ? null
+                : new Uri(other.SentBy.OriginalString);
+
+            Value = other.Value == null
+                ? null
+                : new Uri(other.Value.OriginalString);
+        }
+
         protected bool Equals(Organizer other)
         {
             return Equals(Value, other.Value);
@@ -139,29 +158,30 @@ namespace Ical.Net.DataTypes
 
         public override object Clone()
         {
-            var clone = base.Clone() as Organizer;
-            if (clone == null)
-            {
-                return new Organizer();
-            }
+            return new Organizer(this);
+            //var clone = base.Clone() as Organizer;
+            //if (clone == null)
+            //{
+            //    return new Organizer();
+            //}
 
-            clone.CommonName = CommonName == null
-                ? null
-                : string.Copy(CommonName);
+            //clone.CommonName = CommonName == null
+            //    ? null
+            //    : string.Copy(CommonName);
 
-            clone.DirectoryEntry = DirectoryEntry == null
-                ? null
-                : new Uri(DirectoryEntry.OriginalString);
+            //clone.DirectoryEntry = DirectoryEntry == null
+            //    ? null
+            //    : new Uri(DirectoryEntry.OriginalString);
 
-            clone.SentBy = SentBy == null
-                ? null
-                : new Uri(SentBy.OriginalString);
+            //clone.SentBy = SentBy == null
+            //    ? null
+            //    : new Uri(SentBy.OriginalString);
 
-            clone.Value = Value == null
-                ? null
-                : new Uri(Value.OriginalString);
+            //clone.Value = Value == null
+            //    ? null
+            //    : new Uri(Value.OriginalString);
 
-            return clone;
+            //return clone;
         }
     }
 }

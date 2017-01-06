@@ -20,6 +20,11 @@ namespace Ical.Net.DataTypes
             Status = status;
         }
 
+        protected FreeBusyEntry(FreeBusyEntry other) : base(other)
+        {
+            Status = other.Status;
+        }
+
         public override void CopyFrom(ICopyable obj)
         {
             base.CopyFrom(obj);
@@ -33,14 +38,15 @@ namespace Ical.Net.DataTypes
 
         public override object Clone()
         {
-            var clone = base.Clone() as FreeBusyEntry;
-            if (clone == null)
-            {
-                return new FreeBusyEntry {Status = FreeBusyStatus.Free};
-            }
+            return new FreeBusyEntry(this);
+            //var clone = base.Clone() as FreeBusyEntry;
+            //if (clone == null)
+            //{
+            //    return new FreeBusyEntry {Status = FreeBusyStatus.Free};
+            //}
 
-            clone.Status = Status;
-            return clone;
+            //clone.Status = Status;
+            //return clone;
         }
     }
 }

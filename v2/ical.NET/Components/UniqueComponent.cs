@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using Ical.Net.DataTypes;
 using Ical.Net.Interfaces.Components;
 using Ical.Net.Interfaces.DataTypes;
+using Ical.Net.Utility;
 
 namespace Ical.Net
 {
@@ -27,6 +29,21 @@ namespace Ical.Net
         public UniqueComponent(string name) : base(name)
         {
             EnsureProperties();
+        }
+
+        public UniqueComponent(UniqueComponent other) : base(other)
+        {
+            Attendees = CollectionHelpers.Clone(other.Attendees).ToList();
+            Comments = CollectionHelpers.Clone(other.Comments).ToList();
+            DtStamp = other.DtStamp?.Clone() as CalDateTime;
+            Organizer = other.Organizer?.Clone() as Organizer;
+            RequestStatuses = CollectionHelpers.Clone(other.RequestStatuses).ToList();
+            Uid = other.Uid == null
+                ? null
+                : string.Copy(other.Uid);
+            Url = other.Url == null
+                ? null
+                : new Uri(other.Url.OriginalString);
         }
 
         private void EnsureProperties()
@@ -116,5 +133,7 @@ namespace Ical.Net
             get { return Properties.Get<string>("UID"); }
             set { Properties.Set("UID", value); }
         }
+
+        public override object Clone() => new UniqueComponent(this);
     }
 }

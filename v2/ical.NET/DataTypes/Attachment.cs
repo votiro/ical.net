@@ -63,6 +63,22 @@ namespace Ical.Net.DataTypes
             Uri = a.Uri;
         }
 
+        protected Attachment(Attachment other) : base(other)
+        {
+            if (other.Data == null)
+            {
+                Data = null;
+            }
+            else
+            {
+                var dataCopy = new byte[other.Data.Length];
+                Array.Copy(other.Data, dataCopy, other.Data.Length);
+            }
+
+            var newEncoding = other.ValueEncoding.Clone() as Encoding;
+            ValueEncoding = newEncoding;
+        }
+
         public override string ToString()
         {
             return Data == null
@@ -121,23 +137,24 @@ namespace Ical.Net.DataTypes
 
         public override object Clone()
         {
-            var clone = base.Clone() as Attachment;
-            if (clone == null)
-            {
-                return null;
-            }
+            return new Attachment(this);
+            //var clone = base.Clone() as Attachment;
+            //if (clone == null)
+            //{
+            //    return null;
+            //}
 
-            if (Data == null || !Data.Any())
-            {
-                return clone;
-            }
+            //if (Data == null || !Data.Any())
+            //{
+            //    return clone;
+            //}
 
-            var dataCopy = new byte[Data.Length];
-            Array.Copy(Data, dataCopy, Data.Length);
-            var newEncoding = ValueEncoding.Clone() as Encoding;
-            clone.Data = dataCopy;
-            clone.ValueEncoding = newEncoding;
-            return clone;
+            //var dataCopy = new byte[Data.Length];
+            //Array.Copy(Data, dataCopy, Data.Length);
+            //var newEncoding = ValueEncoding.Clone() as Encoding;
+            //clone.Data = dataCopy;
+            //clone.ValueEncoding = newEncoding;
+            //return clone;
         }
     }
 }

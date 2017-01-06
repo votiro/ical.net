@@ -13,7 +13,7 @@ namespace Ical.Net.DataTypes
     /// <summary>
     /// An iCalendar representation of the <c>RRULE</c> property.
     /// </summary>
-    public class RecurrencePattern : EncodableDataType, IRecurrencePattern
+    public class RecurrencePattern : EncodableDataType, IRecurrencePattern, ICloneable
     {
         private int _interval = int.MinValue;
         private RecurrenceRestrictionType? _restrictionType;
@@ -107,6 +107,24 @@ namespace Ical.Net.DataTypes
             CopyFrom(serializer.Deserialize(new StringReader(value)) as ICopyable);
         }
 
+        protected RecurrencePattern(RecurrencePattern other) : base(other)
+        {
+            Frequency = other.Frequency;
+            Until = other.Until;
+            Count = other.Count;
+            Interval = other.Interval;
+            BySecond = CollectionHelpers.CloneStructs(other.BySecond).ToList();
+            ByMinute = CollectionHelpers.CloneStructs(other.ByMinute).ToList();
+            ByHour = CollectionHelpers.CloneStructs(other.ByHour).ToList();
+            ByDay = CollectionHelpers.Clone(other.ByDay).ToList();
+            ByMonthDay = CollectionHelpers.CloneStructs(other.ByMonthDay).ToList();
+            ByYearDay = CollectionHelpers.CloneStructs(other.ByYearDay).ToList();
+            BySetPosition = CollectionHelpers.CloneStructs(other.BySetPosition).ToList();
+            FirstDayOfWeek = other.FirstDayOfWeek;
+            RestrictionType = other.RestrictionType;
+            EvaluationMode = other.EvaluationMode;
+        }
+
         public override string ToString()
         {
             var serializer = new RecurrencePatternSerializer();
@@ -195,27 +213,28 @@ namespace Ical.Net.DataTypes
 
         public override object Clone()
         {
-            var clone = base.Clone() as RecurrencePattern;
-            if (clone == null)
-            {
-                return null;
-            }
+            return new RecurrencePattern(this);
+            //var clone = base.Clone() as RecurrencePattern;
+            //if (clone == null)
+            //{
+            //    return null;
+            //}
 
-            clone.Frequency = Frequency;
-            clone.Until = Until;
-            clone.Count = Count;
-            clone.Interval = Interval;
-            clone.BySecond = CollectionHelpers.CloneStructs(BySecond).ToList();
-            clone.ByMinute = CollectionHelpers.CloneStructs(ByMinute).ToList();
-            clone.ByHour = CollectionHelpers.CloneStructs(ByHour).ToList();
-            clone.ByDay = CollectionHelpers.Clone(ByDay).ToList();
-            clone.ByMonthDay = CollectionHelpers.CloneStructs(ByMonthDay).ToList();
-            clone.ByYearDay = CollectionHelpers.CloneStructs(ByYearDay).ToList();
-            clone.BySetPosition = CollectionHelpers.CloneStructs(BySetPosition).ToList();
-            clone.FirstDayOfWeek = FirstDayOfWeek;
-            clone.RestrictionType = RestrictionType;
-            clone.EvaluationMode = EvaluationMode;
-            return clone;
+            //clone.Frequency = Frequency;
+            //clone.Until = Until;
+            //clone.Count = Count;
+            //clone.Interval = Interval;
+            //clone.BySecond = CollectionHelpers.CloneStructs(BySecond).ToList();
+            //clone.ByMinute = CollectionHelpers.CloneStructs(ByMinute).ToList();
+            //clone.ByHour = CollectionHelpers.CloneStructs(ByHour).ToList();
+            //clone.ByDay = CollectionHelpers.Clone(ByDay).ToList();
+            //clone.ByMonthDay = CollectionHelpers.CloneStructs(ByMonthDay).ToList();
+            //clone.ByYearDay = CollectionHelpers.CloneStructs(ByYearDay).ToList();
+            //clone.BySetPosition = CollectionHelpers.CloneStructs(BySetPosition).ToList();
+            //clone.FirstDayOfWeek = FirstDayOfWeek;
+            //clone.RestrictionType = RestrictionType;
+            //clone.EvaluationMode = EvaluationMode;
+            //return clone;
         }
 
         private static bool CollectionEquals<T>(IEnumerable<T> c1, IEnumerable<T> c2) => c1.SequenceEqual(c2);

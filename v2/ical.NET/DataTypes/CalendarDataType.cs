@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Linq;
 using System.Runtime.Serialization;
 using Ical.Net.General;
 using Ical.Net.General.Proxies;
@@ -23,6 +25,36 @@ namespace Ical.Net.DataTypes
         protected CalendarDataType()
         {
             Initialize();
+        }
+
+        protected CalendarDataType(CalendarDataType other)
+        {
+            Initialize();
+            Language = other.Language == null
+                ? null
+                : string.Copy(other.Language);
+
+            _AssociatedObject = other.Calendar?.Clone() as Calendar;
+            _proxy.SetParent(_AssociatedObject);
+
+            //var parameterList = new ParameterList();
+
+            //if (other.Parameters != null && other.Parameters.Any() && other.Parameters is ParameterCollectionProxy)
+            //{
+            //    //var subList = 
+            //    foreach (var collection in other.Parameters)
+            //    {
+                    
+            //    }
+            //}
+
+            //var clonedParameters = CollectionHelpers.Clone(other.Parameters);
+            
+            //foreach (var parameter in clonedParameters)
+            //{
+            //    parameterList.Add(parameter);
+            //}
+            _proxy.SetProxiedObject(other.Parameters);
         }
 
         private void Initialize()
@@ -167,22 +199,23 @@ namespace Ical.Net.DataTypes
 
         public virtual object Clone()
         {
-            var clone = new CalendarDataType();
-            clone._AssociatedObject = Calendar.Clone() as Calendar;
+            return new CalendarDataType(this);
+            //var clone = new CalendarDataType();
+            //clone._AssociatedObject = Calendar.Clone() as Calendar;
 
-            clone.Language = Language == null
-                ? null
-                : string.Copy(Language);
+            //clone.Language = Language == null
+            //    ? null
+            //    : string.Copy(Language);
 
-            clone._proxy.SetParent(_AssociatedObject);
-            var clonedParameters = CollectionHelpers.Clone(Parameters);
-            var parameterList = new ParameterList();
-            foreach (var parameter in clonedParameters)
-            {
-                parameterList.Add(parameter);
-            }
-            clone._proxy.SetProxiedObject(parameterList);
-            return clone;
+            //clone._proxy.SetParent(_AssociatedObject);
+            //var clonedParameters = CollectionHelpers.Clone(Parameters);
+            //var parameterList = new ParameterList();
+            //foreach (var parameter in clonedParameters)
+            //{
+            //    parameterList.Add(parameter);
+            //}
+            //clone._proxy.SetProxiedObject(parameterList);
+            //return clone;
         }
 
         public virtual IParameterCollection Parameters => _proxy;

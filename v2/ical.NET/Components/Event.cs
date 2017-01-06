@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Ical.Net.DataTypes;
 using Ical.Net.Evaluation;
 using Ical.Net.Interfaces.Components;
 using Ical.Net.Interfaces.DataTypes;
@@ -214,6 +215,29 @@ namespace Ical.Net
             Initialize();
         }
 
+        protected Event(Event other) : base(other)
+        {
+            DtStart = other.DtStart.Clone() as CalDateTime;
+            DtEnd = other.DtEnd.Clone() as CalDateTime;
+            Duration = other.Duration;
+            IsAllDay = other.IsAllDay;
+            GeographicLocation = other.GeographicLocation;
+            Location = other.Location == null
+                ? null
+                : string.Copy(other.Location);
+
+            if (other.Resources != null && other.Resources.Any())
+            {
+                var asHashSet = other.Resources as HashSet<string>;
+                Resources = other.Resources == null
+                    ? null
+                    : new HashSet<string>(other.Resources.Select(string.Copy), asHashSet.Comparer);
+            }
+
+            Status = other.Status;
+            Transparency = other.Transparency;
+        }
+
         private void Initialize()
         {
             Name = Components.Event;
@@ -317,7 +341,7 @@ namespace Ical.Net
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((Event)obj);
         }
 
@@ -355,6 +379,11 @@ namespace Ical.Net
                 return 1;
             }
             throw new Exception("An error occurred while comparing two CalDateTimes.");
+        }
+
+        public override object Clone()
+        {
+            return new Event(this);
         }
     }
 }

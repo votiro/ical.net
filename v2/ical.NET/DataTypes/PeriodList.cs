@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +14,7 @@ namespace Ical.Net.DataTypes
     /// <summary>
     /// An iCalendar list of recurring dates (or date exclusions)
     /// </summary>
-    public class PeriodList : EncodableDataType, IPeriodList
+    public class PeriodList : EncodableDataType, IPeriodList, ICloneable
     {
         public string TzId { get; set; }
         public int Count => Periods.Count;
@@ -29,6 +30,14 @@ namespace Ical.Net.DataTypes
         {
             var serializer = new PeriodListSerializer();
             CopyFrom(serializer.Deserialize(new StringReader(value)) as ICopyable);
+        }
+
+        protected PeriodList(PeriodList other) : base(other)
+        {
+            Periods = CollectionHelpers.Clone(other.Periods).ToList();
+            TzId = other.TzId == null
+                ? null
+                : string.Copy(other.TzId);
         }
 
         protected bool Equals(PeriodList other)
@@ -80,18 +89,19 @@ namespace Ical.Net.DataTypes
 
         public override object Clone()
         {
-            var clone = base.Clone() as PeriodList;
-            if (clone == null)
-            {
-                return null;
-            }
+            return new PeriodList(this);
+            //var clone = base.Clone() as PeriodList;
+            //if (clone == null)
+            //{
+            //    return null;
+            //}
 
-            clone.Periods = CollectionHelpers.Clone(Periods).ToList();
-            clone.TzId = TzId == null
-                ? null
-                : string.Copy(TzId);
+            //clone.Periods = CollectionHelpers.Clone(Periods).ToList();
+            //clone.TzId = TzId == null
+            //    ? null
+            //    : string.Copy(TzId);
 
-            return clone;
+            //return clone;
         }
 
         public override string ToString() => new PeriodListSerializer().SerializeToString(this);

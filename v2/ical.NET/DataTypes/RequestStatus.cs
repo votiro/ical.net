@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Ical.Net.Interfaces.DataTypes;
 using Ical.Net.Interfaces.General;
@@ -8,7 +9,7 @@ namespace Ical.Net.DataTypes
     /// <summary>
     /// A class that represents the return status of an iCalendar request.
     /// </summary>
-    public class RequestStatus : EncodableDataType, IRequestStatus
+    public class RequestStatus : EncodableDataType, IRequestStatus, ICloneable
     {
         private string _mDescription;
         private string _mExtraData;
@@ -38,6 +39,19 @@ namespace Ical.Net.DataTypes
         {
             var serializer = new RequestStatusSerializer();
             CopyFrom(serializer.Deserialize(new StringReader(value)) as ICopyable);
+        }
+
+        protected RequestStatus(RequestStatus other) : base(other)
+        {
+            Description = other.Description == null
+                ? null
+                : string.Copy(other.Description);
+
+            ExtraData = other.ExtraData == null
+                ? null
+                : string.Copy(other.ExtraData);
+
+            StatusCode = other.StatusCode.Clone() as StatusCode;
         }
 
         public override void CopyFrom(ICopyable obj)
@@ -75,22 +89,23 @@ namespace Ical.Net.DataTypes
 
         public override object Clone()
         {
-            var clone = base.Clone() as RequestStatus;
-            if (clone == null)
-            {
-                return null;
-            }
+            return new RequestStatus(this);
+            //var clone = base.Clone() as RequestStatus;
+            //if (clone == null)
+            //{
+            //    return null;
+            //}
 
-            clone.Description = Description == null
-                ? null
-                : string.Copy(Description);
+            //clone.Description = Description == null
+            //    ? null
+            //    : string.Copy(Description);
 
-            clone.ExtraData = ExtraData == null
-                ? null
-                : string.Copy(ExtraData);
+            //clone.ExtraData = ExtraData == null
+            //    ? null
+            //    : string.Copy(ExtraData);
 
-            clone.StatusCode = StatusCode.Clone() as StatusCode;
-            return clone;
+            //clone.StatusCode = StatusCode.Clone() as StatusCode;
+            //return clone;
         }
 
         public override string ToString()

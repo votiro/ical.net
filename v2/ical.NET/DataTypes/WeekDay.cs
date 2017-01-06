@@ -38,6 +38,12 @@ namespace Ical.Net.DataTypes
             CopyFrom(serializer.Deserialize(new StringReader(value)) as ICopyable);
         }
 
+        protected WeekDay(WeekDay other) : base(other)
+        {
+            DayOfWeek = other.DayOfWeek;
+            Offset = other.Offset;
+        }
+
         public override bool Equals(object obj)
         {
             if (!(obj is WeekDay))
@@ -76,15 +82,16 @@ namespace Ical.Net.DataTypes
 
         public override object Clone()
         {
-            var clone = base.Clone() as WeekDay;
-            if (clone == null)
-            {
-                return null;
-            }
+            return new WeekDay(this);
+            //var clone = base.Clone() as WeekDay;
+            //if (clone == null)
+            //{
+            //    return null;
+            //}
 
-            clone.DayOfWeek = DayOfWeek;
-            clone.Offset = Offset;
-            return clone;
+            //clone.DayOfWeek = DayOfWeek;
+            //clone.Offset = Offset;
+            //return clone;
         }
 
         public int CompareTo(object obj)

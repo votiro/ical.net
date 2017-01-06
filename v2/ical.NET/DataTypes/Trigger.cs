@@ -73,6 +73,16 @@ namespace Ical.Net.DataTypes
             CopyFrom(serializer.Deserialize(new StringReader(value)) as ICopyable);
         }
 
+        protected Trigger(Trigger other) : base(other)
+        {
+            DateTime = other.DateTime.Clone() as CalDateTime;
+            Duration = other.Duration == null
+                ? null
+                : other.Duration.Value as TimeSpan?;
+
+            Related = other.Related;
+        }
+
         public override void CopyFrom(ICopyable obj)
         {
             //base.CopyFrom(obj);
@@ -100,19 +110,20 @@ namespace Ical.Net.DataTypes
 
         public override object Clone()
         {
-            var clone = base.Clone() as Trigger;
-            if (clone == null)
-            {
-                return null;
-            }
+            return new Trigger(this);
+            //var clone = base.Clone() as Trigger;
+            //if (clone == null)
+            //{
+            //    return null;
+            //}
 
-            clone.DateTime = DateTime.Clone() as CalDateTime;
-            clone.Duration = Duration == null
-                ? null
-                : Duration.Value as TimeSpan?;
+            //clone.DateTime = DateTime.Clone() as CalDateTime;
+            //clone.Duration = Duration == null
+            //    ? null
+            //    : Duration.Value as TimeSpan?;
 
-            clone.Related = Related;
-            return clone;
+            //clone.Related = Related;
+            //return clone;
         }
 
         protected bool Equals(Trigger other)

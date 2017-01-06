@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Ical.Net.Interfaces.DataTypes
 {
-    public interface IRecurrencePattern : IEncodableDataType
+    public interface IRecurrencePattern : IEncodableDataType, ICloneable
     {
         FrequencyType Frequency { get; set; }
         DateTime Until { get; set; }

@@ -53,7 +53,7 @@ namespace Ical.Net
         /// </summary>
         public virtual CalendarPropertyList Properties { get; protected set; }
 
-        public CalendarComponent() : base()
+        public CalendarComponent()
         {
             Initialize();
         }
@@ -61,6 +61,17 @@ namespace Ical.Net
         public CalendarComponent(string name) : base(name)
         {
             Initialize();
+        }
+
+        protected CalendarComponent(CalendarComponent other) : base(other)
+        {
+            var clonedProperties = CollectionHelpers.Clone(other.Properties).ToList();
+            var propertyList = new CalendarPropertyList();
+            foreach (var property in clonedProperties)
+            {
+                propertyList.Add(property);
+            }
+            Properties = propertyList;
         }
 
         private void Initialize()
@@ -108,20 +119,21 @@ namespace Ical.Net
 
         public override object Clone()
         {
-            var clone = base.Clone() as CalendarComponent;
-            if (clone == null)
-            {
-                return null;
-            }
+            return new CalendarComponent(this);
+            //var clone = base.Clone() as CalendarComponent;
+            //if (clone == null)
+            //{
+            //    return null;
+            //}
 
-            var clonedProperties = CollectionHelpers.Clone(Properties).ToList();
-            var propertyList = new CalendarPropertyList();
-            foreach (var property in clonedProperties)
-            {
-                propertyList.Add(property);
-            }
-            clone.Properties = propertyList;
-            return clone;
+            //var clonedProperties = CollectionHelpers.Clone(Properties).ToList();
+            //var propertyList = new CalendarPropertyList();
+            //foreach (var property in clonedProperties)
+            //{
+            //    propertyList.Add(property);
+            //}
+            //clone.Properties = propertyList;
+            //return clone;
         }
 
         /// <summary>

@@ -61,14 +61,16 @@ namespace Ical.Net.Utility
             }
 
             var sizedCollection = collection as ICollection<T>;
-            if (sizedCollection != null)
+            if (sizedCollection != null && sizedCollection.Any())
             {
                 var toReturn = new List<T>(sizedCollection.Count);
                 var cloned = sizedCollection.Select(i => i.Clone()).Cast<T>().ToList();
                 toReturn.AddRange(cloned);
                 return toReturn;
             }
-            return collection.Select(i => (T) i.Clone());
+            return collection.Any()
+                ? collection.Select(i => (T)i.Clone())
+                : Enumerable.Empty<T>();
         }
 
         public static IEnumerable<TV> CloneStructs<TV>(IEnumerable<TV> collection) where TV : struct

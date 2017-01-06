@@ -7,7 +7,7 @@ using Ical.Net.Utility;
 
 namespace Ical.Net.DataTypes
 {
-    public class Attendee : EncodableDataType, IAttendee
+    public class Attendee : EncodableDataType, IAttendee, ICloneable
     {
         private Uri _sentBy;
         /// <summary> SENT-BY, to indicate who is acting on behalf of the ATTENDEE </summary>
@@ -244,6 +244,35 @@ namespace Ical.Net.DataTypes
             Value = new Uri(attendeeUri);
         }
 
+        protected Attendee(Attendee other) : base(other)
+        {
+            SentBy = other.SentBy == null
+                ? null
+                : new Uri(other.SentBy.OriginalString);
+            CommonName = other.CommonName == null
+                ? null
+                : string.Copy(other.CommonName);
+            DirectoryEntry = other.DirectoryEntry == null
+                ? null
+                : new Uri(other.DirectoryEntry.OriginalString);
+            Type = other.Type == null
+                ? null
+                : string.Copy(other.Type);
+            Members = CollectionHelpers.Clone(other.Members).ToList();
+            Role = other.Role == null
+                ? null
+                : string.Copy(other.Role);
+            ParticipationStatus = other.ParticipationStatus == null
+                ? null
+                : string.Copy(other.ParticipationStatus);
+            Rsvp = other.Rsvp;
+            DelegatedTo = CollectionHelpers.Clone(other.DelegatedTo).ToList();
+            DelegatedFrom = CollectionHelpers.Clone(other.DelegatedFrom).ToList();
+            Value = other.Value == null
+                ? null
+                : new Uri(other.Value.OriginalString);
+        }
+
         public override void CopyFrom(ICopyable obj)
         {
             base.CopyFrom(obj);
@@ -290,39 +319,40 @@ namespace Ical.Net.DataTypes
 
         public override object Clone()
         {
-            var clone = base.Clone() as Attendee;
-            if (clone == null)
-            {
-                return null;
-            }
+            return new Attendee(this);
+            //var clone = base.Clone() as Attendee;
+            //if (clone == null)
+            //{
+            //    return null;
+            //}
 
-            clone.SentBy = SentBy == null
-                ? null
-                : new Uri(SentBy.OriginalString);
-            clone.CommonName = CommonName == null
-                ? null
-                : string.Copy(CommonName);
-            clone.DirectoryEntry = DirectoryEntry == null
-                ? null
-                : new Uri(DirectoryEntry.OriginalString);
-            clone.Type = Type == null
-                ? null
-                : string.Copy(Type);
-            clone.Members = CollectionHelpers.Clone(Members).ToList();
-            clone.Role = Role == null
-                ? null
-                : string.Copy(Role);
-            clone.ParticipationStatus = ParticipationStatus == null
-                ? null
-                : string.Copy(ParticipationStatus);
-            clone.Rsvp = Rsvp;
-            clone.DelegatedTo = CollectionHelpers.Clone(DelegatedTo).ToList();
-            clone.DelegatedFrom = CollectionHelpers.Clone(DelegatedFrom).ToList();
-            clone.Value = Value == null
-                ? null
-                : new Uri(Value.OriginalString);
+            //clone.SentBy = SentBy == null
+            //    ? null
+            //    : new Uri(SentBy.OriginalString);
+            //clone.CommonName = CommonName == null
+            //    ? null
+            //    : string.Copy(CommonName);
+            //clone.DirectoryEntry = DirectoryEntry == null
+            //    ? null
+            //    : new Uri(DirectoryEntry.OriginalString);
+            //clone.Type = Type == null
+            //    ? null
+            //    : string.Copy(Type);
+            //clone.Members = CollectionHelpers.Clone(Members).ToList();
+            //clone.Role = Role == null
+            //    ? null
+            //    : string.Copy(Role);
+            //clone.ParticipationStatus = ParticipationStatus == null
+            //    ? null
+            //    : string.Copy(ParticipationStatus);
+            //clone.Rsvp = Rsvp;
+            //clone.DelegatedTo = CollectionHelpers.Clone(DelegatedTo).ToList();
+            //clone.DelegatedFrom = CollectionHelpers.Clone(DelegatedFrom).ToList();
+            //clone.Value = Value == null
+            //    ? null
+            //    : new Uri(Value.OriginalString);
 
-            return clone;
+            //return clone;
         }
 
         protected bool Equals(Attendee other)

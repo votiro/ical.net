@@ -162,6 +162,34 @@ namespace Ical.Net
             EnsureProperties();
         }
 
+        protected RecurringComponent(RecurringComponent other) : base(other)
+        {
+            Class = other.Class == null
+                ? null
+                : string.Copy(other.Class);
+
+            Attachments = CollectionHelpers.Clone(other.Attachments.Cast<Attachment>()).Cast<IAttachment>().ToList();  // :(
+            Categories = CollectionHelpers.Clone(other.Categories).ToList();
+            Contacts = CollectionHelpers.Clone(other.Contacts).ToList();
+            RelatedComponents = CollectionHelpers.Clone(other.RelatedComponents).ToList();
+            Created = other.Created;
+            Description = other.Description == null
+                ? null
+                : string.Copy(Description);
+            DtStart = other.DtStart;
+            Priority = other.Priority;
+            RecurrenceId = other.RecurrenceId?.Clone() as CalDateTime;
+            Sequence = other.Sequence;
+            Summary = other.Summary == null
+                ? null
+                : string.Copy(other.Summary);
+            LastModified = other.LastModified?.Clone() as CalDateTime;
+            RecurrenceRules = CollectionHelpers.Clone(other.RecurrenceRules).ToList();
+            ExceptionRules = CollectionHelpers.Clone(other.ExceptionRules).ToList();
+            ExceptionDates = CollectionHelpers.Clone(other.ExceptionDates).ToList();
+            RecurrenceDates = CollectionHelpers.Clone(other.RecurrenceDates).ToList();
+        }
+
         private void Initialize()
         {
             SetService(new RecurringEvaluator(this));
@@ -226,5 +254,7 @@ namespace Ical.Net
             }
             return occurrences;
         }
+
+        public override object Clone() => new RecurringComponent(this);
     }
 }

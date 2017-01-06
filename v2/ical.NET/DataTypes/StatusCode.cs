@@ -48,6 +48,15 @@ namespace Ical.Net.DataTypes
             CopyFrom(serializer.Deserialize(new StringReader(value)) as ICopyable);
         }
 
+        protected StatusCode(StatusCode other) : base(other)
+        {
+            if (other.Parts != null)
+            {
+                Parts = new int[other.Parts.Length];
+                Array.Copy(other.Parts, Parts, other.Parts.Length);
+            }
+        }
+
         public override void CopyFrom(ICopyable obj)
         {
             base.CopyFrom(obj);
@@ -71,20 +80,21 @@ namespace Ical.Net.DataTypes
 
         public override object Clone()
         {
-            var clone = base.Clone() as StatusCode;
-            if (clone == null)
-            {
-                return null;
-            }
+            return new StatusCode(this);
+            //var clone = base.Clone() as StatusCode;
+            //if (clone == null)
+            //{
+            //    return null;
+            //}
 
-            if (Parts == null || !Parts.Any())
-            {
-                return clone;
-            }
+            //if (Parts == null || !Parts.Any())
+            //{
+            //    return clone;
+            //}
 
-            clone.Parts = new int[Parts.Length];
-            Array.Copy(Parts, clone.Parts, Parts.Length);
-            return clone;
+            //clone.Parts = new int[Parts.Length];
+            //Array.Copy(Parts, clone.Parts, Parts.Length);
+            //return clone;
         }
 
         public override string ToString() => new StatusCodeSerializer().SerializeToString(this);

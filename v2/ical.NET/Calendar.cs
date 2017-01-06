@@ -160,6 +160,25 @@ namespace Ical.Net
             Initialize();
         }
 
+        protected Calendar(Calendar other) : base(other)
+        {
+            Method = other.Method == null
+                ? null
+                : string.Copy(other.Method);
+
+            ProductId = other.ProductId == null
+                ? null
+                : string.Copy(other.ProductId);
+
+            Scale = other.Scale == null
+                ? null
+                : string.Copy(other.Scale);
+
+            Version = other.Version == null
+                ? null
+                : string.Copy(other.Version);
+        }
+
         private void Initialize()
         {
             _mUniqueComponents = new UniqueComponentListProxy<IUniqueComponent>(Children);
@@ -505,6 +524,34 @@ namespace Ical.Net
         public virtual IFreeBusy GetFreeBusy(IOrganizer organizer, IAttendee[] contacts, IDateTime fromInclusive, IDateTime toExclusive)
         {
             return Net.FreeBusy.Create(this, Net.FreeBusy.CreateRequest(fromInclusive, toExclusive, organizer, contacts));
+        }
+
+        public override object Clone()
+        {
+            return new Calendar(this);
+            //var clone = base.Clone() as Calendar;
+            //if (clone == null)
+            //{
+            //    return null;
+            //}
+
+            //clone.Method = Method == null
+            //    ? null
+            //    : string.Copy(Method);
+
+            //clone.ProductId = ProductId == null
+            //    ? null
+            //    : string.Copy(ProductId);
+
+            //clone.Scale = Scale == null
+            //    ? null
+            //    : string.Copy(Scale);
+
+            //clone.Version = Version == null
+            //    ? null
+            //    : string.Copy(Version);
+
+            //return clone;
         }
     }
 }

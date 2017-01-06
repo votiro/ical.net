@@ -31,6 +31,11 @@ namespace Ical.Net.DataTypes
             Offset = ts;
         }
 
+        protected UtcOffset(UtcOffset other) : base(other)
+        {
+            Offset = other.Offset;
+        }
+
         public static implicit operator UtcOffset(TimeSpan ts) => new UtcOffset(ts);
 
         public static explicit operator TimeSpan(UtcOffset o) => o.Offset;
@@ -73,14 +78,15 @@ namespace Ical.Net.DataTypes
 
         public override object Clone()
         {
-            var clone = base.Clone() as UtcOffset;
-            if (clone == null)
-            {
-                return null;
-            }
+            return new UtcOffset(this);
+            //var clone = base.Clone() as UtcOffset;
+            //if (clone == null)
+            //{
+            //    return null;
+            //}
 
-            clone.Offset = Offset;
-            return clone;
+            //clone.Offset = Offset;
+            //return clone;
         }
     }
 }

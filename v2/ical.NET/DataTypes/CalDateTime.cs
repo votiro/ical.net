@@ -15,7 +15,7 @@ namespace Ical.Net.DataTypes
     /// class handles time zone differences, and integrates seamlessly into the iCalendar framework.
     /// </remarks>
     /// </summary>
-    public sealed class CalDateTime : EncodableDataType, IDateTime
+    public class CalDateTime : EncodableDataType, IDateTime
     {
         public static CalDateTime Now => new CalDateTime(DateTime.Now);
 
@@ -31,6 +31,15 @@ namespace Ical.Net.DataTypes
         public CalDateTime(IDateTime value)
         {
             Initialize(value.Value, value.TzId, null);
+        }
+
+        protected CalDateTime(CalDateTime other) : base(other)
+        {
+            IsUniversalTime = other.IsUniversalTime;
+            Value = other.Value;
+            HasDate = other.HasDate;
+            HasTime = other.HasTime;
+            TzId = other.TzId;
         }
 
         public CalDateTime(DateTime value) : this(value, null) {}
@@ -142,8 +151,9 @@ namespace Ical.Net.DataTypes
 
         public override object Clone()
         {
-            var clone = new CalDateTime(Value, TzId);
-            return clone;
+            return new CalDateTime(this);
+            //var clone = new CalDateTime(Value, TzId);
+            //return clone;
         }
 
         //ToDo: Time zone equality should include time zone values. Perhaps we should separate the idea of "equal" with "equivalent

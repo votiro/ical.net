@@ -1,9 +1,11 @@
 using System;
+using System.Linq;
 using System.Runtime.Serialization;
 using Ical.Net.Collections;
 using Ical.Net.ExtensionMethods;
 using Ical.Net.Interfaces;
 using Ical.Net.Interfaces.General;
+using Ical.Net.Utility;
 
 namespace Ical.Net.General
 {
@@ -29,6 +31,30 @@ namespace Ical.Net.General
         {
             Line = line;
             Column = col;
+        }
+
+        protected CalendarObject(CalendarObject other) : base(other)
+        {
+            Initialize();
+            Column = other.Column;
+            Line = other.Line;
+            Name = other.Name == null
+                ? null
+                : string.Copy(other.Name);
+            Group = other.Group == null
+                ? null
+                : string.Copy(other.Group);
+            _serviceProvider = other._serviceProvider;
+            //Calendar = other.Calendar?.Clone() as Calendar;
+            //Parent = other.Parent?.Clone() as CalendarObject;
+            Parent = other.Parent;
+
+            var clonedChildren = CollectionHelpers.Clone(other.Children).ToList();
+            Children.Clear();
+            foreach (var child in clonedChildren)
+            {
+                Children.Add(child);
+            }
         }
 
         private void Initialize()
@@ -82,8 +108,9 @@ namespace Ical.Net.General
 
         public override object Clone()
         {
-            var clone = base.Clone() as CalendarObject;
-            return clone ?? new CalendarObject();
+            return new CalendarObject(this);
+            //var foo = new CalendarObject(this);
+            //return foo;
         }
 
         public override void CopyFrom(ICopyable c)
@@ -96,7 +123,7 @@ namespace Ical.Net.General
 
             // Copy the name and basic information
             Name = obj.Name == null ? null : string.Copy(obj.Name);
-            Parent = obj.Parent.Clone() as CalendarObject;
+            Parent = obj.Parent?.Clone() as CalendarObject;
             Line = obj.Line;
             Column = obj.Column;
 

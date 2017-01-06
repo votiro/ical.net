@@ -4,6 +4,7 @@ using Ical.Net.Collections;
 using Ical.Net.Collections.Interfaces;
 using Ical.Net.Collections.Proxies;
 using Ical.Net.Interfaces.General;
+using Ical.Net.Utility;
 
 namespace Ical.Net.General.Proxies
 {

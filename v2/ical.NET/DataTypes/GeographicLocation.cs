@@ -29,6 +29,12 @@ namespace Ical.Net.DataTypes
             Longitude = longitude;
         }
 
+        protected GeographicLocation(GeographicLocation other) : base(other)
+        {
+            Latitude = other.Latitude;
+            Longitude = other.Longitude;
+        }
+
         public override void CopyFrom(ICopyable obj)
         {
             base.CopyFrom(obj);
@@ -70,15 +76,16 @@ namespace Ical.Net.DataTypes
 
         public override object Clone()
         {
-            var clone = base.Clone() as GeographicLocation;
-            if (clone == null)
-            {
-                return null;
-            }
+            return new GeographicLocation(this);
+            //var clone = base.Clone() as GeographicLocation;
+            //if (clone == null)
+            //{
+            //    return null;
+            //}
 
-            clone.Latitude = Latitude;
-            clone.Longitude = Longitude;
-            return clone;
+            //clone.Latitude = Latitude;
+            //clone.Longitude = Longitude;
+            //return clone;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Ical.Net.Collections.Interfaces;
 using Ical.Net.General;
 

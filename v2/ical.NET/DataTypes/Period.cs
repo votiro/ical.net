@@ -46,6 +46,13 @@ namespace Ical.Net.DataTypes
             EndTime = start.Add(duration);
         }
 
+        protected Period(Period other) : base(other)
+        {
+            Duration = other.Duration;
+            StartTime = other.StartTime.Clone() as CalDateTime;
+            EndTime = other.EndTime.Clone() as CalDateTime;
+        }
+
         public override void CopyFrom(ICopyable obj)
         {
             //base.CopyFrom(obj);
@@ -73,15 +80,16 @@ namespace Ical.Net.DataTypes
 
         public override object Clone()
         {
-            var clone = base.Clone() as Period;
-            if (clone == null)
-            {
-                return null;
-            }
-            clone.Duration = Duration;
-            clone.StartTime = StartTime.Clone() as CalDateTime;
-            clone.EndTime = EndTime.Clone() as CalDateTime;
-            return clone;
+            return new Period(this);
+            //var clone = base.Clone() as Period;
+            //if (clone == null)
+            //{
+            //    return null;
+            //}
+            //clone.Duration = Duration;
+            //clone.StartTime = StartTime.Clone() as CalDateTime;
+            //clone.EndTime = EndTime.Clone() as CalDateTime;
+            //return clone;
         }
 
         protected bool Equals(Period other)

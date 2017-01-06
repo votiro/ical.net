@@ -15,6 +15,11 @@ namespace Ical.Net.General
             _mIsLoaded = true;
         }
 
+        protected CalendarObjectBase(CalendarObjectBase cob)
+        {
+            _mIsLoaded = true;
+        }
+
         /// <summary>
         /// Copies values from the target object to the
         /// current object.
@@ -28,15 +33,24 @@ namespace Ical.Net.General
         public virtual T Copy<T>()
         {
             var type = GetType();
-            var obj = Activator.CreateInstance(type) as ICopyable;
-
-            // Duplicate our values
-            if (obj is T)
+            var obj = Activator.CreateInstance(type) as ICloneable;
+            try
             {
-                obj.CopyFrom(this);
-                return (T)obj;
+                var clone = (T) obj.Clone();
+                return clone;
             }
-            return default(T);
+            catch (Exception e)
+            {
+                return default(T);
+            }
+
+            //// Duplicate our values
+            //if (obj is T)
+            //{
+            //    obj.CopyFrom(this);
+            //    return (T)obj;
+            //}
+            //return default(T);
         }
 
         public virtual bool IsLoaded => _mIsLoaded;
