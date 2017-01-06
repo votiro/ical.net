@@ -244,8 +244,86 @@ namespace Ical.Net.DataTypes
             Value = new Uri(attendeeUri);
         }
 
-        //ToDo: See if this can be deleted
-        public override void CopyFrom(ICopyable obj) {}
+        public override void CopyFrom(ICopyable obj)
+        {
+            base.CopyFrom(obj);
+            var attendee = obj as Attendee;
+            if (attendee == null)
+            {
+                return;
+            }
+
+            SentBy = attendee.SentBy == null
+                ? null
+                : new Uri(attendee.SentBy.OriginalString);
+
+            CommonName = attendee.CommonName == null
+                ? null
+                : string.Copy(attendee.CommonName);
+
+            DirectoryEntry = attendee.DirectoryEntry == null
+                ? null
+                : new Uri(attendee.DirectoryEntry.OriginalString);
+
+            Type = attendee.Type == null
+                ? null
+                : string.Copy(attendee.Type);
+
+            Members = CollectionHelpers.Clone(attendee.Members).ToList();
+
+            Role = attendee.Role == null
+                ? null
+                : string.Copy(attendee.Role);
+
+            ParticipationStatus = attendee.ParticipationStatus == null
+                ? null
+                : string.Copy(attendee.ParticipationStatus);
+
+            Rsvp = attendee.Rsvp;
+            DelegatedTo = CollectionHelpers.Clone(attendee.DelegatedTo).ToList();
+            DelegatedFrom = CollectionHelpers.Clone(attendee.DelegatedFrom).ToList();
+
+            Value = attendee.Value == null
+                ? null
+                : new Uri(attendee.Value.OriginalString);
+        }
+
+        public override object Clone()
+        {
+            var clone = base.Clone() as Attendee;
+            if (clone == null)
+            {
+                return null;
+            }
+
+            clone.SentBy = SentBy == null
+                ? null
+                : new Uri(SentBy.OriginalString);
+            clone.CommonName = CommonName == null
+                ? null
+                : string.Copy(CommonName);
+            clone.DirectoryEntry = DirectoryEntry == null
+                ? null
+                : new Uri(DirectoryEntry.OriginalString);
+            clone.Type = Type == null
+                ? null
+                : string.Copy(Type);
+            clone.Members = CollectionHelpers.Clone(Members).ToList();
+            clone.Role = Role == null
+                ? null
+                : string.Copy(Role);
+            clone.ParticipationStatus = ParticipationStatus == null
+                ? null
+                : string.Copy(ParticipationStatus);
+            clone.Rsvp = Rsvp;
+            clone.DelegatedTo = CollectionHelpers.Clone(DelegatedTo).ToList();
+            clone.DelegatedFrom = CollectionHelpers.Clone(DelegatedFrom).ToList();
+            clone.Value = Value == null
+                ? null
+                : new Uri(Value.OriginalString);
+
+            return clone;
+        }
 
         protected bool Equals(Attendee other)
         {

@@ -193,6 +193,31 @@ namespace Ical.Net.DataTypes
             EvaluationMode = r.EvaluationMode;
         }
 
+        public override object Clone()
+        {
+            var clone = base.Clone() as RecurrencePattern;
+            if (clone == null)
+            {
+                return null;
+            }
+
+            clone.Frequency = Frequency;
+            clone.Until = Until;
+            clone.Count = Count;
+            clone.Interval = Interval;
+            clone.BySecond = CollectionHelpers.CloneStructs(BySecond).ToList();
+            clone.ByMinute = CollectionHelpers.CloneStructs(ByMinute).ToList();
+            clone.ByHour = CollectionHelpers.CloneStructs(ByHour).ToList();
+            clone.ByDay = CollectionHelpers.Clone(ByDay).ToList();
+            clone.ByMonthDay = CollectionHelpers.CloneStructs(ByMonthDay).ToList();
+            clone.ByYearDay = CollectionHelpers.CloneStructs(ByYearDay).ToList();
+            clone.BySetPosition = CollectionHelpers.CloneStructs(BySetPosition).ToList();
+            clone.FirstDayOfWeek = FirstDayOfWeek;
+            clone.RestrictionType = RestrictionType;
+            clone.EvaluationMode = EvaluationMode;
+            return clone;
+        }
+
         private static bool CollectionEquals<T>(IEnumerable<T> c1, IEnumerable<T> c2) => c1.SequenceEqual(c2);
     }
 }

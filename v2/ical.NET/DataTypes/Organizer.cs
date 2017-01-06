@@ -15,7 +15,17 @@ namespace Ical.Net.DataTypes
     {
         public virtual Uri SentBy
         {
-            get { return new Uri(Parameters.Get("SENT-BY")); }
+            get
+            {
+                if (!Parameters.ContainsKey("SENT-BY"))
+                {
+                    SentBy = null;
+                }
+                var value = Parameters.Get("SENT-BY");
+                return value == null
+                    ? null
+                    : new Uri(value);
+            }
             set
             {
                 if (value != null)
@@ -37,7 +47,17 @@ namespace Ical.Net.DataTypes
 
         public virtual Uri DirectoryEntry
         {
-            get { return new Uri(Parameters.Get("DIR")); }
+            get
+            {
+                if (!Parameters.ContainsKey("DIR"))
+                {
+                    DirectoryEntry = null;
+                }
+                var value = Parameters.Get("DIR");
+                return value == null
+                    ? null
+                    : new Uri(value);
+            }
             set
             {
                 if (value != null)
@@ -58,7 +78,10 @@ namespace Ical.Net.DataTypes
         public Organizer(string value) : this()
         {
             var serializer = new OrganizerSerializer();
-            CopyFrom(serializer.Deserialize(new StringReader(value)) as ICopyable);
+            using (var reader = new StringReader(value))
+            {
+                CopyFrom(serializer.Deserialize(reader) as ICopyable);
+            }
         }
 
         protected bool Equals(Organizer other)
@@ -91,12 +114,54 @@ namespace Ical.Net.DataTypes
         public override void CopyFrom(ICopyable obj)
         {
             base.CopyFrom(obj);
-
-            var o = obj as IOrganizer;
-            if (o != null)
+            var copy = obj as Organizer;
+            if (copy == null)
             {
-                Value = o.Value;
+                return;
             }
+
+            CommonName = copy.CommonName == null
+                ? null
+                : string.Copy(copy.CommonName);
+
+            DirectoryEntry = string.IsNullOrEmpty(copy.DirectoryEntry?.OriginalString)
+                ? null
+                : new Uri(copy.DirectoryEntry.OriginalString);
+
+            SentBy = copy.SentBy == null
+                ? null
+                : new Uri(copy.SentBy.OriginalString);
+
+            Value = copy.Value == null
+                ? null
+                : new Uri(copy.Value.OriginalString);
+        }
+
+        public override object Clone()
+        {
+            var clone = base.Clone() as Organizer;
+            if (clone == null)
+            {
+                return new Organizer();
+            }
+
+            clone.CommonName = CommonName == null
+                ? null
+                : string.Copy(CommonName);
+
+            clone.DirectoryEntry = DirectoryEntry == null
+                ? null
+                : new Uri(DirectoryEntry.OriginalString);
+
+            clone.SentBy = SentBy == null
+                ? null
+                : new Uri(SentBy.OriginalString);
+
+            clone.Value = Value == null
+                ? null
+                : new Uri(Value.OriginalString);
+
+            return clone;
         }
     }
 }

@@ -7,9 +7,9 @@ namespace Ical.Net.DataTypes
     /// <summary>
     /// Represents a time offset from UTC (Coordinated Universal Time).
     /// </summary>
-    public class UtcOffset : EncodableDataType, IUtcOffset
+    public class UtcOffset : EncodableDataType, IUtcOffset, ICloneable
     {
-        public TimeSpan Offset { get; }
+        public TimeSpan Offset { get; private set; }
 
         public bool Positive => Offset >= TimeSpan.Zero;
 
@@ -69,6 +69,18 @@ namespace Ical.Net.DataTypes
         public override string ToString()
         {
             return (Positive ? "+" : "-") + Hours.ToString("00") + Minutes.ToString("00") + (Seconds != 0 ? Seconds.ToString("00") : string.Empty);
+        }
+
+        public override object Clone()
+        {
+            var clone = base.Clone() as UtcOffset;
+            if (clone == null)
+            {
+                return null;
+            }
+
+            clone.Offset = Offset;
+            return clone;
         }
     }
 }

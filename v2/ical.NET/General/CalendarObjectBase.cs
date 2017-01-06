@@ -3,7 +3,7 @@ using Ical.Net.Interfaces.General;
 
 namespace Ical.Net.General
 {
-    public class CalendarObjectBase : ICopyable, ILoadable
+    public class CalendarObjectBase : ICopyable, ILoadable, ICloneable
     {
         private bool _mIsLoaded;
 
@@ -34,7 +34,7 @@ namespace Ical.Net.General
             if (obj is T)
             {
                 obj.CopyFrom(this);
-                return (T) obj;
+                return (T)obj;
             }
             return default(T);
         }
@@ -49,5 +49,7 @@ namespace Ical.Net.General
             _mIsLoaded = true;
             Loaded?.Invoke(this, EventArgs.Empty);
         }
+
+        public virtual object Clone() => new CalendarObjectBase();
     }
 }

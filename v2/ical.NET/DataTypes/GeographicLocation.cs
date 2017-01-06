@@ -29,7 +29,18 @@ namespace Ical.Net.DataTypes
             Longitude = longitude;
         }
 
-        public override void CopyFrom(ICopyable obj) {}
+        public override void CopyFrom(ICopyable obj)
+        {
+            base.CopyFrom(obj);
+            var copy = obj as GeographicLocation;
+            if (copy == null)
+            {
+                return;
+            }
+
+            Latitude = copy.Latitude;
+            Longitude = copy.Longitude;
+        }
 
         public override string ToString()
         {
@@ -55,6 +66,19 @@ namespace Ical.Net.DataTypes
             {
                 return (Latitude.GetHashCode() * 397) ^ Longitude.GetHashCode();
             }
+        }
+
+        public override object Clone()
+        {
+            var clone = base.Clone() as GeographicLocation;
+            if (clone == null)
+            {
+                return null;
+            }
+
+            clone.Latitude = Latitude;
+            clone.Longitude = Longitude;
+            return clone;
         }
     }
 }

@@ -1,6 +1,6 @@
-using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using Ical.Net.General;
@@ -8,6 +8,7 @@ using Ical.Net.Interfaces.Components;
 using Ical.Net.Interfaces.General;
 using Ical.Net.Interfaces.Serialization;
 using Ical.Net.Serialization.iCalendar.Serializers.Components;
+using Ical.Net.Utility;
 
 namespace Ical.Net
 {
@@ -78,24 +79,49 @@ namespace Ical.Net
         {
             base.CopyFrom(obj);
 
-            var c = obj as ICalendarComponent;
-            if (c == null)
+            var copy = obj as CalendarComponent;
+            if (copy == null)
             {
                 return;
             }
 
-            Properties.Clear();
-            foreach (var p in c.Properties)
+            var copiedProperties = CollectionHelpers.Clone(copy.Properties).ToList();
+            Properties = new CalendarPropertyList();
+            foreach (var property in copiedProperties)
             {
-                var s = p.Value as string;
-                if (s != null)
-                {
-                    var copy = string.Copy(s);
-                    var newProperty = new CalendarProperty(p.Name, copy);
-                    Properties.Add(newProperty);
-                }
-                Properties.Add(p);
+                Properties.Add(property);
             }
+            //Properties.Clear();
+            //foreach (var p in copy.Properties)
+            //{
+            //    //var s = p.Value as string;
+            //    //if (s != null)
+            //    //{
+            //    //    var copy = string.Copy(s);
+            //    //    var newProperty = new CalendarProperty(p.Name, copy);
+            //    //    Properties.Add(newProperty);
+            //    //}
+            //    //Properties.Add(p);
+            //    Properties.Add(p.Copy<ICalendarProperty>());
+            //}
+        }
+
+        public override object Clone()
+        {
+            var clone = base.Clone() as CalendarComponent;
+            if (clone == null)
+            {
+                return null;
+            }
+
+            var clonedProperties = CollectionHelpers.Clone(Properties).ToList();
+            var propertyList = new CalendarPropertyList();
+            foreach (var property in clonedProperties)
+            {
+                propertyList.Add(property);
+            }
+            clone.Properties = propertyList;
+            return clone;
         }
 
         /// <summary>

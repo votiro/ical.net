@@ -125,7 +125,7 @@ namespace Ical.Net.UnitTests
 
             foreach (var e in elements)
             {
-                Assert.IsTrue(searchRegion.Contains(SerializationConstants.LineBreak + e + SerializationConstants.LineBreak), notFound, e);
+                Assert.IsTrue(searchRegion.Contains(e), notFound, e);
             }
 
             return searchRegion;
@@ -327,7 +327,7 @@ namespace Ical.Net.UnitTests
 
             Console.Write(serializedCalendar);
 
-            var vEvt = InspectSerializedSection(serializedCalendar, "VEVENT", new[] {"ORGANIZER:" + org});
+            var vEvt = InspectSerializedSection(serializedCalendar, "VEVENT", new[] {"ORGANIZER", org});
 
             foreach (var a in evt.Attendees)
             {

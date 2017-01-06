@@ -5,13 +5,14 @@ using Ical.Net.General.Proxies;
 using Ical.Net.Interfaces;
 using Ical.Net.Interfaces.DataTypes;
 using Ical.Net.Interfaces.General;
+using Ical.Net.Utility;
 
 namespace Ical.Net.DataTypes
 {
     /// <summary>
     /// An abstract class from which all iCalendar data types inherit.
     /// </summary>
-    public abstract class CalendarDataType : ICalendarDataType
+    public class CalendarDataType : ICalendarDataType, ICloneable
     {
         private IParameterCollection _parameters;
         private ParameterCollectionProxy _proxy;
@@ -162,6 +163,26 @@ namespace Ical.Net.DataTypes
                 return (T) obj;
             }
             return default(T);
+        }
+
+        public virtual object Clone()
+        {
+            var clone = new CalendarDataType();
+            clone._AssociatedObject = Calendar.Clone() as Calendar;
+
+            clone.Language = Language == null
+                ? null
+                : string.Copy(Language);
+
+            clone._proxy.SetParent(_AssociatedObject);
+            var clonedParameters = CollectionHelpers.Clone(Parameters);
+            var parameterList = new ParameterList();
+            foreach (var parameter in clonedParameters)
+            {
+                parameterList.Add(parameter);
+            }
+            clone._proxy.SetProxiedObject(parameterList);
+            return clone;
         }
 
         public virtual IParameterCollection Parameters => _proxy;

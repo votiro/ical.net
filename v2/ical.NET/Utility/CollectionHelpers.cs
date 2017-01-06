@@ -52,5 +52,40 @@ namespace Ical.Net.Utility
                 return leftSet.SetEquals(rightSet);
             }
         }
+
+        public static IEnumerable<T> Clone<T>(IEnumerable<T> collection) where T : ICloneable
+        {
+            if (collection == null)
+            {
+                return null;
+            }
+
+            var sizedCollection = collection as ICollection<T>;
+            if (sizedCollection != null)
+            {
+                var toReturn = new List<T>(sizedCollection.Count);
+                var cloned = sizedCollection.Select(i => i.Clone()).Cast<T>().ToList();
+                toReturn.AddRange(cloned);
+                return toReturn;
+            }
+            return collection.Select(i => (T) i.Clone());
+        }
+
+        public static IEnumerable<TV> CloneStructs<TV>(IEnumerable<TV> collection) where TV : struct
+        {
+            if (collection == null)
+            {
+                return null;
+            }
+
+            var sizedCollection = collection as ICollection<TV>;
+            if (sizedCollection != null)
+            {
+                var toReturn = new List<TV>(sizedCollection.Count);
+                toReturn.AddRange(sizedCollection);
+                return toReturn;
+            }
+            return collection.Select(i => i);
+        }
     }
 }

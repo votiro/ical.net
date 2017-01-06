@@ -80,17 +80,23 @@ namespace Ical.Net.General
             return Name?.GetHashCode() ?? 0;
         }
 
+        public override object Clone()
+        {
+            var clone = base.Clone() as CalendarObject;
+            return clone ?? new CalendarObject();
+        }
+
         public override void CopyFrom(ICopyable c)
         {
-            var obj = c as ICalendarObject;
+            var obj = c as CalendarObject;
             if (obj == null)
             {
                 return;
             }
 
             // Copy the name and basic information
-            Name = obj.Name;
-            Parent = obj.Parent;
+            Name = obj.Name == null ? null : string.Copy(obj.Name);
+            Parent = obj.Parent.Clone() as CalendarObject;
             Line = obj.Line;
             Column = obj.Column;
 
@@ -98,7 +104,7 @@ namespace Ical.Net.General
             Children.Clear();
             foreach (var child in obj.Children)
             {
-                this.AddChild(child);
+                this.AddChild(child.Copy<CalendarObject>());
             }
         }
 

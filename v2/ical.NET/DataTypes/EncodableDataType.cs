@@ -12,5 +12,11 @@ namespace Ical.Net.DataTypes
             get { return Parameters.Get("ENCODING"); }
             set { Parameters.Set("ENCODING", value); }
         }
+
+        public override object Clone()
+        {
+            var clone = base.Clone();
+            return clone as EncodableDataType ?? new EncodableDataType();
+        }
     }
 }

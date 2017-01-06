@@ -70,8 +70,27 @@ namespace Ical.Net.DataTypes
                 : ValueEncoding.GetString(Data);
         }
 
-        //ToDo: See if this can be deleted
-        public override void CopyFrom(ICopyable obj) { }
+        public override void CopyFrom(ICopyable obj)
+        {
+            base.CopyFrom(obj);
+            var copy = obj as Attachment;
+            if (copy == null)
+            {
+                return;
+            }
+
+            if (copy.ValueEncoding != null)
+            {
+                ValueEncoding = copy.ValueEncoding.Clone() as Encoding;
+            }
+
+            if (copy.Data != null && copy.Data.Any())
+            {
+                var copiedData = new byte[copy.Data.Length];
+                Array.Copy(copy.Data, copiedData, copy.Data.Length);
+                Data = copiedData;
+            }
+        }
 
         protected bool Equals(Attachment other)
         {
@@ -98,6 +117,27 @@ namespace Ical.Net.DataTypes
                 hashCode = (hashCode * 397) ^ (ValueEncoding?.GetHashCode() ?? 0);
                 return hashCode;
             }
+        }
+
+        public override object Clone()
+        {
+            var clone = base.Clone() as Attachment;
+            if (clone == null)
+            {
+                return null;
+            }
+
+            if (Data == null || !Data.Any())
+            {
+                return clone;
+            }
+
+            var dataCopy = new byte[Data.Length];
+            Array.Copy(Data, dataCopy, Data.Length);
+            var newEncoding = ValueEncoding.Clone() as Encoding;
+            clone.Data = dataCopy;
+            clone.ValueEncoding = newEncoding;
+            return clone;
         }
     }
 }

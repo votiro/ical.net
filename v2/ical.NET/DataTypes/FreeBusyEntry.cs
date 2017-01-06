@@ -30,5 +30,17 @@ namespace Ical.Net.DataTypes
                 Status = fb.Status;
             }
         }
+
+        public override object Clone()
+        {
+            var clone = base.Clone() as FreeBusyEntry;
+            if (clone == null)
+            {
+                return new FreeBusyEntry {Status = FreeBusyStatus.Free};
+            }
+
+            clone.Status = Status;
+            return clone;
+        }
     }
 }

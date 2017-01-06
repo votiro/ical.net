@@ -9,7 +9,7 @@ namespace Ical.Net.DataTypes
     /// <summary>
     /// Represents an RFC 5545 "BYDAY" value.
     /// </summary>
-    public class WeekDay : EncodableDataType, IWeekDay
+    public class WeekDay : EncodableDataType, IWeekDay, ICloneable
     {
         public virtual int Offset { get; set; } = int.MinValue;
 
@@ -56,13 +56,35 @@ namespace Ical.Net.DataTypes
 
         public override void CopyFrom(ICopyable obj)
         {
+            //base.CopyFrom(obj);
+            //if (obj is IWeekDay)
+            //{
+            //    var bd = (IWeekDay) obj;
+            //    Offset = bd.Offset;
+            //    DayOfWeek = bd.DayOfWeek;
+            //}
             base.CopyFrom(obj);
-            if (obj is IWeekDay)
+            var copy = obj as WeekDay;
+            if (copy == null)
             {
-                var bd = (IWeekDay) obj;
-                Offset = bd.Offset;
-                DayOfWeek = bd.DayOfWeek;
+                return;
             }
+
+            DayOfWeek = copy.DayOfWeek;
+            Offset = copy.Offset;
+        }
+
+        public override object Clone()
+        {
+            var clone = base.Clone() as WeekDay;
+            if (clone == null)
+            {
+                return null;
+            }
+
+            clone.DayOfWeek = DayOfWeek;
+            clone.Offset = Offset;
+            return clone;
         }
 
         public int CompareTo(object obj)

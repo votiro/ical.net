@@ -1,8 +1,9 @@
-﻿using Ical.Net.Collections.Interfaces;
+﻿using System;
+using Ical.Net.Collections.Interfaces;
 
 namespace Ical.Net.Interfaces.General
 {
-    public interface ICalendarObject : IGroupedObject<string>, ILoadable, ICopyable, IServiceProvider
+    public interface ICalendarObject : IGroupedObject<string>, ILoadable, ICopyable, IServiceProvider, ICloneable
     {
         /// <summary>
         /// The name of the calendar object.

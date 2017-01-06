@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Ical.Net.ExtensionMethods;
 using Ical.Net.Interfaces.General;
+using Ical.Net.Utility;
 
 namespace Ical.Net.General
 {
@@ -40,7 +43,12 @@ namespace Ical.Net.General
 
         public CalendarProperty(string name, object value) : base(name)
         {
-            _values.Add(value);
+            var asClonable = value as ICloneable;
+            if (asClonable == null)
+            {
+                return;
+            }
+            _values.Add(asClonable);
         }
 
         public CalendarProperty(int line, int col) : base(line, col) {}
@@ -72,7 +80,49 @@ namespace Ical.Net.General
                 return;
             }
 
+            // Copy/clone the object if possible (deep copy)
+            if (p.Values is ICopyable)
+            {
+                SetValue(((ICopyable)p.Values).Copy<object>());
+            }
+            //else if (p.Values is List<object>)
+            //{
+            //    //Do stuff
+            //    var foo = true;
+            //    var newValues = p.Values.Select(i => i.Copy())
+            //}
+            else
+            {
+                SetValue(p.Values);
+            }
+
+            // Copy parameters
+            foreach (var parm in p.Parameters)
+            {
+                this.AddChild(parm.Copy<CalendarParameter>());
+            }
             SetValue(p.Values);
+        }
+
+        public override object Clone()
+        {
+            var clone = base.Clone() as CalendarProperty;
+            if (clone == null)
+            {
+                return null;
+            }
+
+            clone.Value = Value;
+            var clonedParameters = CollectionHelpers.Clone(Parameters);
+            var parameterList = new ParameterList();
+            foreach (var parameter in clonedParameters)
+            {
+                parameterList.Add(parameter);
+            }
+            clone.Parameters = parameterList;
+            var clonableValues = _values.Cast<ICloneable>().Where(p => p != null).ToList();
+            clone._values = CollectionHelpers.Clone(clonableValues).Cast<object>().ToList();
+            return clone;
         }
 
         public virtual IEnumerable<object> Values => _values;

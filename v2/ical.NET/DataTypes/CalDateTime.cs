@@ -140,6 +140,12 @@ namespace Ical.Net.DataTypes
             }
         }
 
+        public override object Clone()
+        {
+            var clone = new CalDateTime(Value, TzId);
+            return clone;
+        }
+
         //ToDo: Time zone equality should include time zone values. Perhaps we should separate the idea of "equal" with "equivalent
         /// <summary>Equality is determined by the unambiguous UTC representation of the time. Time zone string values are ignored.</summary>
         public override bool Equals(object obj)

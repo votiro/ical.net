@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Ical.Net.Evaluation;
 using Ical.Net.Interfaces.DataTypes;
 using Ical.Net.Interfaces.General;
@@ -53,17 +54,44 @@ namespace Ical.Net.DataTypes
 
         public override void CopyFrom(ICopyable obj)
         {
+            //base.CopyFrom(obj);
+            //var list = obj as IPeriodList;
+            //if (list == null)
+            //{
+            //    return;
+            //}
+
+            //foreach (var p in list)
+            //{
+            //    Add(p);
+            //}
             base.CopyFrom(obj);
-            var list = obj as IPeriodList;
-            if (list == null)
+            var copy = obj as PeriodList;
+            if (copy == null)
             {
                 return;
             }
 
-            foreach (var p in list)
+            Periods = CollectionHelpers.Clone(copy.Periods).ToList();
+            TzId = copy.TzId == null
+                ? null
+                : string.Copy(copy.TzId);
+        }
+
+        public override object Clone()
+        {
+            var clone = base.Clone() as PeriodList;
+            if (clone == null)
             {
-                Add(p);
+                return null;
             }
+
+            clone.Periods = CollectionHelpers.Clone(Periods).ToList();
+            clone.TzId = TzId == null
+                ? null
+                : string.Copy(TzId);
+
+            return clone;
         }
 
         public override string ToString() => new PeriodListSerializer().SerializeToString(this);

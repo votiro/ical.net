@@ -75,14 +75,44 @@ namespace Ical.Net.DataTypes
 
         public override void CopyFrom(ICopyable obj)
         {
+            //base.CopyFrom(obj);
+            //if (obj is ITrigger)
+            //{
+            //    var t = (ITrigger) obj;
+            //    DateTime = t.DateTime;
+            //    Duration = t.Duration;
+            //    Related = t.Related;
+            //}
             base.CopyFrom(obj);
-            if (obj is ITrigger)
+            var copy = obj as Trigger;
+            if (copy == null)
             {
-                var t = (ITrigger) obj;
-                DateTime = t.DateTime;
-                Duration = t.Duration;
-                Related = t.Related;
+                return;
             }
+
+            DateTime = copy.DateTime.Clone() as CalDateTime;
+            Duration = copy.Duration == null
+                ? null
+                : Duration.Value as TimeSpan?;
+
+            Related = copy.Related;
+        }
+
+        public override object Clone()
+        {
+            var clone = base.Clone() as Trigger;
+            if (clone == null)
+            {
+                return null;
+            }
+
+            clone.DateTime = DateTime.Clone() as CalDateTime;
+            clone.Duration = Duration == null
+                ? null
+                : Duration.Value as TimeSpan?;
+
+            clone.Related = Related;
+            return clone;
         }
 
         protected bool Equals(Trigger other)

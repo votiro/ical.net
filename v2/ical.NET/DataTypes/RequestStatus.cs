@@ -42,19 +42,55 @@ namespace Ical.Net.DataTypes
 
         public override void CopyFrom(ICopyable obj)
         {
+            //base.CopyFrom(obj);
+            //if (!(obj is IRequestStatus))
+            //{
+            //    return;
+            //}
+
+            //var rs = (IRequestStatus) obj;
+            //if (rs.StatusCode != null)
+            //{
+            //    StatusCode = rs.StatusCode;
+            //}
+            //Description = rs.Description;
+            //rs.ExtraData = rs.ExtraData;
             base.CopyFrom(obj);
-            if (!(obj is IRequestStatus))
+            var copy = obj as RequestStatus;
+            if (copy == null)
             {
                 return;
             }
 
-            var rs = (IRequestStatus) obj;
-            if (rs.StatusCode != null)
+            Description = copy.Description == null
+                ? null
+                : string.Copy(copy.Description);
+
+            ExtraData = copy.ExtraData == null
+                ? null
+                : string.Copy(copy.ExtraData);
+
+            StatusCode = copy.StatusCode.Clone() as StatusCode;
+        }
+
+        public override object Clone()
+        {
+            var clone = base.Clone() as RequestStatus;
+            if (clone == null)
             {
-                StatusCode = rs.StatusCode;
+                return null;
             }
-            Description = rs.Description;
-            rs.ExtraData = rs.ExtraData;
+
+            clone.Description = Description == null
+                ? null
+                : string.Copy(Description);
+
+            clone.ExtraData = ExtraData == null
+                ? null
+                : string.Copy(ExtraData);
+
+            clone.StatusCode = StatusCode.Clone() as StatusCode;
+            return clone;
         }
 
         public override string ToString()

@@ -48,16 +48,40 @@ namespace Ical.Net.DataTypes
 
         public override void CopyFrom(ICopyable obj)
         {
-            base.CopyFrom(obj);
+            //base.CopyFrom(obj);
 
-            var p = obj as IPeriod;
-            if (p == null)
+            //var p = obj as IPeriod;
+            //if (p == null)
+            //{
+            //    return;
+            //}
+            //StartTime = p.StartTime;
+            //EndTime = p.EndTime;
+            //Duration = p.Duration;
+
+            base.CopyFrom(obj);
+            var copy = obj as Period;
+            if (obj == null)
             {
                 return;
             }
-            StartTime = p.StartTime;
-            EndTime = p.EndTime;
-            Duration = p.Duration;
+
+            Duration = copy.Duration;
+            StartTime = copy.StartTime;
+            EndTime = copy.EndTime;
+        }
+
+        public override object Clone()
+        {
+            var clone = base.Clone() as Period;
+            if (clone == null)
+            {
+                return null;
+            }
+            clone.Duration = Duration;
+            clone.StartTime = StartTime.Clone() as CalDateTime;
+            clone.EndTime = EndTime.Clone() as CalDateTime;
+            return clone;
         }
 
         protected bool Equals(Period other)

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using Ical.Net.Interfaces.DataTypes;
@@ -10,7 +11,7 @@ namespace Ical.Net.DataTypes
     /// <summary>
     /// An iCalendar status code.
     /// </summary>
-    public class StatusCode : EncodableDataType, IStatusCode
+    public class StatusCode : EncodableDataType, IStatusCode, ICloneable
     {
         public int[] Parts { get; private set; }
 
@@ -26,25 +27,13 @@ namespace Ical.Net.DataTypes
             }
         }
 
-        public int Secondary
-        {
-            get
-            {
-                return Parts.Length > 1
-                    ? Parts[1]
-                    : 0;
-            }
-        }
+        public int Secondary => Parts.Length > 1
+            ? Parts[1]
+            : 0;
 
-        public int Tertiary
-        {
-            get
-            {
-                return Parts.Length > 2
-                    ? Parts[2]
-                    : 0;
-            }
-        }
+        public int Tertiary => Parts.Length > 2
+            ? Parts[2]
+            : 0;
 
         public StatusCode() {}
 
@@ -62,12 +51,40 @@ namespace Ical.Net.DataTypes
         public override void CopyFrom(ICopyable obj)
         {
             base.CopyFrom(obj);
-            if (obj is IStatusCode)
+            var copy = obj as StatusCode;
+            if (copy?.Parts == null || !copy.Parts.Any())
             {
-                var sc = (IStatusCode) obj;
-                Parts = new int[sc.Parts.Length];
-                sc.Parts.CopyTo(Parts, 0);
+                return;
             }
+
+            Parts = new int[copy.Parts.Length];
+            Array.Copy(copy.Parts, Parts, copy.Parts.Length);
+
+            //base.CopyFrom(obj);
+            //if (obj is IStatusCode)
+            //{
+            //    var sc = (IStatusCode) obj;
+            //    Parts = new int[sc.Parts.Length];
+            //    sc.Parts.CopyTo(Parts, 0);
+            //}
+        }
+
+        public override object Clone()
+        {
+            var clone = base.Clone() as StatusCode;
+            if (clone == null)
+            {
+                return null;
+            }
+
+            if (Parts == null || !Parts.Any())
+            {
+                return clone;
+            }
+
+            clone.Parts = new int[Parts.Length];
+            Array.Copy(Parts, clone.Parts, Parts.Length);
+            return clone;
         }
 
         public override string ToString() => new StatusCodeSerializer().SerializeToString(this);
