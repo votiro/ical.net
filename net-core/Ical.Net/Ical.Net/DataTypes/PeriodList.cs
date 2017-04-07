@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +18,7 @@ namespace Ical.Net.DataTypes
         public string TzId { get; set; }
         public int Count => Periods.Count;
 
-        protected IList<Period> Periods { get; set; } = new List<Period>(64);
+        protected IList<Period> Periods { get; set; } = new List<Period>();
 
         public PeriodList()
         {
@@ -30,17 +31,15 @@ namespace Ical.Net.DataTypes
             CopyFrom(serializer.Deserialize(new StringReader(value)) as ICopyable);
         }
 
-        protected bool Equals(PeriodList other)
-        {
-            return string.Equals(TzId, other.TzId) && CollectionHelpers.Equals(Periods, other.Periods);
-        }
+        protected bool Equals(PeriodList other) =>
+            string.Equals(TzId, other.TzId, StringComparison.OrdinalIgnoreCase)
+            && CollectionHelpers.Equals(Periods, other.Periods);
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((PeriodList)obj);
+            return obj.GetType() == GetType() && Equals((PeriodList)obj);
         }
 
         public override int GetHashCode()
@@ -71,8 +70,8 @@ namespace Ical.Net.DataTypes
 
         public Period this[int index]
         {
-            get { return Periods[index]; }
-            set { Periods[index] = value; }
+            get => Periods[index];
+            set => Periods[index] = value;
         }
 
         public virtual void Add(Period item) => Periods.Add(item);
