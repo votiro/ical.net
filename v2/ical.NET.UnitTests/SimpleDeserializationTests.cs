@@ -143,7 +143,8 @@ namespace Ical.Net.UnitTests
         [Test, Category("Deserialization")]
         public void Categories1_2()
         {
-            var iCal = SimpleDeserializer.Default.Deserialize(new StringReader(IcsFiles.Categories1)).Cast<ICalendar>().Single();
+            //var iCal = SimpleDeserializer.Default.Deserialize(new StringReader(IcsFiles.Categories1)).Cast<ICalendar>().Single();
+            var iCal = Calendar.Load(IcsFiles.Categories1).First();
             ProgramTest.TestCal(iCal);
             var evt = iCal.Events.First();
 
@@ -205,7 +206,8 @@ namespace Ical.Net.UnitTests
         [Test]
         public void Encoding2()
         {
-            var iCal = SimpleDeserializer.Default.Deserialize(new StringReader(IcsFiles.Encoding2)).Cast<ICalendar>().Single();
+            //var iCal = SimpleDeserializer.Default.Deserialize(new StringReader(IcsFiles.Encoding2)).Cast<ICalendar>().Single();
+            var iCal = Calendar.Load(IcsFiles.Encoding2).First();
             ProgramTest.TestCal(iCal);
             var evt = iCal.Events.First();
 
@@ -229,7 +231,8 @@ namespace Ical.Net.UnitTests
         [Test]
         public void Encoding3()
         {
-            var iCal = SimpleDeserializer.Default.Deserialize(new StringReader(IcsFiles.Encoding3)).Cast<ICalendar>().Single();
+            //var iCal = SimpleDeserializer.Default.Deserialize(new StringReader(IcsFiles.Encoding3)).Cast<ICalendar>().Single();
+            var iCal = Calendar.Load(IcsFiles.Encoding3).First();
             ProgramTest.TestCal(iCal);
             var evt = iCal.Events.First();
 
@@ -279,7 +282,8 @@ END:VCALENDAR
         [Test]
         public void GeographicLocation1_2()
         {
-            var iCal = SimpleDeserializer.Default.Deserialize(new StringReader(IcsFiles.GeographicLocation1)).Cast<ICalendar>().Single();
+            //var iCal = SimpleDeserializer.Default.Deserialize(new StringReader(IcsFiles.GeographicLocation1)).Cast<ICalendar>().Single();
+            var iCal = Calendar.Load(IcsFiles.GeographicLocation1).First();
             ProgramTest.TestCal(iCal);
             var evt = iCal.Events.First();
 

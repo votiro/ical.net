@@ -13,6 +13,7 @@ using Ical.Net.Interfaces.DataTypes;
 using Ical.Net.Interfaces.Evaluation;
 using Ical.Net.Interfaces.General;
 using Ical.Net.Interfaces.Serialization;
+using Ical.Net.Serialization;
 using Ical.Net.Serialization.iCalendar.Serializers;
 using Ical.Net.Utility;
 
@@ -135,6 +136,16 @@ namespace Ical.Net
             var text = tr.ReadToEnd();
             var ms = new MemoryStream(Encoding.UTF8.GetBytes(text));
             return LoadFromStream(ms, Encoding.UTF8, serializer);
+        }
+
+        public static IEnumerable<Calendar> Load(string icalString)
+        {
+            return Load(new StringReader(icalString));
+        }
+
+        public static IEnumerable<Calendar> Load(TextReader tr)
+        {
+            return SimpleDeserializer.Default.Deserialize(tr).Cast<Calendar>();
         }
 
         private IUniqueComponentList<IUniqueComponent> _mUniqueComponents;

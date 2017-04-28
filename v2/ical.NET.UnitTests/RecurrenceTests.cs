@@ -12,6 +12,7 @@ using Ical.Net.Interfaces;
 using Ical.Net.Interfaces.Components;
 using Ical.Net.Interfaces.DataTypes;
 using Ical.Net.Interfaces.Evaluation;
+using Ical.Net.Serialization;
 using Ical.Net.Serialization.iCalendar.Serializers.DataTypes;
 using Ical.Net.Utility;
 using NUnit.Framework;
@@ -80,7 +81,8 @@ namespace Ical.Net.UnitTests
         [Test, Category("Recurrence")]
         public void YearlyComplex1()
         {
-            var iCal = Calendar.LoadFromStream(new StringReader(IcsFiles.YearlyComplex1))[0];
+            //var iCal = Calendar.LoadFromStream(new StringReader(IcsFiles.YearlyComplex1))[0];
+            var iCal = Calendar.Load(IcsFiles.YearlyComplex1).First();
             ProgramTest.TestCal(iCal);
             var evt = iCal.Events.First();
             var occurrences = evt.GetOccurrences(
@@ -141,7 +143,8 @@ namespace Ical.Net.UnitTests
         [Test, Category("Recurrence")]
         public void DailyUntil1()
         {
-            var iCal = Calendar.LoadFromStream(new StringReader(IcsFiles.DailyUntil1))[0];
+            //var iCal = Calendar.LoadFromStream(new StringReader(IcsFiles.DailyUntil1))[0];
+            var iCal = Calendar.Load(IcsFiles.DailyUntil1).First();
             ProgramTest.TestCal(iCal);
             var evt = iCal.Events.First();
 
@@ -311,7 +314,8 @@ namespace Ical.Net.UnitTests
         [Test, Category("Recurrence")]
         public void ByMonth1()
         {
-            var iCal = Calendar.LoadFromStream(new StringReader(IcsFiles.ByMonth1))[0];
+            //var iCal = Calendar.LoadFromStream(new StringReader(IcsFiles.ByMonth1))[0];
+            var iCal = Calendar.Load(IcsFiles.ByMonth1).First();
             ProgramTest.TestCal(iCal);
             var evt = iCal.Events.First();
 
@@ -346,8 +350,10 @@ namespace Ical.Net.UnitTests
         [Test, Category("Recurrence")]
         public void ByMonth2()
         {
-            var iCal1 = Calendar.LoadFromStream(new StringReader(IcsFiles.ByMonth1))[0];
-            var iCal2 = Calendar.LoadFromStream(new StringReader(IcsFiles.ByMonth2))[0];
+            //var iCal1 = Calendar.LoadFromStream(new StringReader(IcsFiles.ByMonth1))[0];
+            //var iCal2 = Calendar.LoadFromStream(new StringReader(IcsFiles.ByMonth2))[0];
+            var iCal1 = Calendar.Load(IcsFiles.ByMonth1).First();
+            var iCal2 = Calendar.Load(IcsFiles.ByMonth2).First();
             ProgramTest.TestCal(iCal1);
             ProgramTest.TestCal(iCal2);
             IEvent evt1 = (Event)iCal1.Events.First();
@@ -530,8 +536,10 @@ namespace Ical.Net.UnitTests
         [Test, Category("Recurrence")]
         public void WeeklyCountWkst1()
         {
-            var iCal1 = Calendar.LoadFromStream(new StringReader(IcsFiles.WeeklyUntilWkst1))[0];
-            var iCal2 = Calendar.LoadFromStream(new StringReader(IcsFiles.WeeklyCountWkst1))[0];
+            //var iCal1 = Calendar.LoadFromStream(new StringReader(IcsFiles.WeeklyUntilWkst1))[0];
+            //var iCal2 = Calendar.LoadFromStream(new StringReader(IcsFiles.WeeklyCountWkst1))[0];
+            var iCal1 = Calendar.Load(IcsFiles.WeeklyUntilWkst1).First();
+            var iCal2 = Calendar.Load(IcsFiles.WeeklyCountWkst1).First();
             ProgramTest.TestCal(iCal1);
             ProgramTest.TestCal(iCal2);
             var evt1 = iCal1.Events.First();
@@ -1755,8 +1763,10 @@ namespace Ical.Net.UnitTests
         [Test, Category("Recurrence")]
         public void MinutelyByHour1()
         {
-            var iCal1 = Calendar.LoadFromStream(new StringReader(IcsFiles.DailyByHourMinute1))[0];
-            var iCal2 = Calendar.LoadFromStream(new StringReader(IcsFiles.MinutelyByHour1))[0];
+            //var iCal1 = Calendar.LoadFromStream(new StringReader(IcsFiles.DailyByHourMinute1))[0];
+            //var iCal2 = Calendar.LoadFromStream(new StringReader(IcsFiles.MinutelyByHour1))[0];
+            var iCal1 = Calendar.Load(IcsFiles.DailyByHourMinute1).First();
+            var iCal2 = Calendar.Load(IcsFiles.MinutelyByHour1).First();
             ProgramTest.TestCal(iCal1);
             ProgramTest.TestCal(iCal2);
             var evt1 = iCal1.Events.First();
@@ -3183,6 +3193,12 @@ END:VCALENDAR";
             e.ExceptionDates.First().Add(new Period(new CalDateTime(_now.AddDays(2))));
             serialized = SerializeToString(e);
             Assert.AreEqual(3, Regex.Matches(serialized, expected).Count);
+
+            //var deserialized = Calendar.LoadFromStream(new StringReader(serialized));
+            //var periodListTzid = deserialized.First().Events.First().ExceptionDates.First().TzId;
+            //var deserialized = SimpleDeserializer.Default.Deserialize(new StringReader(serialized)).Cast<ICalendar>().Single();
+            //var periodListTzid = deserialized.Events.First().ExceptionDates.First().TzId;
+            //Assert.AreEqual(tzid, periodListTzid);
         }
     }
 }

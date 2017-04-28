@@ -11,7 +11,8 @@ namespace Ical.Net.UnitTests
         [Test, Category("Journal")]
         public void Journal1()
         {
-            var iCal = Calendar.LoadFromStream(new StringReader(IcsFiles.JOURNAL1))[0];
+            //var iCal = Calendar.LoadFromStream(new StringReader(IcsFiles.JOURNAL1))[0];
+            var iCal = Calendar.Load(IcsFiles.JOURNAL1).First();
             ProgramTest.TestCal(iCal);
             Assert.AreEqual(1, iCal.Journals.Count);
             var j = iCal.Journals[0];
@@ -25,7 +26,8 @@ namespace Ical.Net.UnitTests
         [Test, Category("Journal")]
         public void Journal2()
         {
-            var iCal = Calendar.LoadFromStream(new StringReader(IcsFiles.JOURNAL2))[0];
+            //var iCal = Calendar.LoadFromStream(new StringReader(IcsFiles.JOURNAL2))[0];
+            var iCal = Calendar.Load(IcsFiles.JOURNAL2).First();
             ProgramTest.TestCal(iCal);
             Assert.AreEqual(1, iCal.Journals.Count);
             var j = iCal.Journals.First();
