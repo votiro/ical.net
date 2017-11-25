@@ -5,6 +5,7 @@ using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
 using Ical.Net.Evaluation;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 
 namespace Ical.Net.FrameworkUnitTests
 {
@@ -83,7 +84,6 @@ namespace Ical.Net.FrameworkUnitTests
                 Assert.IsTrue(contains, $"Collection does not contain {currentOccurrence}, but it is a {currentOccurrence.DayOfWeek}");
             }
         }
-
 
         [Test]
         public void EnumerationChangedException()
@@ -201,6 +201,132 @@ END:VCALENDAR
             var occurrences = collection.GetOccurrences<CalendarEvent>(startCheck, startCheck.AddMonths(1));
 
             Assert.IsTrue(occurrences.Count == 4);
+        }
+
+        [Test, TestCaseSource(nameof(GetOccurrencesByDayTestCases))]
+        public static void ByDayEveryOtherWeekTests(DateTime startDate, DateTime endDate, IEnumerable<DateTime> expectedDates)
+        {
+            var rule = new RecurrencePattern(FrequencyType.Weekly, 2)
+            {
+                ByDay = new List<WeekDay>
+                {
+                    new WeekDay(DayOfWeek.Monday),
+                    new WeekDay(DayOfWeek.Tuesday),
+                    new WeekDay(DayOfWeek.Wednesday),
+                    new WeekDay(DayOfWeek.Thursday),
+                    new WeekDay(DayOfWeek.Friday),
+                    new WeekDay(DayOfWeek.Saturday),
+                    new WeekDay(DayOfWeek.Sunday),
+                }
+            };
+
+            var calendarEvent = new CalendarEvent
+            {
+                DtStart = new CalDateTime(startDate),
+                DtEnd = new CalDateTime(endDate),
+                RecurrenceRules = new List<RecurrencePattern>
+                {
+                    rule
+                },
+            };
+
+            var occurrenceStarts = calendarEvent.GetOccurrences(startDate, endDate)
+                .Select(o => o.Period.StartTime.Value)
+                .ToList();
+
+            CollectionAssert.AreEquivalent(expectedDates, occurrenceStarts);
+        }
+
+        public static IEnumerable<ITestCaseData> GetOccurrencesByDayTestCases()
+        {
+            var startDate = new DateTime(2017, 12, 30);
+            var endDate = new DateTime(2018, 1, 29);
+            var expectedDates = new[]
+            {
+                new DateTime(2017, 12, 30),
+                new DateTime(2017, 12, 31),
+
+                // 1-7 no events
+                
+                new DateTime(2018, 1, 8),
+                new DateTime(2018, 1, 9),
+                new DateTime(2018, 1, 10),
+                new DateTime(2018, 1, 11),
+                new DateTime(2018, 1, 12),
+                new DateTime(2018, 1, 13),
+                new DateTime(2018, 1, 14),
+
+                // 15 - 21 no events
+
+                new DateTime(2018, 1, 22),
+                new DateTime(2018, 1, 23),
+                new DateTime(2018, 1, 24),
+                new DateTime(2018, 1, 25),
+                new DateTime(2018, 1, 26),
+                new DateTime(2018, 1, 27),
+                new DateTime(2018, 1, 28),
+            };
+            yield return new TestCaseData(startDate, endDate, expectedDates)
+                .SetName("ByDay every other week crossing a year boundary");
+
+            var decemberStart = new DateTime(2017, 12, 1);
+            var decemberEnd = new DateTime(2017, 12, 31);
+            var expectedDecemberDates = new[]
+            {
+                new DateTime(2017, 12, 1),
+                new DateTime(2017, 12, 2),
+                new DateTime(2017, 12, 3),
+                // 4-10 no events
+                
+                new DateTime(2017, 12, 11),
+                new DateTime(2017, 12, 12),
+                new DateTime(2017, 12, 13),
+                new DateTime(2017, 12, 14),
+                new DateTime(2017, 12, 15),
+                new DateTime(2017, 12, 16),
+                new DateTime(2017, 12, 17),
+
+                // 18 - 24 no events
+
+                new DateTime(2017, 12, 25),
+                new DateTime(2017, 12, 26),
+                new DateTime(2017, 12, 27),
+                new DateTime(2017, 12, 28),
+                new DateTime(2017, 12, 29),
+                new DateTime(2017, 12, 30),
+            };
+            yield return new TestCaseData(decemberStart, decemberEnd, expectedDecemberDates)
+                .SetName("ByDay every other week during the same month");
+
+            var novemberStart = new DateTime(2017, 11, 30);
+            var thruDecemberEnd = new DateTime(2017, 12, 31);
+            var expectedNovemberThruDecember = new[]
+            {
+                new DateTime(2017, 11, 30),
+                new DateTime(2017, 12, 1),
+                new DateTime(2017, 12, 2),
+                new DateTime(2017, 12, 3),
+                // 4-10 no events
+                
+                new DateTime(2017, 12, 11),
+                new DateTime(2017, 12, 12),
+                new DateTime(2017, 12, 13),
+                new DateTime(2017, 12, 14),
+                new DateTime(2017, 12, 15),
+                new DateTime(2017, 12, 16),
+                new DateTime(2017, 12, 17),
+
+                // 18 - 24 no events
+
+                new DateTime(2017, 12, 25),
+                new DateTime(2017, 12, 26),
+                new DateTime(2017, 12, 27),
+                new DateTime(2017, 12, 28),
+                new DateTime(2017, 12, 29),
+                new DateTime(2017, 12, 30),
+            };
+            yield return new TestCaseData(novemberStart, thruDecemberEnd, expectedNovemberThruDecember)
+                .SetName("SByDay every other week starting in one month, and ending in the next month");
         }
     }
 }

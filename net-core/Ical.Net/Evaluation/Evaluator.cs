@@ -53,7 +53,7 @@ namespace Ical.Net.Evaluation
             // FIXME: use a more specific exception.
             if (interval == 0)
             {
-                throw new Exception("Cannot evaluate with an interval of zero.  Please use an interval other than zero.");
+                throw new ArgumentException("Cannot evaluate with an interval of zero.  Please use an interval other than zero.");
             }
 
             var old = dt;
