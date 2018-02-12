@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\net-core\Ical.Net\Ical.Net\Ical.Net.csproj" />
+    <PackageReference Include="Ical.Net" Version="4.0.6" />
   </ItemGroup>
 
 </Project>
