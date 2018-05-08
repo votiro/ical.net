@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
+using Ical.Net.Utility;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 
@@ -64,6 +65,53 @@ namespace Ical.Net.FrameworkUnitTests
 
             yield return new TestCaseData(ianaEvent, bclCst)
                 .SetName($"IANA to BCL: {ianaNy} to {bclCst}");
+        }
+
+        [Test]
+        public void TzIdConstructorTests()
+        {
+            var add = 0;
+            var someTime = DateTime.Now.AddHours(add++);
+            // Local to UTC
+            var eventuallyUtc = new CalDateTime(someTime);
+
+            Assert.IsFalse(eventuallyUtc.IsUtc);
+            Assert.AreEqual(DateTimeKind.Local, eventuallyUtc.Value.Kind);
+
+            var localToUtcAsUtc = eventuallyUtc.AsUtc;
+            eventuallyUtc.TzId = "UTC";
+
+            Assert.IsTrue(eventuallyUtc.IsUtc);
+            Assert.AreEqual(eventuallyUtc.Value.Kind, DateTimeKind.Utc);
+            Assert.IsTrue(localToUtcAsUtc != eventuallyUtc.AsUtc);
+
+            // Ambiguous to UTC
+            var ambiguous = DateTime.SpecifyKind(DateTime.Now.AddHours(add++), DateTimeKind.Unspecified);
+            var ambiguousToUtc = new CalDateTime(ambiguous);
+
+            Assert.IsFalse(ambiguousToUtc.IsUtc);
+            Assert.AreEqual(DateTimeKind.Unspecified, ambiguousToUtc.Value.Kind);
+
+            var ambiguousUtcAsUtc = ambiguousToUtc.AsUtc;
+            ambiguousToUtc.TzId = "UTC";
+
+            Assert.IsTrue(ambiguousToUtc.IsUtc);
+            Assert.AreEqual(ambiguousToUtc.Value.Kind, DateTimeKind.Utc);
+            Assert.IsTrue(ambiguousToUtc.AsUtc != ambiguousUtcAsUtc);
+
+            // UTC to Local
+            var utc = DateTime.SpecifyKind(DateTime.Now.AddHours(add++), DateTimeKind.Utc);
+            var utcToLocal = new CalDateTime(utc);
+
+            Assert.IsTrue(utcToLocal.IsUtc);
+            Assert.AreEqual(DateTimeKind.Utc, utcToLocal.Value.Kind);
+
+            var utcToLocalAsUtc = utcToLocal.AsUtc;
+            utcToLocal.TzId = "America/New_York";
+
+            Assert.IsFalse(utcToLocal.IsUtc);
+            Assert.AreEqual(utcToLocal.Value.Kind, DateTimeKind.Local);
+            Assert.IsTrue(utcToLocal.AsUtc != utcToLocalAsUtc);
         }
     }
 }

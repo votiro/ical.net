@@ -70,28 +70,34 @@ namespace Ical.Net.DataTypes
 
         private void Initialize(DateTime value, string tzId, Calendar cal)
         {
+            var kind = DateTimeKind.Unspecified;
+            string actualTz = null;
+
             if (!string.IsNullOrWhiteSpace(tzId) && !tzId.Equals("UTC", StringComparison.OrdinalIgnoreCase))
             {
                 // Definitely local
-                value = DateTime.SpecifyKind(value, DateTimeKind.Local);
-                TzId = tzId;
+                kind = DateTimeKind.Local;
+                actualTz = tzId;
             }
             else if (string.Equals("UTC", tzId, StringComparison.OrdinalIgnoreCase) || value.Kind == DateTimeKind.Utc)
             {
                 // Probably UTC
-                value = DateTime.SpecifyKind(value, DateTimeKind.Utc);
-                TzId = "UTC";
+                kind = DateTimeKind.Utc;
+                actualTz = "UTC";
             }
-            else
+            else if (value.Kind == DateTimeKind.Local)
             {
-                // Ambiguous, but probably local
-                value = DateTime.SpecifyKind(value, DateTimeKind.Unspecified);
+                // Probably local?
+                kind = DateTimeKind.Local;
+                actualTz = tzId;
             }
+            // Otherwise the kind is ambiguous, so leave it unspecified...
 
-            Value = new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second, value.Kind);
             HasDate = true;
             HasTime = value.Second != 0 || value.Minute != 0 || value.Hour != 0;
             AssociatedObject = cal;
+            Value = DateTime.SpecifyKind(value, kind);
+            TzId = actualTz;
         }
 
         private DateTime CoerceDateTime(int year, int month, int day, int hour, int minute, int second, DateTimeKind kind)
@@ -242,7 +248,11 @@ namespace Ical.Net.DataTypes
                     //  2) Value having a DateTimeKind.Utc
                     //  3) Use the OS's time zone
 
-                    if (!string.IsNullOrWhiteSpace(TzId))
+                    if (string.Equals("UTC", TzId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _asUtc = DateTime.SpecifyKind(Value, DateTimeKind.Utc);
+                    }
+                    else if (!string.IsNullOrWhiteSpace(TzId))
                     {
                         var asLocal = DateUtil.ToZonedDateTimeLeniently(Value, TzId);
                         _asUtc = asLocal.ToDateTimeUtc();
@@ -266,13 +276,15 @@ namespace Ical.Net.DataTypes
             get => _value;
             set
             {
-                if (_value == value && _value.Kind == value.Kind)
+                // ical standard doesn't care about timeslices < 1 second
+                var temp = value.Truncate(TimeSpan.FromSeconds(1));
+                if (_value == temp && _value.Kind == temp.Kind)
                 {
                     return;
                 }
 
                 _asUtc = DateTime.MinValue;
-                _value = value;
+                _value = temp;
             }
         }
 
