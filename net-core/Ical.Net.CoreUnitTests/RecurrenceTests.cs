@@ -3441,5 +3441,65 @@ END:VCALENDAR
             var occurrences = firstEvent.GetOccurrences(startSearch, endSearch);
             Assert.AreEqual(5, occurrences.Count);
         }
+
+        [Test, TestCaseSource(nameof(UntilRruleTimezoneTestCases)]
+        public void UntilRruleTimezone(CalendarEvent calendarEvent)
+        {
+            // https://tools.ietf.org/html/rfc5545#section-3.3.10
+            // Furthermore, if the "DTSTART" property is specified as a date with local time, then the UNTIL rule part MUST also be specified as a date with
+            // local time. If the "DTSTART" property is specified as a date with UTC time or a date with local time and time zone reference, then the UNTIL
+            // rule part MUST be specified as a date with UTC time.
+
+            var expectedKind = calendarEvent.Start.IsUtc
+                ? DateTimeKind.Utc
+                : DateTimeKind.Local;
+
+            Assert.AreEqual(expectedKind, calendarEvent.RecurrenceRules.First().Until.Kind);
+        }
+
+        public static IEnumerable<ITestCaseData> UntilRruleTimezoneTestCases()
+        {
+            var utcPattern = new RecurrencePattern(FrequencyType.Weekly)
+            {
+                Until = DateTime.SpecifyKind(_later.AddDays(100), DateTimeKind.Utc),
+            };
+
+            var localPattern = new RecurrencePattern(FrequencyType.Weekly)
+            {
+                Until = DateTime.SpecifyKind(_later.AddDays(100), DateTimeKind.Local),
+            };
+
+            var utcEventUtcPattern = new CalendarEvent
+            {
+                Start = new CalDateTime(_now, "UTC"),
+                End = new CalDateTime(_later, "UTC"),
+                RecurrenceRules = new List<RecurrencePattern> { utcPattern },
+            };
+            yield return new TestCaseData(utcEventUtcPattern).SetName("UTC event with a UTC UNTIL pattern");
+
+            var utcEventLocalPattern = new CalendarEvent
+            {
+                Start = new CalDateTime(_now, "UTC"),
+                End = new CalDateTime(_later, "UTC"),
+                RecurrenceRules = new List<RecurrencePattern> { localPattern },
+            };
+            yield return new TestCaseData(utcEventLocalPattern).SetName("UTC event with a local UNTIL pattern");
+
+            var localEventLocalPattern = new CalendarEvent
+            {
+                Start = new CalDateTime(_now, _tzid),
+                End = new CalDateTime(_later, _tzid),
+                RecurrenceRules = new List<RecurrencePattern> { localPattern },
+            };
+            yield return new TestCaseData(localEventLocalPattern).SetName("Local event with a local UNTIL pattern");
+
+            var localEventUtcPattern = new CalendarEvent
+            {
+                Start = new CalDateTime(_now, _tzid),
+                End = new CalDateTime(_later, _tzid),
+                RecurrenceRules = new List<RecurrencePattern> { utcPattern },
+            };
+            yield return new TestCaseData(localEventUtcPattern).SetName("Local event with a UTC UNTIL pattern");
+        }
     }
 }
