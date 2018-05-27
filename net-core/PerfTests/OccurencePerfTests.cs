@@ -10,7 +10,7 @@ namespace PerfTests
 {
     public class OccurencePerfTests
     {
-        [Benchmark]
+        //[Benchmark]
         public void MultipleEventsWithUntilOccurrencesSearchingByWholeCalendar()
         {
             var calendar = GetFourCalendarEventsWithUntilRule();
@@ -19,7 +19,7 @@ namespace PerfTests
             var occurences = calendar.GetOccurrences(searchStart, searchEnd);
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void MultipleEventsWithUntilOccurrences()
         {
             var calendar = GetFourCalendarEventsWithUntilRule();
@@ -30,7 +30,7 @@ namespace PerfTests
                 .ToList();
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void MultipleEventsWithUntilOccurrencesEventsAsParallel()
         {
             var calendar = GetFourCalendarEventsWithUntilRule();
@@ -74,7 +74,7 @@ namespace PerfTests
             return c;
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void MultipleEventsWithCountOccurrencesSearchingByWholeCalendar()
         {
             var calendar = GetFourCalendarEventsWithCountRule();
@@ -83,7 +83,7 @@ namespace PerfTests
             var occurences = calendar.GetOccurrences(searchStart, searchEnd);
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void MultipleEventsWithCountOccurrences()
         {
             var calendar = GetFourCalendarEventsWithCountRule();
@@ -94,7 +94,7 @@ namespace PerfTests
                 .ToList();
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void MultipleEventsWithCountOccurrencesEventsAsParallel()
         {
             var calendar = GetFourCalendarEventsWithCountRule();

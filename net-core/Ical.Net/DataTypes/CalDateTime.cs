@@ -13,7 +13,7 @@ namespace Ical.Net.DataTypes
     /// class handles time zone differences, and integrates seamlessly into the iCalendar framework.
     /// </remarks>
     /// </summary>
-    public sealed class CalDateTime : EncodableDataType, IDateTime
+    public sealed class CalDateTime : EncodableDataType, IDateTime, IComparable<IDateTime>
     {
         public static CalDateTime Now => new CalDateTime(DateTime.Now);
 
@@ -141,7 +141,8 @@ namespace Ical.Net.DataTypes
                 return;
             }
 
-            _value = dt.Value;
+            //_value = dt.Value;
+            Value = dt.Value;
             _hasDate = dt.HasDate;
             _hasTime = dt.HasTime;
 
@@ -172,13 +173,13 @@ namespace Ical.Net.DataTypes
             }
         }
 
-        public static bool operator <(CalDateTime left, IDateTime right) => left.AsUtc < right.AsUtc;
+        public static bool operator <(CalDateTime left, IDateTime right) => left < right;
 
-        public static bool operator >(CalDateTime left, IDateTime right) => left.AsUtc > right.AsUtc;
+        public static bool operator >(CalDateTime left, IDateTime right) => left > right;
 
-        public static bool operator <=(CalDateTime left, IDateTime right) => left.AsUtc <= right.AsUtc;
+        public static bool operator <=(CalDateTime left, IDateTime right) => left <= right;
 
-        public static bool operator >=(CalDateTime left, IDateTime right) => left.AsUtc >= right.AsUtc;
+        public static bool operator >=(CalDateTime left, IDateTime right) => left >= right;
 
         public static bool operator ==(CalDateTime left, IDateTime right) => left.Equals(right);
 
@@ -187,7 +188,7 @@ namespace Ical.Net.DataTypes
         public static TimeSpan operator -(CalDateTime left, IDateTime right)
         {
             left.AssociateWith(right);
-            return left.AsUtc - right.AsUtc;
+            return left - right;
         }
 
         public static IDateTime operator -(CalDateTime left, TimeSpan right)
@@ -260,23 +261,37 @@ namespace Ical.Net.DataTypes
             }
         }
 
-        private DateTime _value;
+        //private DateTime _value;
+        private ZonedDateTime _zonedValue;
         public DateTime Value
         {
-            get => _value;
+            get
+            {
+                var kind = string.Equals(_tzId, "UTC", StringComparison.OrdinalIgnoreCase)
+                    ? DateTimeKind.Utc
+                    : string.IsNullOrEmpty(_tzId)
+                        ? DateTimeKind.Unspecified
+                        : DateTimeKind.Local;
+                return DateTime.SpecifyKind(_zonedValue.ToDateTimeUnspecified(), kind);
+            }
             set
             {
-                if (_value == value && _value.Kind == value.Kind)
+                var asZoned = DateUtil.ToZonedDateTimeLeniently(value, _tzId);
+                if (asZoned == _zonedValue)
                 {
                     return;
                 }
+                //if (_value == value && _value.Kind == value.Kind)
+                //{
+                //    return;
+                //}
+                _zonedValue = asZoned;
 
-                _asUtc = DateTime.MinValue;
-                _value = value;
+                //_asUtc = DateTime.MinValue;
             }
         }
 
-        public bool IsUtc => _value.Kind == DateTimeKind.Utc;
+        public bool IsUtc => _zonedValue.Zone == DateTimeZone.Utc;
 
         public bool HasDate
         {
@@ -389,11 +404,16 @@ namespace Ical.Net.DataTypes
         /// system-local time zone.
         /// </summary>
         public DateTimeOffset AsDateTimeOffset =>
-            string.IsNullOrWhiteSpace(TzId)
+            string.IsNullOrWhiteSpace(_tzId)
                 ? new DateTimeOffset(AsSystemLocal)
                 : DateUtil.ToZonedDateTimeLeniently(Value, TzId).ToDateTimeOffset();
 
-        public IDateTime Add(TimeSpan ts) => this + ts;
+        public IDateTime Add(TimeSpan ts)
+        {
+            // ToDo: Make this immutable, i.e. return a new CalDateTime
+            _zonedValue = _zonedValue + Duration.FromTimeSpan(ts);
+            return this;
+        }
 
         public IDateTime Subtract(TimeSpan ts) => this - ts;
 
