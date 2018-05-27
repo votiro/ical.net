@@ -188,6 +188,20 @@ namespace Ical.Net.Utility
             return lenientZonedDateTime;
         }
 
+        public static ZonedDateTime ToZonedDateTimeLeniently(DateTime dateTime, DateTimeZone zone)
+        {
+            var lenientDt = LocalDateTime.FromDateTime(dateTime);
+            var lenientZoned = lenientDt.InZoneLeniently(zone);
+            return lenientZoned;
+        }
+
+        public static ZonedDateTime ToZonedDateTimeLeniently(DateTimeOffset dateTimeOffset, DateTimeZone zone)
+        {
+            var instant = Instant.FromDateTimeOffset(dateTimeOffset);
+            var lenientZoned = new ZonedDateTime(instant, zone);
+            return lenientZoned;
+        }
+
         public static ZonedDateTime FromTimeZoneToTimeZone(DateTime dateTime, string fromZoneId, string toZoneId)
             => FromTimeZoneToTimeZone(dateTime, GetZone(fromZoneId), GetZone(toZoneId));
 

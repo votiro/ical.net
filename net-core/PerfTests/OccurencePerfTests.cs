@@ -137,5 +137,44 @@ namespace PerfTests
             c.Events.AddRange(events);
             return c;
         }
+
+        private static readonly DateTime _now = DateTime.Now;
+        private static readonly CalendarEvent _untilRule = new CalendarEvent
+        {
+            Start = new CalDateTime(_now, "Europe/Volgograd"),
+            End = new CalDateTime(_now, "Europe/Volgograd"),
+            RecurrenceRules = new List<RecurrencePattern>
+            {
+                new RecurrencePattern(FrequencyType.Daily)
+                {
+                    Until = _now.AddDays(365),
+                }
+            },
+        };
+
+        [Benchmark]
+        public void UntilRule()
+        {
+            var occurrences = _untilRule.GetOccurrences(_now.AddDays(-365), _now.AddDays(365));
+        }
+
+        private static readonly CalendarEvent _countRule = new CalendarEvent
+        {
+            Start = new CalDateTime(_now, "Europe/Volgograd"),
+            End = new CalDateTime(_now, "Europe/Volgograd"),
+            RecurrenceRules = new List<RecurrencePattern>
+            {
+                new RecurrencePattern(FrequencyType.Daily)
+                {
+                    Count = 365,
+                }
+            },
+        };
+
+        [Benchmark]
+        public void CountRule()
+        {
+            var occurrences = _countRule.GetOccurrences(_now.AddDays(-365), _now.AddDays(365));
+        }
     }
 }
