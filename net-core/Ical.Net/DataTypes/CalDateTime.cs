@@ -13,7 +13,7 @@ namespace Ical.Net.DataTypes
     /// class handles time zone differences, and integrates seamlessly into the iCalendar framework.
     /// </remarks>
     /// </summary>
-    public sealed class CalDateTime : EncodableDataType, IDateTime, IComparable<IDateTime>
+    public sealed class CalDateTime : EncodableDataType, IDateTime
     {
         public static CalDateTime Now => new CalDateTime(DateTime.Now);
 
@@ -141,8 +141,7 @@ namespace Ical.Net.DataTypes
                 return;
             }
 
-            //_value = dt.Value;
-            Value = dt.Value;
+            _value = dt.Value;
             _hasDate = dt.HasDate;
             _hasTime = dt.HasTime;
 
@@ -173,13 +172,13 @@ namespace Ical.Net.DataTypes
             }
         }
 
-        public static bool operator <(CalDateTime left, IDateTime right) => left < right;
+        public static bool operator <(CalDateTime left, IDateTime right) => left.AsUtc < right.AsUtc;
 
-        public static bool operator >(CalDateTime left, IDateTime right) => left > right;
+        public static bool operator >(CalDateTime left, IDateTime right) => left.AsUtc > right.AsUtc;
 
-        public static bool operator <=(CalDateTime left, IDateTime right) => left <= right;
+        public static bool operator <=(CalDateTime left, IDateTime right) => left.AsUtc <= right.AsUtc;
 
-        public static bool operator >=(CalDateTime left, IDateTime right) => left >= right;
+        public static bool operator >=(CalDateTime left, IDateTime right) => left.AsUtc >= right.AsUtc;
 
         public static bool operator ==(CalDateTime left, IDateTime right) => left.Equals(right);
 
@@ -188,7 +187,7 @@ namespace Ical.Net.DataTypes
         public static TimeSpan operator -(CalDateTime left, IDateTime right)
         {
             left.AssociateWith(right);
-            return left - right;
+            return left.AsUtc - right.AsUtc;
         }
 
         public static IDateTime operator -(CalDateTime left, TimeSpan right)
@@ -248,7 +247,7 @@ namespace Ical.Net.DataTypes
                         var asLocal = DateUtil.ToZonedDateTimeLeniently(Value, TzId);
                         _asUtc = asLocal.ToDateTimeUtc();
                     }
-                    else if(IsUtc || Value.Kind == DateTimeKind.Utc)
+                    else if (IsUtc || Value.Kind == DateTimeKind.Utc)
                     {
                         _asUtc = DateTime.SpecifyKind(Value, DateTimeKind.Utc);
                     }
@@ -261,37 +260,23 @@ namespace Ical.Net.DataTypes
             }
         }
 
-        //private DateTime _value;
-        private ZonedDateTime _zonedValue;
+        private DateTime _value;
         public DateTime Value
         {
-            get
-            {
-                var kind = string.Equals(_tzId, "UTC", StringComparison.OrdinalIgnoreCase)
-                    ? DateTimeKind.Utc
-                    : string.IsNullOrEmpty(_tzId)
-                        ? DateTimeKind.Unspecified
-                        : DateTimeKind.Local;
-                return DateTime.SpecifyKind(_zonedValue.ToDateTimeUnspecified(), kind);
-            }
+            get => _value;
             set
             {
-                var asZoned = DateUtil.ToZonedDateTimeLeniently(value, _tzId);
-                if (asZoned == _zonedValue)
+                if (_value == value && _value.Kind == value.Kind)
                 {
                     return;
                 }
-                //if (_value == value && _value.Kind == value.Kind)
-                //{
-                //    return;
-                //}
-                _zonedValue = asZoned;
 
-                //_asUtc = DateTime.MinValue;
+                _asUtc = DateTime.MinValue;
+                _value = value;
             }
         }
 
-        public bool IsUtc => _zonedValue.Zone == DateTimeZone.Utc;
+        public bool IsUtc => _value.Kind == DateTimeKind.Utc;
 
         public bool HasDate
         {
@@ -404,16 +389,11 @@ namespace Ical.Net.DataTypes
         /// system-local time zone.
         /// </summary>
         public DateTimeOffset AsDateTimeOffset =>
-            string.IsNullOrWhiteSpace(_tzId)
+            string.IsNullOrWhiteSpace(TzId)
                 ? new DateTimeOffset(AsSystemLocal)
                 : DateUtil.ToZonedDateTimeLeniently(Value, TzId).ToDateTimeOffset();
 
-        public IDateTime Add(TimeSpan ts)
-        {
-            // ToDo: Make this immutable, i.e. return a new CalDateTime
-            _zonedValue = _zonedValue + Duration.FromTimeSpan(ts);
-            return this;
-        }
+        public IDateTime Add(TimeSpan ts) => this + ts;
 
         public IDateTime Subtract(TimeSpan ts) => this - ts;
 

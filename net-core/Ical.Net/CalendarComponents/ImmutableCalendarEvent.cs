@@ -74,7 +74,7 @@ namespace Ical.Net.CalendarComponents
                 if (!Equals(Duration, value))
                 {
                     Properties.Set("DURATION", value);
-                    ExtrapolateTimes();
+                    //ExtrapolateTimes();
                 }
             }
         }
@@ -129,7 +129,7 @@ namespace Ical.Net.CalendarComponents
         public ImmutableCalendarEvent()
         {
             Initialize();
-            _mEvaluator = new EventEvaluator(this);
+            //_mEvaluator = new EventEvaluator(this);
         }
 
         public override string Name => "VEVENT";
