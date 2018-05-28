@@ -10,9 +10,8 @@ namespace Ical.Net.DataTypes
         //, IDateTime
     {
         private static readonly DateTimeZone _systemTimeZone = DateTimeZoneProviders.Tzdb.GetSystemDefault();
-        private DateTimeKind Kind => _zonedValue.Zone == DateTimeZone.Utc ? DateTimeKind.Utc : DateTimeKind.Local;
-        private readonly ZonedDateTime _zonedValue;
-        private readonly bool _hasTime;
+        private DateTimeKind Kind => Value.Zone == DateTimeZone.Utc ? DateTimeKind.Utc : DateTimeKind.Local;
+        public ZonedDateTime Value { get; }
 
         public ImmutableCalDateTime(DateTime dateTime, string timeZone, bool hasTime = true)
             : this(
@@ -30,53 +29,56 @@ namespace Ical.Net.DataTypes
             {
                 throw new ArgumentNullException(nameof(zonedDateTime));
             }
-            _zonedValue = zonedDateTime;
-            _hasTime = hasTime;
+            Value = zonedDateTime;
+            HasTime = hasTime;
         }
 
-        public string TzId => _zonedValue.Zone.Id;
-        public DateTimeOffset AsDateTimeOffset => _zonedValue.ToDateTimeOffset();
-        public DateTime AsUtc => _zonedValue.ToDateTimeUtc();
+        public string TzId => Value.Zone.Id;
+        public DateTimeOffset AsDateTimeOffset => Value.ToDateTimeOffset();
+        public DateTime AsUtc => Value.ToDateTimeUtc();
         public bool HasDate => true;
-        public bool HasTime => _hasTime;
-        public DateTime AsSystemLocal => DateTime.SpecifyKind(_zonedValue.WithZone(_systemTimeZone).ToDateTimeUnspecified(), Kind);
-        public DateTimeOffset AsSystemLocalOffset => _zonedValue.WithZone(_systemTimeZone).ToDateTimeOffset();
-        public LocalDateTime AsSystemLocalDateTime => _zonedValue.LocalDateTime;
-        public bool IsUtc => _zonedValue.Zone == DateTimeZone.Utc;
-        public int Year => _zonedValue.Year;
-        public int Month => _zonedValue.Month;
-        public int Day => _zonedValue.Day;
-        public int Hour => _zonedValue.Hour;
-        public int Minute => _zonedValue.Minute;
-        public int Second => _zonedValue.Second;
-        public int Millisecond => _zonedValue.Millisecond;
+        public bool HasTime { get; }
 
-        public IsoDayOfWeek IsoDayOfWeek => _zonedValue.DayOfWeek;
-        public DayOfWeek DayOfWeek => _zonedValue.DayOfWeek.ToIsoDayOfWeek();
-        public int DayOfYear => _zonedValue.DayOfYear;
+        public DateTime AsSystemLocal => DateTime.SpecifyKind(Value.WithZone(_systemTimeZone).ToDateTimeUnspecified(), Kind);
+        public DateTimeOffset AsSystemLocalOffset => Value.WithZone(_systemTimeZone).ToDateTimeOffset();
+        public LocalDateTime AsSystemLocalDateTime => Value.LocalDateTime;
+        public bool IsUtc => Value.Zone == DateTimeZone.Utc;
+        public int Year => Value.Year;
+        public int Month => Value.Month;
+        public int Day => Value.Day;
+        public int Hour => Value.Hour;
+        public int Minute => Value.Minute;
+        public int Second => Value.Second;
+        public int Millisecond => Value.Millisecond;
 
-        public LocalDate LocalDate => _zonedValue.Date;
-        public DateTime Date => DateTime.SpecifyKind(_zonedValue.Date.ToDateTimeUnspecified(), Kind);
-        public LocalTime LocalTime => _zonedValue.TimeOfDay;
-        public TimeSpan Time => _zonedValue.ToDateTimeUnspecified().TimeOfDay;
+        public IsoDayOfWeek IsoDayOfWeek => Value.DayOfWeek;
+        public DayOfWeek DayOfWeek => Value.DayOfWeek.ToIsoDayOfWeek();
+        public int DayOfYear => Value.DayOfYear;
+
+        public DateTime LocalDateTime => DateTime.SpecifyKind(Value.ToDateTimeUnspecified(), Kind);
+        public LocalDateTime Local => Value.LocalDateTime;
+        public LocalDate LocalDate => Value.Date;
+        public DateTime Date => DateTime.SpecifyKind(Value.Date.ToDateTimeUnspecified(), Kind);
+        public LocalTime LocalTime => Value.TimeOfDay;
+        public TimeSpan Time => Value.ToDateTimeUnspecified().TimeOfDay;
 
         public ImmutableCalDateTime ToTimeZone(DateTimeZone newTimeZone)
-            => new ImmutableCalDateTime(_zonedValue.WithZone(newTimeZone), _hasTime);
+            => new ImmutableCalDateTime(Value.WithZone(newTimeZone), HasTime);
 
         public ImmutableCalDateTime ToTimeZone(string newTimeZone)
-            => new ImmutableCalDateTime(_zonedValue.WithZone(DateUtil.GetZone(newTimeZone, useLocalIfNotFound: false)), _hasTime);
+            => new ImmutableCalDateTime(Value.WithZone(DateUtil.GetZone(newTimeZone, useLocalIfNotFound: false)), HasTime);
 
         public static bool operator <(ImmutableCalDateTime left, ImmutableCalDateTime right)
-            => left._zonedValue.ToInstant() < right._zonedValue.ToInstant();
+            => left.Value.ToInstant() < right.Value.ToInstant();
 
         public static bool operator <=(ImmutableCalDateTime left, ImmutableCalDateTime right)
-            => left._zonedValue.ToInstant() <= right._zonedValue.ToInstant();
+            => left.Value.ToInstant() <= right.Value.ToInstant();
 
         public static bool operator >(ImmutableCalDateTime left, ImmutableCalDateTime right)
-            => left._zonedValue.ToInstant() > right._zonedValue.ToInstant();
+            => left.Value.ToInstant() > right.Value.ToInstant();
 
         public static bool operator >=(ImmutableCalDateTime left, ImmutableCalDateTime right)
-            => left._zonedValue.ToInstant() >= right._zonedValue.ToInstant();
+            => left.Value.ToInstant() >= right.Value.ToInstant();
 
         public static bool operator ==(ImmutableCalDateTime left, ImmutableCalDateTime right)
             => left.Equals(right);
@@ -87,26 +89,32 @@ namespace Ical.Net.DataTypes
         public static ImmutableCalDateTime operator -(ImmutableCalDateTime left, TimeSpan right)
         {
             var duration = Duration.FromTimeSpan(right);
-            var newZonedValue = left._zonedValue - duration;
+            var newZonedValue = left.Value - duration;
             return new ImmutableCalDateTime(newZonedValue, left.HasTime);
         }
 
         public static ImmutableCalDateTime operator -(ImmutableCalDateTime left, Duration duration)
         {
-            var newZonedValue = left._zonedValue - duration;
+            var newZonedValue = left.Value - duration;
             return new ImmutableCalDateTime(newZonedValue, left.HasTime);
+        }
+
+        public static ImmutableCalDateTime operator -(ImmutableCalDateTime left, ImmutableCalDateTime right)
+        {
+            var duration = left.Value - right.Value;
+            return left - duration;
         }
 
         public static ImmutableCalDateTime operator +(ImmutableCalDateTime left, TimeSpan right)
         {
             var asDuration = Duration.FromTimeSpan(right);
-            var newZonedValue = left._zonedValue + asDuration;
+            var newZonedValue = left.Value + asDuration;
             return new ImmutableCalDateTime(newZonedValue, left.HasTime);
         }
 
         public static ImmutableCalDateTime operator +(ImmutableCalDateTime left, Duration duration)
         {
-            var newZonedValue = left._zonedValue + duration;
+            var newZonedValue = left.Value + duration;
             return new ImmutableCalDateTime(newZonedValue, left.HasTime);
         }
 
@@ -127,14 +135,14 @@ namespace Ical.Net.DataTypes
                 : 1;
         }
 
-        public bool Equals(ImmutableCalDateTime other) => _hasTime == other._hasTime && _zonedValue.Equals(other._zonedValue);
+        public bool Equals(ImmutableCalDateTime other) => HasTime == other.HasTime && Value.Equals(other.Value);
 
         public override int GetHashCode()
         {
             unchecked
             {
-                var hashCode = _zonedValue.GetHashCode();
-                hashCode = (hashCode * 397) ^ _hasTime.GetHashCode();
+                var hashCode = Value.GetHashCode();
+                hashCode = (hashCode * 397) ^ HasTime.GetHashCode();
                 return hashCode;
             }
         }

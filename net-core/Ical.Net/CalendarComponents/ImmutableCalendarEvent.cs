@@ -22,10 +22,8 @@ namespace Ical.Net.CalendarComponents
     ///         <item>Create a TextCollection DataType for 'text' items separated by commas</item>
     ///     </list>
     /// </note>
-    public class ImmutableCalendarEvent : RecurringComponent, IAlarmContainer, IComparable<CalendarEvent>
+    public class ImmutableCalendarEvent : RecurringComponent, IAlarmContainer, IComparable<ImmutableCalendarEvent>
     {
-        internal const string ComponentName = "VEVENT";
-
         /// <summary>
         /// The start date/time of the event.
         /// <note>
@@ -37,8 +35,7 @@ namespace Ical.Net.CalendarComponents
         /// the end date/time will be extrapolated.
         /// </note>
         /// </summary>
-        public ImmutableCalDateTime Start => _start;
-        private readonly ImmutableCalDateTime _start;
+        public ImmutableCalDateTime Start { get; }
 
         /// <summary>
         /// The end date/time of the event.
@@ -51,8 +48,7 @@ namespace Ical.Net.CalendarComponents
         /// will be extrapolated.
         /// </note>
         /// </summary>
-        public ImmutableCalDateTime End => _end;
-        private readonly ImmutableCalDateTime _end;
+        public ImmutableCalDateTime End { get; }
 
         /// <summary>
         /// The duration of the event.
@@ -91,15 +87,13 @@ namespace Ical.Net.CalendarComponents
         /// <summary>
         /// The geographic location (lat/long) of the event.
         /// </summary>
-        public GeographicLocation GeographicLocation => _geoLoc;
-        private readonly GeographicLocation _geoLoc;
+        public GeographicLocation GeographicLocation { get; }
         internal string GeographicLocationKey => "GEO";
 
         /// <summary>
         /// The location of the event.
         /// </summary>
-        public string Location => _location;
-        private readonly string _location;
+        public string Location { get; }
         internal string LocationKey => "LOCATION";
 
         /// <summary>
@@ -107,15 +101,13 @@ namespace Ical.Net.CalendarComponents
         /// <example>Conference room #2</example>
         /// <example>Projector</example>
         /// </summary>
-        public virtual IReadOnlyList<string> Resources => _resources;
-        private readonly IReadOnlyList<string> _resources;
+        public IReadOnlyList<string> Resources { get; }
         internal string ResourcesKey => "RESOURCES";
 
         /// <summary>
         /// The status of the event.
         /// </summary>
-        public string Status => _status;
-        private readonly string _status;
+        public string Status { get; }
         internal string StatusKey => "STATUS";
 
         /// <summary>
@@ -125,8 +117,7 @@ namespace Ical.Net.CalendarComponents
         /// or if the time cannot be scheduled for anything
         /// else (opaque).
         /// </summary>
-        public string Transparency => _transparency;
-        private readonly string _transparency;
+        public string Transparency { get; }
         internal string TransparencyKey => "TRANSPARENCY";
 
         private readonly EventEvaluator _mEvaluator;
@@ -138,13 +129,13 @@ namespace Ical.Net.CalendarComponents
         public ImmutableCalendarEvent()
         {
             Initialize();
+            _mEvaluator = new EventEvaluator(this);
         }
+
+        public override string Name => "VEVENT";
 
         private void Initialize()
         {
-            Name = EventStatus.Name;
-
-            //_mEvaluator = new EventEvaluator(this);
             SetService(_mEvaluator);
         }
 
@@ -194,27 +185,9 @@ namespace Ical.Net.CalendarComponents
         protected override void OnDeserialized(StreamingContext context)
         {
             base.OnDeserialized(context);
-
-            ExtrapolateTimes();
         }
 
-        private void ExtrapolateTimes()
-        {
-            if (End == null && Start != null && Duration != default(TimeSpan))
-            {
-                End = Start.Add(Duration);
-            }
-            else if (Duration == default(TimeSpan) && Start != null && End != null)
-            {
-                Duration = End.Subtract(Start);
-            }
-            else if (Start == null && Duration != default(TimeSpan) && End != null)
-            {
-                Start = End.Subtract(Duration);
-            }
-        }
-
-        protected bool Equals(CalendarEvent other)
+        protected bool Equals(ImmutableCalendarEvent other)
         {
             var resourcesSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             resourcesSet.UnionWith(Resources);
@@ -280,10 +253,10 @@ namespace Ical.Net.CalendarComponents
         {
             unchecked
             {
-                var hashCode = Start?.GetHashCode() ?? 0;
+                var hashCode = Start.GetHashCode();
                 hashCode = (hashCode * 397) ^ (Summary?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (Description?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (DtEnd?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (End.GetHashCode());
                 hashCode = (hashCode * 397) ^ (Location?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ Status?.GetHashCode() ?? 0;
                 hashCode = (hashCode * 397) ^ IsActive.GetHashCode();
@@ -298,6 +271,6 @@ namespace Ical.Net.CalendarComponents
             }
         }
 
-        public int CompareTo(CalendarEvent other) => return Start.CompareTo(other.Start);
+        public int CompareTo(ImmutableCalendarEvent other) => Start.CompareTo(other.Start);
     }
 }
