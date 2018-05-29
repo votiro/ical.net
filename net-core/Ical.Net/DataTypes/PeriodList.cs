@@ -46,7 +46,7 @@ namespace Ical.Net.DataTypes
 
         public override string ToString() => new PeriodListSerializer().SerializeToString(this);
 
-        public void Add(IDateTime dt) => Periods.Add(new Period(dt));
+        public void Add(ImmutableCalDateTime dt) => Periods.Add(new Period(dt));
 
         public static Dictionary<string, List<Period>> GetGroupedPeriods(IList<PeriodList> periodLists)
         {

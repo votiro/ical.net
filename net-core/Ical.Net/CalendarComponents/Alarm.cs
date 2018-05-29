@@ -71,7 +71,7 @@ namespace Ical.Net.CalendarComponents
         /// Gets a list of alarm occurrences for the given recurring component, <paramref name="rc"/>
         /// that occur between <paramref name="fromDate"/> and <paramref name="toDate"/>.
         /// </summary>
-        public virtual IList<AlarmOccurrence> GetOccurrences(IRecurringComponent rc, IDateTime fromDate, IDateTime toDate)
+        public virtual IList<AlarmOccurrence> GetOccurrences(IRecurringComponent rc, ImmutableCalDateTime fromDate, ImmutableCalDateTime toDate)
         {
             Occurrences.Clear();
 
@@ -88,7 +88,7 @@ namespace Ical.Net.CalendarComponents
                 // Ensure that "FromDate" has already been set
                 if (fromDate == null)
                 {
-                    fromDate = rc.Start.Copy<IDateTime>();
+                    fromDate = rc.Start.Copy<ImmutableCalDateTime>();
                 }
 
                 var d = default(TimeSpan);
@@ -122,7 +122,7 @@ namespace Ical.Net.CalendarComponents
             }
             else
             {
-                var dt = Trigger.DateTime.Copy<IDateTime>();
+                var dt = Trigger.DateTime.Copy<ImmutableCalDateTime>();
                 dt.AssociatedObject = this;
                 Occurrences.Add(new AlarmOccurrence(this, dt, rc));
             }
@@ -141,7 +141,7 @@ namespace Ical.Net.CalendarComponents
         /// </summary>
         /// <param name="start">The earliest date/time to poll trigered alarms for.</param>
         /// <returns>A list of <see cref="AlarmOccurrence"/> objects, each containing a triggered alarm.</returns>
-        public virtual IList<AlarmOccurrence> Poll(IDateTime start, IDateTime end)
+        public virtual IList<AlarmOccurrence> Poll(ImmutableCalDateTime start, ImmutableCalDateTime end)
         {
             var results = new List<AlarmOccurrence>();
 
@@ -167,12 +167,12 @@ namespace Ical.Net.CalendarComponents
             for (var i = 0; i < len; i++)
             {
                 var ao = Occurrences[i];
-                var alarmTime = ao.DateTime.Copy<IDateTime>();
+                var alarmTime = ao.DateTime.Copy<ImmutableCalDateTime>();
 
                 for (var j = 0; j < Repeat; j++)
                 {
                     alarmTime = alarmTime.Add(Duration);
-                    Occurrences.Add(new AlarmOccurrence(this, alarmTime.Copy<IDateTime>(), ao.Component));
+                    Occurrences.Add(new AlarmOccurrence(this, alarmTime.Copy<ImmutableCalDateTime>(), ao.Component));
                 }
             }
         }

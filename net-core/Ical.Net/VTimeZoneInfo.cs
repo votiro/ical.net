@@ -113,15 +113,15 @@ namespace Ical.Net
             set => Properties.Set("TZNAME", value);
         }
 
-        public virtual IDateTime DtStart
+        public virtual ImmutableCalDateTime DtStart
         {
             get => Start;
             set => Start = value;
         }
 
-        public virtual IDateTime Start
+        public virtual ImmutableCalDateTime Start
         {
-            get => Properties.Get<IDateTime>("DTSTART");
+            get => Properties.Get<ImmutableCalDateTime>("DTSTART");
             set => Properties.Set("DTSTART", value);
         }
 
@@ -149,9 +149,9 @@ namespace Ical.Net
             set => Properties.Set("RRULE", value);
         }
 
-        public virtual IDateTime RecurrenceId
+        public virtual ImmutableCalDateTime RecurrenceId
         {
-            get => Properties.Get<IDateTime>("RECURRENCE-ID");
+            get => Properties.Get<ImmutableCalDateTime>("RECURRENCE-ID");
             set => Properties.Set("RECURRENCE-ID", value);
         }
 
@@ -160,13 +160,13 @@ namespace Ical.Net
             RecurrenceUtil.ClearEvaluation(this);
         }
 
-        public virtual HashSet<Occurrence> GetOccurrences(IDateTime dt)
+        public virtual HashSet<Occurrence> GetOccurrences(ImmutableCalDateTime dt)
             => RecurrenceUtil.GetOccurrences(this, dt, true);
 
         public virtual HashSet<Occurrence> GetOccurrences(DateTime dt)
             => RecurrenceUtil.GetOccurrences(this, new CalDateTime(dt), true);
 
-        public virtual HashSet<Occurrence> GetOccurrences(IDateTime startTime, IDateTime endTime)
+        public virtual HashSet<Occurrence> GetOccurrences(ImmutableCalDateTime startTime, ImmutableCalDateTime endTime)
             => RecurrenceUtil.GetOccurrences(this, startTime, endTime, true);
 
         public virtual HashSet<Occurrence> GetOccurrences(DateTime startTime, DateTime endTime)

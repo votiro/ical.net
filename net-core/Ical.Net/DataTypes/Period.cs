@@ -8,10 +8,10 @@ namespace Ical.Net.DataTypes
     {
         public Period() { }
 
-        public Period(IDateTime occurs)
+        public Period(ImmutableCalDateTime occurs)
             : this(occurs, default(TimeSpan)) {}
 
-        public Period(IDateTime start, IDateTime end)
+        public Period(ImmutableCalDateTime start, ImmutableCalDateTime end)
         {
             if (end != null && end.LessThanOrEqual(start))
             {
@@ -27,7 +27,7 @@ namespace Ical.Net.DataTypes
             Duration = end.Subtract(start);
         }
 
-        public Period(IDateTime start, TimeSpan duration)
+        public Period(ImmutableCalDateTime start, TimeSpan duration)
         {
             if (duration < TimeSpan.Zero)
             {
@@ -100,8 +100,8 @@ namespace Ical.Net.DataTypes
             }
         }
 
-        private IDateTime _startTime;
-        public virtual IDateTime StartTime
+        private ImmutableCalDateTime _startTime;
+        public virtual ImmutableCalDateTime StartTime
         {
             get => _startTime.HasTime
                 ? _startTime
@@ -117,8 +117,8 @@ namespace Ical.Net.DataTypes
             }
         }
 
-        private IDateTime _endTime;
-        public virtual IDateTime EndTime
+        private ImmutableCalDateTime _endTime;
+        public virtual ImmutableCalDateTime EndTime
         {
             get => _endTime;
             set
@@ -156,7 +156,7 @@ namespace Ical.Net.DataTypes
             }
         }
 
-        public virtual bool Contains(IDateTime dt)
+        public virtual bool Contains(ImmutableCalDateTime dt)
         {
             // Start time is inclusive
             if (dt == null || StartTime == null || !StartTime.LessThanOrEqual(dt))

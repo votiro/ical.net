@@ -148,7 +148,7 @@ namespace Ical.Net.CalendarComponents
         /// </summary>
         /// <param name="dateTime">The date to test.</param>
         /// <returns>True if the event occurs on the <paramref name="dateTime"/> provided, False otherwise.</returns>
-        public virtual bool OccursOn(IDateTime dateTime)
+        public virtual bool OccursOn(ImmutableCalDateTime dateTime)
         {
             return _mEvaluator.Periods.Any(p => p.StartTime.Date == dateTime.Date || // It's the start date OR
                                                 (p.StartTime.Date <= dateTime.Date && // It's after the start date AND
@@ -161,7 +161,7 @@ namespace Ical.Net.CalendarComponents
         /// </summary>
         /// <param name="dateTime">The date and time to test.</param>
         /// <returns>True if the event begins at the given date and time</returns>
-        public virtual bool OccursAt(IDateTime dateTime)
+        public virtual bool OccursAt(ImmutableCalDateTime dateTime)
         {
             return _mEvaluator.Periods.Any(p => p.StartTime.Equals(dateTime));
         }

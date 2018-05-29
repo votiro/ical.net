@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Ical.Net.DataTypes;
 using Ical.Net.Evaluation;
+using NodaTime;
+using Period = Ical.Net.DataTypes.Period;
 
 namespace Ical.Net.CalendarComponents
 {
@@ -19,16 +21,16 @@ namespace Ical.Net.CalendarComponents
         /// <summary>
         /// The date/time the todo was completed.
         /// </summary>
-        public virtual IDateTime Completed
+        public virtual ImmutableCalDateTime Completed
         {
-            get => Properties.Get<IDateTime>("COMPLETED");
+            get => Properties.Get<ImmutableCalDateTime>("COMPLETED");
             set => Properties.Set("COMPLETED", value);
         }
 
         /// <summary>
         /// The start date/time of the todo item.
         /// </summary>
-        public override IDateTime DtStart
+        public override ImmutableCalDateTime DtStart
         {
             get => base.DtStart;
             set
@@ -41,9 +43,9 @@ namespace Ical.Net.CalendarComponents
         /// <summary>
         /// The due date of the todo item.
         /// </summary>
-        public virtual IDateTime Due
+        public virtual ImmutableCalDateTime Due
         {
-            get => Properties.Get<IDateTime>("DUE");
+            get => Properties.Get<ImmutableCalDateTime>("DUE");
             set
             {
                 Properties.Set("DUE", value);
@@ -117,9 +119,12 @@ namespace Ical.Net.CalendarComponents
                 // status was changed).
                 if (IsLoaded)
                 {
-                    Completed = string.Equals(value, TodoStatus.Completed, TodoStatus.Comparison)
-                        ? CalDateTime.Now
-                        : null;
+                    var zone = DtStart.TimeZone;
+                    var completedValue = string.Equals(value, TodoStatus.Completed, TodoStatus.Comparison)
+                        ? new ZonedDateTime(SystemClock.Instance.GetCurrentInstant(), zone)
+                        : new ZonedDateTime(Instant.MinValue, zone);
+
+                    Completed = new ImmutableCalDateTime(completedValue);
                 }
 
                 Properties.Set(TodoStatus.Key, value);
@@ -145,21 +150,22 @@ namespace Ical.Net.CalendarComponents
         /// </note>
         /// </summary>
         /// <returns>True if the todo item has been completed</returns>
-        public virtual bool IsCompleted(IDateTime currDt)
+        public virtual bool IsCompleted(ImmutableCalDateTime currDt)
         {
-            if (Status == TodoStatus.Completed)
+            if (!string.Equals(Status, TodoStatus.Completed, TodoStatus.Comparison))
             {
-                if (Completed == null || Completed.GreaterThan(currDt))
-                {
-                    return true;
-                }
-
-                // Evaluate to the previous occurrence.
-                _mEvaluator.EvaluateToPreviousOccurrence(Completed, currDt);
-
-                return _mEvaluator.Periods.Cast<Period>().All(p => !p.StartTime.GreaterThan(Completed) || !currDt.GreaterThanOrEqual(p.StartTime));
+                return false;
             }
-            return false;
+
+            if (Completed > currDt)
+            {
+                return true;
+            }
+
+            // Evaluate to the previous occurrence.
+            _mEvaluator.EvaluateToPreviousOccurrence(Completed, currDt);
+
+            return _mEvaluator.Periods.Cast<Period>().All(p => !(p.StartTime > Completed) || !(currDt >= p.StartTime));
         }
 
         /// <summary>
@@ -168,9 +174,8 @@ namespace Ical.Net.CalendarComponents
         /// </summary>
         /// <param name="currDt">The date and time to test.</param>
         /// <returns>True if the item is Active as of <paramref name="currDt"/>, False otherwise.</returns>
-        public virtual bool IsActive(IDateTime currDt)
-            => (DtStart == null || currDt.GreaterThanOrEqual(DtStart))
-                && (!IsCompleted(currDt) && !IsCancelled);
+        public virtual bool IsActive(ImmutableCalDateTime currDt)
+            => currDt >= DtStart && !IsCompleted(currDt) && !IsCancelled;
 
         /// <summary>
         /// Returns True if the todo item was cancelled.
@@ -188,18 +193,10 @@ namespace Ical.Net.CalendarComponents
 
         private void ExtrapolateTimes()
         {
-            if (Due == null && DtStart != null && Duration != default(TimeSpan))
-            {
-                Due = DtStart.Add(Duration);
-            }
-            else if (Duration == default(TimeSpan) && DtStart != null && Due != null)
-            {
-                Duration = Due.Subtract(DtStart);
-            }
-            else if (DtStart == null && Duration != default(TimeSpan) && Due != null)
-            {
-                DtStart = Due.Subtract(Duration);
-            }
+            //if (Duration == default(TimeSpan))
+            //{
+            //    Duration = Due.Subtract(DtStart);
+            //}
         }
     }
 }

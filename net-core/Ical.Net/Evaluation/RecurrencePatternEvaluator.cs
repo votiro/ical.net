@@ -58,7 +58,7 @@ namespace Ical.Net.Evaluation
             Pattern = pattern;
         }
 
-        private RecurrencePattern ProcessRecurrencePattern(IDateTime referenceDate)
+        private RecurrencePattern ProcessRecurrencePattern(ImmutableCalDateTime referenceDate)
         {
             var r = new RecurrencePattern();
             r.CopyFrom(Pattern);
@@ -223,7 +223,7 @@ namespace Ical.Net.Evaluation
          * 9:00AM, and not 12:19PM.
          */
 
-        private HashSet<DateTime> GetDates(IDateTime seed, DateTime periodStart, DateTime periodEnd, int maxCount, RecurrencePattern pattern,
+        private HashSet<DateTime> GetDates(ImmutableCalDateTime seed, DateTime periodStart, DateTime periodEnd, int maxCount, RecurrencePattern pattern,
             bool includeReferenceDateInResults)
         {
             var dates = new HashSet<DateTime>();
@@ -867,11 +867,12 @@ namespace Ical.Net.Evaluation
             return dates;
         }
 
-        private Period CreatePeriod(DateTime dt, IDateTime referenceDate)
+        private Period CreatePeriod(DateTime dt, ImmutableCalDateTime referenceDate)
         {
-            // Turn each resulting date/time into an IDateTime and associate it
+            // Turn each resulting date/time into an ImmutableCalDateTime and associate it
             // with the reference date.
-            IDateTime newDt = new CalDateTime(dt, referenceDate.TzId);
+            var immutable = new ImmutableCalDateTime(dt, referenceDate.TzId, referenceDate.HasTime);
+            ImmutableCalDateTime newDt = new CalDateTime(dt, referenceDate.TzId);
 
             // NOTE: fixes bug #2938007 - hasTime missing
             newDt.HasTime = referenceDate.HasTime;
@@ -882,7 +883,7 @@ namespace Ical.Net.Evaluation
             return new Period(newDt);
         }
 
-        public override HashSet<Period> Evaluate(IDateTime referenceDate, DateTime periodStart, DateTime periodEnd, bool includeReferenceDateInResults)
+        public override HashSet<Period> Evaluate(ImmutableCalDateTime referenceDate, DateTime periodStart, DateTime periodEnd, bool includeReferenceDateInResults)
         {
             // Create a recurrence pattern suitable for use during evaluation.
             var pattern = ProcessRecurrencePattern(referenceDate);

@@ -10,16 +10,16 @@ namespace Ical.Net.Utility
 {
     internal static class DateUtil
     {
-        public static IDateTime StartOfDay(IDateTime dt)
-            => dt.AddHours(-dt.Hour).AddMinutes(-dt.Minute).AddSeconds(-dt.Second);
+        public static ImmutableCalDateTime StartOfDay(ImmutableCalDateTime dt)
+            => dt.Add(TimeSpan.FromHours(-dt.Hour)).Add(TimeSpan.FromSeconds(-dt.Minute)).Add(TimeSpan.FromSeconds(-dt.Second));
 
-        public static IDateTime EndOfDay(IDateTime dt)
-            => StartOfDay(dt).AddDays(1).AddTicks(-1);
+        public static ImmutableCalDateTime EndOfDay(ImmutableCalDateTime dt)
+            => StartOfDay(dt).Add(TimeSpan.FromDays(1)).Add(TimeSpan.FromTicks(-1));
 
-        public static DateTime GetSimpleDateTimeData(IDateTime dt)
+        public static DateTime GetSimpleDateTimeData(ImmutableCalDateTime dt)
             => DateTime.SpecifyKind(dt.Value, dt.IsUtc ? DateTimeKind.Utc : DateTimeKind.Local);
 
-        public static DateTime SimpleDateTimeToMatch(IDateTime dt, IDateTime toMatch)
+        public static DateTime SimpleDateTimeToMatch(ImmutableCalDateTime dt, ImmutableCalDateTime toMatch)
         {
             if (toMatch.IsUtc && dt.IsUtc)
             {
@@ -36,7 +36,7 @@ namespace Ical.Net.Utility
             return dt.Value;
         }
 
-        public static IDateTime MatchTimeZone(IDateTime dt1, IDateTime dt2)
+        public static ImmutableCalDateTime MatchTimeZone(ImmutableCalDateTime dt1, ImmutableCalDateTime dt2)
         {
             // Associate the date/time with the first.
             var copy = dt2;
@@ -88,7 +88,7 @@ namespace Ical.Net.Utility
             => TzdbDateTimeZoneSource.Default.WindowsMapping.PrimaryMapping
                 .ToDictionary(k => k.Key, v => v.Value, StringComparer.OrdinalIgnoreCase);
 
-        public static readonly DateTimeZone LocalDateTimeZone = DateTimeZoneProviders.Tzdb.GetSystemDefault();
+        public static readonly DateTimeZone SystemTimeZone = DateTimeZoneProviders.Tzdb.GetSystemDefault();
 
         /// <summary>
         /// Use this method to turn a raw string into a NodaTime DateTimeZone. It searches all time zone providers (IANA, BCL, serialization, etc) to see if
@@ -103,7 +103,7 @@ namespace Ical.Net.Utility
         {
             if (string.IsNullOrWhiteSpace(tzId))
             {
-                return LocalDateTimeZone;
+                return SystemTimeZone;
             }
 
             if (tzId.StartsWith("/", StringComparison.OrdinalIgnoreCase))
@@ -156,7 +156,7 @@ namespace Ical.Net.Utility
 
             if (useLocalIfNotFound)
             {
-                return LocalDateTimeZone;
+                return SystemTimeZone;
             }
 
             throw new ArgumentException($"Unrecognized time zone id {tzId}");

@@ -37,7 +37,7 @@ namespace Ical.Net.Serialization.DataTypes
                         return null;
                     }
 
-                    var value = valueType == typeof(IDateTime)
+                    var value = valueType == typeof(ImmutableCalDateTime)
                         ? t.DateTime
                         : (object) t.Duration;
                     return serializer.SerializeToString(value);
@@ -89,8 +89,8 @@ namespace Ical.Net.Serialization.DataTypes
                 {
                     case null:
                         return null;
-                    case IDateTime _:
-                        t.DateTime = (IDateTime) obj;
+                    case ImmutableCalDateTime _:
+                        t.DateTime = (ImmutableCalDateTime) obj;
                         break;
                     default:
                         t.Duration = (TimeSpan) obj;

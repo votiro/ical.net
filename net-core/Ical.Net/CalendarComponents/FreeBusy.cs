@@ -92,7 +92,7 @@ namespace Ical.Net.CalendarComponents
             return fb;
         }
 
-        public static FreeBusy CreateRequest(IDateTime fromInclusive, IDateTime toExclusive, Organizer organizer, IEnumerable<Attendee> contacts)
+        public static FreeBusy CreateRequest(ImmutableCalDateTime fromInclusive, ImmutableCalDateTime toExclusive, Organizer organizer, IEnumerable<Attendee> contacts)
         {
             var fb = new FreeBusy
             {
@@ -128,27 +128,27 @@ namespace Ical.Net.CalendarComponents
             set => Properties.Set("FREEBUSY", value);
         }
 
-        public virtual IDateTime DtStart
+        public virtual ImmutableCalDateTime DtStart
         {
-            get => Properties.Get<IDateTime>("DTSTART");
+            get => Properties.Get<ImmutableCalDateTime>("DTSTART");
             set => Properties.Set("DTSTART", value);
         }
 
-        public virtual IDateTime DtEnd
+        public virtual ImmutableCalDateTime DtEnd
         {
-            get => Properties.Get<IDateTime>("DTEND");
+            get => Properties.Get<ImmutableCalDateTime>("DTEND");
             set => Properties.Set("DTEND", value);
         }
 
-        public virtual IDateTime Start
+        public virtual ImmutableCalDateTime Start
         {
-            get => Properties.Get<IDateTime>("DTSTART");
+            get => Properties.Get<ImmutableCalDateTime>("DTSTART");
             set => Properties.Set("DTSTART", value);
         }
 
-        public virtual IDateTime End
+        public virtual ImmutableCalDateTime End
         {
-            get => Properties.Get<IDateTime>("DTEND");
+            get => Properties.Get<ImmutableCalDateTime>("DTEND");
             set => Properties.Set("DTEND", value);
         }
 
@@ -167,7 +167,7 @@ namespace Ical.Net.CalendarComponents
             return status;
         }
 
-        public virtual FreeBusyStatus GetFreeBusyStatus(IDateTime dt)
+        public virtual FreeBusyStatus GetFreeBusyStatus(ImmutableCalDateTime dt)
         {
             var status = FreeBusyStatus.Free;
             if (dt == null)

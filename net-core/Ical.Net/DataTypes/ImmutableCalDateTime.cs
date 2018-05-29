@@ -7,9 +7,8 @@ namespace Ical.Net.DataTypes
 {
     public struct ImmutableCalDateTime :
         IComparable<ImmutableCalDateTime>
-        //, IDateTime
+        //, ImmutableCalDateTime
     {
-        private static readonly DateTimeZone _systemTimeZone = DateTimeZoneProviders.Tzdb.GetSystemDefault();
         private DateTimeKind Kind => Value.Zone == DateTimeZone.Utc ? DateTimeKind.Utc : DateTimeKind.Local;
         public ZonedDateTime Value { get; }
 
@@ -23,6 +22,9 @@ namespace Ical.Net.DataTypes
                 zonedDateTime: DateUtil.ToZonedDateTimeLeniently(dateTimeOffset, DateUtil.GetZone(timeZone, useLocalIfNotFound: false)),
                 hasTime: hasTime) { }
 
+        public ImmutableCalDateTime(DateTime dateTime, bool hasTime = true)
+            : this(DateUtil.ToZonedDateTimeLeniently(dateTime, DateUtil.SystemTimeZone), hasTime) { }
+
         public ImmutableCalDateTime(ZonedDateTime zonedDateTime, bool hasTime = true)
         {
             if (zonedDateTime == null)
@@ -34,13 +36,14 @@ namespace Ical.Net.DataTypes
         }
 
         public string TzId => Value.Zone.Id;
+        public DateTimeZone TimeZone => Value.Zone;
         public DateTimeOffset AsDateTimeOffset => Value.ToDateTimeOffset();
         public DateTime AsUtc => Value.ToDateTimeUtc();
         public bool HasDate => true;
         public bool HasTime { get; }
 
-        public DateTime AsSystemLocal => DateTime.SpecifyKind(Value.WithZone(_systemTimeZone).ToDateTimeUnspecified(), Kind);
-        public DateTimeOffset AsSystemLocalOffset => Value.WithZone(_systemTimeZone).ToDateTimeOffset();
+        public DateTime AsSystemLocal => DateTime.SpecifyKind(Value.WithZone(DateUtil.SystemTimeZone).ToDateTimeUnspecified(), Kind);
+        public DateTimeOffset AsSystemLocalOffset => Value.WithZone(DateUtil.SystemTimeZone).ToDateTimeOffset();
         public LocalDateTime AsSystemLocalDateTime => Value.LocalDateTime;
         public bool IsUtc => Value.Zone == DateTimeZone.Utc;
         public int Year => Value.Year;

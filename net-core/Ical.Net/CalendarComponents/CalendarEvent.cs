@@ -37,7 +37,7 @@ namespace Ical.Net.CalendarComponents
         /// the end date/time will be extrapolated.
         /// </note>
         /// </summary>
-        public override IDateTime DtStart
+        public override ImmutableCalDateTime DtStart
         {
             get => base.DtStart;
             set
@@ -58,9 +58,9 @@ namespace Ical.Net.CalendarComponents
         /// will be extrapolated.
         /// </note>
         /// </summary>
-        public virtual IDateTime DtEnd
+        public virtual ImmutableCalDateTime DtEnd
         {
-            get => Properties.Get<IDateTime>("DTEND");
+            get => Properties.Get<ImmutableCalDateTime>("DTEND");
             set
             {
                 if (!Equals(DtEnd, value))
@@ -108,7 +108,7 @@ namespace Ical.Net.CalendarComponents
         /// <summary>
         /// An alias to the DtEnd field (i.e. end date/time).
         /// </summary>
-        public virtual IDateTime End
+        public virtual ImmutableCalDateTime End
         {
             get => DtEnd;
             set => DtEnd = value;
@@ -220,7 +220,7 @@ namespace Ical.Net.CalendarComponents
         /// </summary>
         /// <param name="dateTime">The date to test.</param>
         /// <returns>True if the event occurs on the <paramref name="dateTime"/> provided, False otherwise.</returns>
-        public virtual bool OccursOn(IDateTime dateTime)
+        public virtual bool OccursOn(ImmutableCalDateTime dateTime)
         {
             return _mEvaluator.Periods.Any(p => p.StartTime.Date == dateTime.Date || // It's the start date OR
                                                 (p.StartTime.Date <= dateTime.Date && // It's after the start date AND
@@ -233,7 +233,7 @@ namespace Ical.Net.CalendarComponents
         /// </summary>
         /// <param name="dateTime">The date and time to test.</param>
         /// <returns>True if the event begins at the given date and time</returns>
-        public virtual bool OccursAt(IDateTime dateTime)
+        public virtual bool OccursAt(ImmutableCalDateTime dateTime)
         {
             return _mEvaluator.Periods.Any(p => p.StartTime.Equals(dateTime));
         }

@@ -201,7 +201,7 @@ namespace Ical.Net
         /// <param name="fromDate">The beginning date/time of the range to test.</param>
         /// <param name="toDate">The end date/time of the range to test.</param>
         [Obsolete("This method is no longer supported.  Use GetOccurrences() instead.")]
-        public void Evaluate(IDateTime fromDate, IDateTime toDate)
+        public void Evaluate(ImmutableCalDateTime fromDate, ImmutableCalDateTime toDate)
         {
             throw new NotSupportedException("Evaluate() is no longer supported as a public method.  Use GetOccurrences() instead.");
         }
@@ -214,7 +214,7 @@ namespace Ical.Net
         /// <param name="fromDate">The beginning date/time of the range to test.</param>
         /// <param name="toDate">The end date/time of the range to test.</param>
         [Obsolete("This method is no longer supported.  Use GetOccurrences() instead.")]
-        public void Evaluate<T>(IDateTime fromDate, IDateTime toDate)
+        public void Evaluate<T>(ImmutableCalDateTime fromDate, ImmutableCalDateTime toDate)
         {
             throw new NotSupportedException("Evaluate() is no longer supported as a public method.  Use GetOccurrences() instead.");
         }
@@ -236,7 +236,7 @@ namespace Ical.Net
         /// </summary>
         /// <param name="dt">The date for which to return occurrences. Time is ignored on this parameter.</param>
         /// <returns>A list of occurrences that occur on the given date (<paramref name="dt"/>).</returns>
-        public virtual HashSet<Occurrence> GetOccurrences(IDateTime dt)
+        public virtual HashSet<Occurrence> GetOccurrences(ImmutableCalDateTime dt)
             => GetOccurrences<IRecurringComponent>(new CalDateTime(dt.AsSystemLocal.Date), new CalDateTime(dt.AsSystemLocal.Date.AddDays(1).AddSeconds(-1)));
 
         public virtual HashSet<Occurrence> GetOccurrences(DateTime dt)
@@ -249,7 +249,7 @@ namespace Ical.Net
         /// <param name="startTime">The beginning date/time of the range.</param>
         /// <param name="endTime">The end date/time of the range.</param>
         /// <returns>A list of occurrences that fall between the dates provided.</returns>
-        public virtual HashSet<Occurrence> GetOccurrences(IDateTime startTime, IDateTime endTime)
+        public virtual HashSet<Occurrence> GetOccurrences(ImmutableCalDateTime startTime, ImmutableCalDateTime endTime)
             => GetOccurrences<IRecurringComponent>(startTime, endTime);
 
         public virtual HashSet<Occurrence> GetOccurrences(DateTime startTime, DateTime endTime)
@@ -267,7 +267,7 @@ namespace Ical.Net
         /// </summary>
         /// <param name="dt">The date for which to return occurrences.</param>
         /// <returns>A list of Periods representing the occurrences of this object.</returns>
-        public virtual HashSet<Occurrence> GetOccurrences<T>(IDateTime dt) where T : IRecurringComponent
+        public virtual HashSet<Occurrence> GetOccurrences<T>(ImmutableCalDateTime dt) where T : IRecurringComponent
             => GetOccurrences<T>(new CalDateTime(dt.AsSystemLocal.Date), new CalDateTime(dt.AsSystemLocal.Date.AddDays(1).AddTicks(-1)));
 
         public virtual HashSet<Occurrence> GetOccurrences<T>(DateTime dt) where T : IRecurringComponent
@@ -280,7 +280,7 @@ namespace Ical.Net
         /// </summary>
         /// <param name="startTime">The starting date range</param>
         /// <param name="endTime">The ending date range</param>
-        public virtual HashSet<Occurrence> GetOccurrences<T>(IDateTime startTime, IDateTime endTime) where T : IRecurringComponent
+        public virtual HashSet<Occurrence> GetOccurrences<T>(ImmutableCalDateTime startTime, ImmutableCalDateTime endTime) where T : IRecurringComponent
         {
             var occurrences = new HashSet<Occurrence>(RecurringItems
                 .OfType<T>()
@@ -375,10 +375,10 @@ namespace Ical.Net
 
         public virtual FreeBusy GetFreeBusy(FreeBusy freeBusyRequest) => CalendarComponents.FreeBusy.Create(this, freeBusyRequest);
 
-        public virtual FreeBusy GetFreeBusy(IDateTime fromInclusive, IDateTime toExclusive)
+        public virtual FreeBusy GetFreeBusy(ImmutableCalDateTime fromInclusive, ImmutableCalDateTime toExclusive)
             => CalendarComponents.FreeBusy.Create(this, CalendarComponents.FreeBusy.CreateRequest(fromInclusive, toExclusive, null, null));
 
-        public virtual FreeBusy GetFreeBusy(Organizer organizer, IEnumerable<Attendee> contacts, IDateTime fromInclusive, IDateTime toExclusive)
+        public virtual FreeBusy GetFreeBusy(Organizer organizer, IEnumerable<Attendee> contacts, ImmutableCalDateTime fromInclusive, ImmutableCalDateTime toExclusive)
             => CalendarComponents.FreeBusy.Create(this, CalendarComponents.FreeBusy.CreateRequest(fromInclusive, toExclusive, organizer, contacts));
 
         /// <summary>

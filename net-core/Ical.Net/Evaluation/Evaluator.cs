@@ -41,9 +41,9 @@ namespace Ical.Net.Evaluation
             MPeriods = new HashSet<Period>();
         }
 
-        protected IDateTime ConvertToIDateTime(DateTime dt, IDateTime referenceDate)
+        protected ImmutableCalDateTime ConvertToIDateTime(DateTime dt, ImmutableCalDateTime referenceDate)
         {
-            IDateTime newDt = new CalDateTime(dt, referenceDate.TzId);
+            ImmutableCalDateTime newDt = new CalDateTime(dt, referenceDate.TzId);
             newDt.AssociateWith(referenceDate);
             return newDt;
         }
@@ -115,6 +115,6 @@ namespace Ical.Net.Evaluation
             MPeriods.Clear();
         }
 
-        public abstract HashSet<Period> Evaluate(IDateTime referenceDate, DateTime periodStart, DateTime periodEnd, bool includeReferenceDateInResults);
+        public abstract HashSet<Period> Evaluate(ImmutableCalDateTime referenceDate, DateTime periodStart, DateTime periodEnd, bool includeReferenceDateInResults);
     }
 }

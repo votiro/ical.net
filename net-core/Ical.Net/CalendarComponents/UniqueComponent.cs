@@ -58,9 +58,9 @@ namespace Ical.Net.CalendarComponents
             set => Properties.Set("COMMENT", value);
         }
 
-        public virtual IDateTime DtStamp
+        public virtual ImmutableCalDateTime DtStamp
         {
-            get => Properties.Get<IDateTime>("DTSTAMP");
+            get => Properties.Get<ImmutableCalDateTime>("DTSTAMP");
             set => Properties.Set("DTSTAMP", value);
         }
 

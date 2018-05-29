@@ -14,10 +14,10 @@ namespace Ical.Net.CalendarComponents
     public class VTimeZone : CalendarComponent
     {
         public static VTimeZone FromLocalTimeZone()
-            => FromDateTimeZone(DateUtil.LocalDateTimeZone.Id);
+            => FromDateTimeZone(DateUtil.SystemTimeZone.Id);
 
         public static VTimeZone FromLocalTimeZone(DateTime earlistDateTimeToSupport, bool includeHistoricalData)
-            => FromDateTimeZone(DateUtil.LocalDateTimeZone.Id, earlistDateTimeToSupport, includeHistoricalData);
+            => FromDateTimeZone(DateUtil.SystemTimeZone.Id, earlistDateTimeToSupport, includeHistoricalData);
 
         public static VTimeZone FromSystemTimeZone(TimeZoneInfo tzinfo)
             => FromSystemTimeZone(tzinfo, new DateTime(DateTime.Now.Year, 1, 1), false);

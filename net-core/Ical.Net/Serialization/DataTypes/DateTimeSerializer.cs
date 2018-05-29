@@ -3,6 +3,8 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using Ical.Net.DataTypes;
+using Ical.Net.Utility;
+using NodaTime;
 
 namespace Ical.Net.Serialization.DataTypes
 {
@@ -41,7 +43,7 @@ namespace Ical.Net.Serialization.DataTypes
 
         public override string SerializeToString(object obj)
         {
-            var dt = obj as IDateTime;
+            var dt = obj as ImmutableCalDateTime;
             if (dt == null)
             {
                 return null;
@@ -100,7 +102,7 @@ namespace Ical.Net.Serialization.DataTypes
         {
             var value = tr.ReadToEnd();
 
-            var dt = CreateAndAssociate() as IDateTime;
+            var dt = CreateAndAssociate() as ImmutableCalDateTime;
             if (dt == null)
             {
                 return null;
@@ -119,42 +121,37 @@ namespace Ical.Net.Serialization.DataTypes
             {
                 return null;
             }
-            var now = DateTime.Now;
 
-            var year = now.Year;
-            var month = now.Month;
-            var date = now.Day;
-            var hour = 0;
-            var minute = 0;
-            var second = 0;
+            var year = 1;
+            var month = 1;
+            var day = 1;
+            var hour = 1;
+            var minute = 1;
+            var second = 1;
+            var hasTime = false;
 
             if (match.Groups[1].Success)
             {
-                dt.HasDate = true;
                 year = Convert.ToInt32(match.Groups[2].Value);
                 month = Convert.ToInt32(match.Groups[3].Value);
-                date = Convert.ToInt32(match.Groups[4].Value);
+                day = Convert.ToInt32(match.Groups[4].Value);
             }
             if (match.Groups.Count >= 6 && match.Groups[5].Success)
             {
-                dt.HasTime = true;
+                hasTime = true;
                 hour = Convert.ToInt32(match.Groups[6].Value);
                 minute = Convert.ToInt32(match.Groups[7].Value);
                 second = Convert.ToInt32(match.Groups[8].Value);
             }
 
             var isUtc = match.Groups[9].Success;
-            var kind = isUtc
-                ? DateTimeKind.Utc
-                : DateTimeKind.Local;
+            var timeZone = isUtc
+                ? DateTimeZone.Utc
+                : DateUtil.SystemTimeZone;
 
-            if (isUtc)
-            {
-                dt.TzId = "UTC";
-            }
-
-            dt.Value = CoerceDateTime(year, month, date, hour, minute, second, kind);
-            return dt;
+            var local = new LocalDateTime(year, month, day, hour, minute, second);
+            var zoned = local.InZoneLeniently(timeZone);
+            return new ImmutableCalDateTime(zoned, hasTime);
         }
     }
 }
