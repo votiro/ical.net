@@ -178,15 +178,13 @@ namespace Ical.Net.CalendarComponents
         public virtual HashSet<Occurrence> GetOccurrences(ImmutableCalDateTime dt) => RecurrenceUtil.GetOccurrences(this, dt, EvaluationIncludesReferenceDate);
 
         public virtual HashSet<Occurrence> GetOccurrences(DateTime dt)
-            => RecurrenceUtil.GetOccurrences(this, new CalDateTime(dt), EvaluationIncludesReferenceDate);
+            => RecurrenceUtil.GetOccurrences(this, new ImmutableCalDateTime(dt), EvaluationIncludesReferenceDate);
 
         public virtual HashSet<Occurrence> GetOccurrences(ImmutableCalDateTime startTime, ImmutableCalDateTime endTime)
             => RecurrenceUtil.GetOccurrences(this, startTime, endTime, EvaluationIncludesReferenceDate);
 
         public virtual HashSet<Occurrence> GetOccurrences(DateTime startTime, DateTime endTime)
-            => RecurrenceUtil.GetOccurrences(this, new CalDateTime(startTime), new CalDateTime(endTime), EvaluationIncludesReferenceDate);
-
-        public virtual IList<AlarmOccurrence> PollAlarms() => PollAlarms(null, null);
+            => RecurrenceUtil.GetOccurrences(this, new ImmutableCalDateTime(startTime), new ImmutableCalDateTime(endTime), EvaluationIncludesReferenceDate);
 
         public virtual IList<AlarmOccurrence> PollAlarms(ImmutableCalDateTime startTime, ImmutableCalDateTime endTime)
             => Alarms?.SelectMany(a => a.Poll(startTime, endTime)).ToList()
@@ -222,7 +220,7 @@ namespace Ical.Net.CalendarComponents
         {
             unchecked
             {
-                var hashCode = DtStart?.GetHashCode() ?? 0;
+                var hashCode = DtStart.GetHashCode();
                 hashCode = (hashCode * 397) ^ Priority.GetHashCode();
                 hashCode = (hashCode * 397) ^ (Summary?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (Class?.GetHashCode() ?? 0);

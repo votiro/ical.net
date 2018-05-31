@@ -21,7 +21,7 @@ namespace Ical.Net.FrameworkUnitTests
         private static CalendarSerializer GetNewSerializer() => new CalendarSerializer();
         private static string SerializeToString(Calendar c) => GetNewSerializer().SerializeToString(c);
         private static string SerializeToString(CalendarEvent e) => SerializeToString(new Calendar { Events = { e } });
-        private static CalendarEvent GetSimpleEvent() => new CalendarEvent { DtStart = new CalDateTime(_nowTime), DtEnd = new CalDateTime(_later), Duration = _later - _nowTime };
+        private static CalendarEvent GetSimpleEvent() => new CalendarEvent { DtStart = new CalDateTime(_nowTime), DtEnd = new CalDateTime(_later), DurationSpan = _later - _nowTime };
         private static Calendar UnserializeCalendar(string s) => Calendar.Load(s);
 
         public static void CompareCalendars(Calendar cal1, Calendar cal2)
@@ -356,11 +356,11 @@ namespace Ical.Net.FrameworkUnitTests
         public void DurationIsStable_Tests()
         {
             var e = GetSimpleEvent();
-            var originalDuration = e.Duration;
+            var originalDuration = e.DurationSpan;
             var c = new Calendar();
             c.Events.Add(e);
             var serialized = SerializeToString(c);
-            Assert.AreEqual(originalDuration, e.Duration);
+            Assert.AreEqual(originalDuration, e.DurationSpan);
             Assert.IsTrue(!serialized.Contains("DURATION"));
         }
 

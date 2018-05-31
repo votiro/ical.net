@@ -85,35 +85,16 @@ namespace Ical.Net.CalendarComponents
             // only once (at a precise time).
             if (Trigger.IsRelative)
             {
-                // Ensure that "FromDate" has already been set
-                if (fromDate == null)
-                {
-                    fromDate = rc.Start.Copy<ImmutableCalDateTime>();
-                }
-
                 var d = default(TimeSpan);
                 foreach (var o in rc.GetOccurrences(fromDate, toDate))
                 {
                     var dt = o.Period.StartTime;
                     if (string.Equals(Trigger.Related, TriggerRelation.End, TriggerRelation.Comparison))
                     {
-                        if (o.Period.EndTime != null)
+                        dt = o.Period.EndTime;
+                        if (d == default(TimeSpan))
                         {
-                            dt = o.Period.EndTime;
-                            if (d == default(TimeSpan))
-                            {
-                                d = o.Period.Duration;
-                            }
-                        }
-                        // Use the "last-found" duration as a reference point
-                        else if (d != default(TimeSpan))
-                        {
-                            dt = o.Period.StartTime.Add(d);
-                        }
-                        else
-                        {
-                            throw new ArgumentException(
-                                "Alarm trigger is relative to the START of the occurrence; however, the occurence has no discernible end.");
+                            d = o.Period.Duration;
                         }
                     }
 
@@ -122,8 +103,7 @@ namespace Ical.Net.CalendarComponents
             }
             else
             {
-                var dt = Trigger.DateTime.Copy<ImmutableCalDateTime>();
-                dt.AssociatedObject = this;
+                var dt = Trigger.DateTime.WithAssociatedObject(this);
                 Occurrences.Add(new AlarmOccurrence(this, dt, rc));
             }
 
@@ -167,12 +147,12 @@ namespace Ical.Net.CalendarComponents
             for (var i = 0; i < len; i++)
             {
                 var ao = Occurrences[i];
-                var alarmTime = ao.DateTime.Copy<ImmutableCalDateTime>();
+                var alarmTime = ao.DateTime;
 
                 for (var j = 0; j < Repeat; j++)
                 {
                     alarmTime = alarmTime.Add(Duration);
-                    Occurrences.Add(new AlarmOccurrence(this, alarmTime.Copy<ImmutableCalDateTime>(), ao.Component));
+                    Occurrences.Add(new AlarmOccurrence(this, alarmTime, ao.Component));
                 }
             }
         }

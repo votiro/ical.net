@@ -53,7 +53,7 @@ namespace Ical.Net.FrameworkUnitTests
             Assert.AreEqual(incoming.Location, expected.Location);
             Assert.AreEqual(incoming.Status, expected.Status);
             Assert.AreEqual(incoming.IsActive, expected.IsActive);
-            Assert.AreEqual(incoming.Duration, expected.Duration);
+            Assert.AreEqual(incoming.DurationSpan, expected.DurationSpan);
             Assert.AreEqual(incoming.Transparency, expected.Transparency);
             Assert.AreEqual(incoming.GetHashCode(), expected.GetHashCode());
             Assert.IsTrue(incoming.Equals(expected));
@@ -68,7 +68,7 @@ namespace Ical.Net.FrameworkUnitTests
         {
             DtStart = new CalDateTime(_nowTime),
             DtEnd = new CalDateTime(_later),
-            Duration = TimeSpan.FromHours(1),
+            DurationSpan = TimeSpan.FromHours(1),
         };
 
         private static string SerializeEvent(CalendarEvent e) => new CalendarSerializer().SerializeToString(new Calendar { Events = { e } });
@@ -102,7 +102,7 @@ namespace Ical.Net.FrameworkUnitTests
             {
                 DtStart = new CalDateTime(_nowTime),
                 DtEnd = new CalDateTime(_later),
-                Duration = TimeSpan.FromHours(1),
+                DurationSpan = TimeSpan.FromHours(1),
                 RecurrenceRules = new List<RecurrencePattern> { rruleA },
             };
 
@@ -120,7 +120,7 @@ namespace Ical.Net.FrameworkUnitTests
             {
                 DtStart = new CalDateTime(_nowTime),
                 DtEnd = new CalDateTime(_later),
-                Duration = TimeSpan.FromHours(1),
+                DurationSpan = TimeSpan.FromHours(1),
                 RecurrenceRules = new List<RecurrencePattern> { rruleB },
             });
 

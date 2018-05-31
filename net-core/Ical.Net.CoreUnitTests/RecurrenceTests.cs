@@ -2586,7 +2586,7 @@ namespace Ical.Net.CoreUnitTests
             var evt = new CalendarEvent
             {
                 Start = new CalDateTime(2011, 1, 29, 11, 0, 0),
-                Duration = TimeSpan.FromHours(1.5),
+                DurationSpan = TimeSpan.FromHours(1.5),
                 Summary = "29th February Test"
             };
 

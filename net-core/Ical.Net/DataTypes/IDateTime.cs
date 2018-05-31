@@ -2,7 +2,7 @@
 
 namespace Ical.Net.DataTypes
 {
-    public interface IDateTime : IEncodableDataType, IComparable<ImmutableCalDateTime>, IFormattable, ICalendarDataType
+    public interface IDateTime : IEncodableDataType, IComparable<IDateTime>, IFormattable, ICalendarDataType
     {
         /// <summary>
         /// Converts the date/time to this computer's local date/time.
@@ -37,22 +37,22 @@ namespace Ical.Net.DataTypes
         /// Use IsUtc along with the TZID to control how this
         /// date/time is handled.
         /// </summary>
-        DateTime Value { get; }
+        DateTime Value { get; set; }
 
         /// <summary>
         /// Gets/sets whether or not this date/time value contains a 'date' part.
         /// </summary>
-        bool HasDate { get; }
+        bool HasDate { get; set; }
 
         /// <summary>
         /// Gets/sets whether or not this date/time value contains a 'time' part.
         /// </summary>
-        bool HasTime { get; }
+        bool HasTime { get; set; }
 
         /// <summary>
         /// Gets/sets the time zone ID for this date/time value.
         /// </summary>
-        string TzId { get; }
+        string TzId { get; set; }
 
         /// <summary>
         /// Gets the year for this date/time value.
@@ -108,12 +108,26 @@ namespace Ical.Net.DataTypes
         /// Converts the date/time value to a local time
         /// within the specified time zone.
         /// </summary>
-        ImmutableCalDateTime ToTimeZone(string tzId);
+        IDateTime ToTimeZone(string tzId);
 
-        ImmutableCalDateTime Add(TimeSpan ts);
-        ImmutableCalDateTime Subtract(TimeSpan ts);
-        TimeSpan Subtract(ImmutableCalDateTime dt);
+        IDateTime Add(TimeSpan ts);
+        IDateTime Subtract(TimeSpan ts);
+        TimeSpan Subtract(IDateTime dt);
 
-        void AssociateWith(ImmutableCalDateTime dt);
+        IDateTime AddYears(int years);
+        IDateTime AddMonths(int months);
+        IDateTime AddDays(int days);
+        IDateTime AddHours(int hours);
+        IDateTime AddMinutes(int minutes);
+        IDateTime AddSeconds(int seconds);
+        IDateTime AddMilliseconds(int milliseconds);
+        IDateTime AddTicks(long ticks);
+
+        bool LessThan(IDateTime dt);
+        bool GreaterThan(IDateTime dt);
+        bool LessThanOrEqual(IDateTime dt);
+        bool GreaterThanOrEqual(IDateTime dt);
+
+        void AssociateWith(IDateTime dt);
     }
 }

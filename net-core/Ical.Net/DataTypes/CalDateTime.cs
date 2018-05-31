@@ -24,7 +24,7 @@ namespace Ical.Net.DataTypes
 
         public CalDateTime() { }
 
-        public CalDateTime(ImmutableCalDateTime value)
+        public CalDateTime(IDateTime value)
         {
             Initialize(value.Value, value.TzId, null);
         }
@@ -135,7 +135,7 @@ namespace Ical.Net.DataTypes
         {
             base.CopyFrom(obj);
 
-            var dt = obj as ImmutableCalDateTime;
+            var dt = obj as IDateTime;
             if (dt == null)
             {
                 return;
@@ -172,34 +172,34 @@ namespace Ical.Net.DataTypes
             }
         }
 
-        public static bool operator <(CalDateTime left, ImmutableCalDateTime right) => left.AsUtc < right.AsUtc;
+        public static bool operator <(CalDateTime left, IDateTime right) => left.AsUtc < right.AsUtc;
 
-        public static bool operator >(CalDateTime left, ImmutableCalDateTime right) => left.AsUtc > right.AsUtc;
+        public static bool operator >(CalDateTime left, IDateTime right) => left.AsUtc > right.AsUtc;
 
-        public static bool operator <=(CalDateTime left, ImmutableCalDateTime right) => left.AsUtc <= right.AsUtc;
+        public static bool operator <=(CalDateTime left, IDateTime right) => left.AsUtc <= right.AsUtc;
 
-        public static bool operator >=(CalDateTime left, ImmutableCalDateTime right) => left.AsUtc >= right.AsUtc;
+        public static bool operator >=(CalDateTime left, IDateTime right) => left.AsUtc >= right.AsUtc;
 
-        public static bool operator ==(CalDateTime left, ImmutableCalDateTime right) => left.Equals(right);
+        public static bool operator ==(CalDateTime left, IDateTime right) => left.Equals(right);
 
-        public static bool operator !=(CalDateTime left, ImmutableCalDateTime right) => !left.Equals(right);
+        public static bool operator !=(CalDateTime left, IDateTime right) => !left.Equals(right);
 
-        public static TimeSpan operator -(CalDateTime left, ImmutableCalDateTime right)
+        public static TimeSpan operator -(CalDateTime left, IDateTime right)
         {
             left.AssociateWith(right);
             return left.AsUtc - right.AsUtc;
         }
 
-        public static ImmutableCalDateTime operator -(CalDateTime left, TimeSpan right)
+        public static IDateTime operator -(CalDateTime left, TimeSpan right)
         {
-            var copy = left.Copy<ImmutableCalDateTime>();
+            var copy = left.Copy<IDateTime>();
             copy.Value -= right;
             return copy;
         }
 
-        public static ImmutableCalDateTime operator +(CalDateTime left, TimeSpan right)
+        public static IDateTime operator +(CalDateTime left, TimeSpan right)
         {
-            var copy = left.Copy<ImmutableCalDateTime>();
+            var copy = left.Copy<IDateTime>();
             copy.Value += right;
             return copy;
         }
@@ -362,9 +362,9 @@ namespace Ical.Net.DataTypes
         public TimeSpan TimeOfDay => Value.TimeOfDay;
 
         /// <summary>
-        /// Returns a representation of the ImmutableCalDateTime in the specified time zone
+        /// Returns a representation of the IDateTime in the specified time zone
         /// </summary>
-        public ImmutableCalDateTime ToTimeZone(string tzId)
+        public IDateTime ToTimeZone(string tzId)
         {
             if (string.IsNullOrWhiteSpace(tzId))
             {
@@ -393,36 +393,36 @@ namespace Ical.Net.DataTypes
                 ? new DateTimeOffset(AsSystemLocal)
                 : DateUtil.ToZonedDateTimeLeniently(Value, TzId).ToDateTimeOffset();
 
-        public ImmutableCalDateTime Add(TimeSpan ts) => this + ts;
+        public IDateTime Add(TimeSpan ts) => this + ts;
 
-        public ImmutableCalDateTime Subtract(TimeSpan ts) => this - ts;
+        public IDateTime Subtract(TimeSpan ts) => this - ts;
 
-        public TimeSpan Subtract(ImmutableCalDateTime dt) => this - dt;
+        public TimeSpan Subtract(IDateTime dt) => this - dt;
 
-        public ImmutableCalDateTime AddYears(int years)
+        public IDateTime AddYears(int years)
         {
-            var dt = Copy<ImmutableCalDateTime>();
+            var dt = Copy<IDateTime>();
             dt.Value = Value.AddYears(years);
             return dt;
         }
 
-        public ImmutableCalDateTime AddMonths(int months)
+        public IDateTime AddMonths(int months)
         {
-            var dt = Copy<ImmutableCalDateTime>();
+            var dt = Copy<IDateTime>();
             dt.Value = Value.AddMonths(months);
             return dt;
         }
 
-        public ImmutableCalDateTime AddDays(int days)
+        public IDateTime AddDays(int days)
         {
-            var dt = Copy<ImmutableCalDateTime>();
+            var dt = Copy<IDateTime>();
             dt.Value = Value.AddDays(days);
             return dt;
         }
 
-        public ImmutableCalDateTime AddHours(int hours)
+        public IDateTime AddHours(int hours)
         {
-            var dt = Copy<ImmutableCalDateTime>();
+            var dt = Copy<IDateTime>();
             if (!dt.HasTime && hours % 24 > 0)
             {
                 dt.HasTime = true;
@@ -431,9 +431,9 @@ namespace Ical.Net.DataTypes
             return dt;
         }
 
-        public ImmutableCalDateTime AddMinutes(int minutes)
+        public IDateTime AddMinutes(int minutes)
         {
-            var dt = Copy<ImmutableCalDateTime>();
+            var dt = Copy<IDateTime>();
             if (!dt.HasTime && minutes % 1440 > 0)
             {
                 dt.HasTime = true;
@@ -442,9 +442,9 @@ namespace Ical.Net.DataTypes
             return dt;
         }
 
-        public ImmutableCalDateTime AddSeconds(int seconds)
+        public IDateTime AddSeconds(int seconds)
         {
-            var dt = Copy<ImmutableCalDateTime>();
+            var dt = Copy<IDateTime>();
             if (!dt.HasTime && seconds % 86400 > 0)
             {
                 dt.HasTime = true;
@@ -453,9 +453,9 @@ namespace Ical.Net.DataTypes
             return dt;
         }
 
-        public ImmutableCalDateTime AddMilliseconds(int milliseconds)
+        public IDateTime AddMilliseconds(int milliseconds)
         {
-            var dt = Copy<ImmutableCalDateTime>();
+            var dt = Copy<IDateTime>();
             if (!dt.HasTime && milliseconds % 86400000 > 0)
             {
                 dt.HasTime = true;
@@ -464,23 +464,23 @@ namespace Ical.Net.DataTypes
             return dt;
         }
 
-        public ImmutableCalDateTime AddTicks(long ticks)
+        public IDateTime AddTicks(long ticks)
         {
-            var dt = Copy<ImmutableCalDateTime>();
+            var dt = Copy<IDateTime>();
             dt.HasTime = true;
             dt.Value = Value.AddTicks(ticks);
             return dt;
         }
 
-        public bool LessThan(ImmutableCalDateTime dt) => this < dt;
+        public bool LessThan(IDateTime dt) => this < dt;
 
-        public bool GreaterThan(ImmutableCalDateTime dt) => this > dt;
+        public bool GreaterThan(IDateTime dt) => this > dt;
 
-        public bool LessThanOrEqual(ImmutableCalDateTime dt) => this <= dt;
+        public bool LessThanOrEqual(IDateTime dt) => this <= dt;
 
-        public bool GreaterThanOrEqual(ImmutableCalDateTime dt) => this >= dt;
+        public bool GreaterThanOrEqual(IDateTime dt) => this >= dt;
 
-        public void AssociateWith(ImmutableCalDateTime dt)
+        public void AssociateWith(IDateTime dt)
         {
             if (AssociatedObject == null && dt.AssociatedObject != null)
             {
@@ -492,7 +492,7 @@ namespace Ical.Net.DataTypes
             }
         }
 
-        public int CompareTo(ImmutableCalDateTime dt)
+        public int CompareTo(IDateTime dt)
         {
             if (Equals(dt))
             {
@@ -506,7 +506,7 @@ namespace Ical.Net.DataTypes
             {
                 return 1;
             }
-            throw new Exception("An error occurred while comparing two ImmutableCalDateTime values.");
+            throw new Exception("An error occurred while comparing two IDateTime values.");
         }
 
         public override string ToString() => ToString(null, null);

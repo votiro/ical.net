@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using Ical.Net.DataTypes;
 using Ical.Net.Evaluation;
 using Ical.Net.Utility;
+using NodaDuration = NodaTime.Duration;
 
 namespace Ical.Net.CalendarComponents
 {
@@ -92,12 +93,12 @@ namespace Ical.Net.CalendarComponents
         //
         // Therefore, Duration is not serialized, as DtEnd
         // should always be extrapolated from the duration.
-        public virtual TimeSpan Duration
+        public virtual TimeSpan DurationSpan
         {
             get => Properties.Get<TimeSpan>("DURATION");
             set
             {
-                if (!Equals(Duration, value))
+                if (!Equals(DurationSpan, value))
                 {
                     Properties.Set("DURATION", value);
                     ExtrapolateTimes();
@@ -118,28 +119,7 @@ namespace Ical.Net.CalendarComponents
         /// Returns true if the event is an all-day event.
         /// </summary>
         public virtual bool IsAllDay
-        {
-            get => !Start.HasTime;
-            set
-            {
-                // Set whether or not the start date/time
-                // has a time value.
-                if (Start != null)
-                {
-                    Start.HasTime = !value;
-                }
-                if (End != null)
-                {
-                    End.HasTime = !value;
-                }
-
-                if (value && Start != null && End != null && Equals(Start.Date, End.Date))
-                {
-                    Duration = default(TimeSpan);
-                    End = Start.AddDays(1);
-                }
-            }
-        }
+            => !Start.HasTime || End.Value - Start.Value >= NodaDuration.FromDays(1);
 
         /// <summary>
         /// The geographic location (lat/long) of the event.
@@ -263,17 +243,9 @@ namespace Ical.Net.CalendarComponents
 
         private void ExtrapolateTimes()
         {
-            if (DtEnd == null && DtStart != null && Duration != default(TimeSpan))
+            if (DurationSpan == default(TimeSpan))
             {
-                DtEnd = DtStart.Add(Duration);
-            }
-            else if (Duration == default(TimeSpan) && DtStart != null && DtEnd != null)
-            {
-                Duration = DtEnd.Subtract(DtStart);
-            }
-            else if (DtStart == null && Duration != default(TimeSpan) && DtEnd != null)
-            {
-                DtStart = DtEnd.Subtract(Duration);
+                DurationSpan = DtEnd.Subtract(DtStart);
             }
         }
 

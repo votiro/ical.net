@@ -52,7 +52,7 @@ namespace Ical.Net.CoreUnitTests
         {
             DtStart = new CalDateTime(_now),
             DtEnd = new CalDateTime(_later),
-            Duration = TimeSpan.FromHours(1),
+            DurationSpan = TimeSpan.FromHours(1),
         };
 
         private static string SerializeEvent(CalendarEvent e) => new CalendarSerializer().SerializeToString(new Calendar { Events = { e } });
