@@ -50,9 +50,9 @@ namespace Ical.Net.CoreUnitTests
 
         private static CalendarEvent GetSimpleEvent() => new CalendarEvent
         {
-            DtStart = new CalDateTime(_now),
-            DtEnd = new CalDateTime(_later),
-            DurationSpan = TimeSpan.FromHours(1),
+            Start = new ImmutableCalDateTime(_now),
+            End = new ImmutableCalDateTime(_later),
+            TimeSpan = TimeSpan.FromHours(1),
         };
 
         private static string SerializeEvent(CalendarEvent e) => new CalendarSerializer().SerializeToString(new Calendar { Events = { e } });

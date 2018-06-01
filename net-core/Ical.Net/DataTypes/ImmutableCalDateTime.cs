@@ -35,7 +35,6 @@ namespace Ical.Net.DataTypes
         {
             Value = zonedDateTime;
             HasTime = hasTime;
-            AssociatedObject = calendarObject;
         }
 
         public string TzId => Value.Zone.Id;
@@ -67,8 +66,6 @@ namespace Ical.Net.DataTypes
         public DateTime Date => DateTime.SpecifyKind(Value.Date.ToDateTimeUnspecified(), Kind);
         public LocalTime LocalTime => Value.TimeOfDay;
         public TimeSpan Time => Value.ToDateTimeUnspecified().TimeOfDay;
-
-        public CalendarObject AssociatedObject { get; }
 
         public ImmutableCalDateTime ToTimeZone(DateTimeZone newTimeZone)
             => new ImmutableCalDateTime(Value.WithZone(newTimeZone), HasTime);
@@ -130,9 +127,6 @@ namespace Ical.Net.DataTypes
         public ImmutableCalDateTime Add(Duration duration) => this + duration;
         public ImmutableCalDateTime Subtract(TimeSpan timespan) => this - timespan;
         public ImmutableCalDateTime Subtract(Duration duration) => this - duration;
-
-        public ImmutableCalDateTime WithAssociatedObject(CalendarObject calendarObject)
-            => new ImmutableCalDateTime(Value, HasTime, calendarObject);
 
         public int CompareTo(ImmutableCalDateTime other)
         {

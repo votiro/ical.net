@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Ical.Net.Serialization.DataTypes;
+using NodaTime;
 
 namespace Ical.Net.DataTypes
 {
@@ -10,6 +11,8 @@ namespace Ical.Net.DataTypes
     /// </summary>    
     public class Trigger : EncodableDataType
     {
+        public const string PropertyName = "TRIGGER";
+
         private ImmutableCalDateTime _mDateTime;
         private TimeSpan? _mDuration;
         private string _mRelated = TriggerRelation.Start;
@@ -20,10 +23,6 @@ namespace Ical.Net.DataTypes
             set
             {
                 _mDateTime = value;
-                if (_mDateTime == null)
-                {
-                    return;
-                }
 
                 // NOTE: this, along with the "Duration" setter, fixes the bug tested in
                 // TODO11(), as well as this thread: https://sourceforge.net/forum/forum.php?thread_id=1926742&forum_id=656447
@@ -58,20 +57,22 @@ namespace Ical.Net.DataTypes
             set => _mRelated = value;
         }
 
-        public virtual bool IsRelative => _mDuration != null;
+        public bool IsRelative => _mDuration != null;
 
-        public Trigger() {}
-
-        public Trigger(TimeSpan ts)
+        private readonly Duration _duration;
+        public Trigger(Duration duration)
         {
-            Duration = ts;
+            _duration = duration;
         }
 
-        public Trigger(string value) : this()
-        {
-            var serializer = new TriggerSerializer();
-            CopyFrom(serializer.Deserialize(new StringReader(value)) as ICopyable);
-        }
+        public Trigger(TimeSpan timeSpan) :
+            this(NodaTime.Duration.FromTimeSpan(timeSpan)) { }
+
+        //public Trigger(string value) : this()
+        //{
+        //    var serializer = new TriggerSerializer();
+        //    CopyFrom(serializer.Deserialize(new StringReader(value)) as ICopyable);
+        //}
 
         public override void CopyFrom(ICopyable obj)
         {

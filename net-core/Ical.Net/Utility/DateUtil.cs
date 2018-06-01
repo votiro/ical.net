@@ -19,23 +19,6 @@ namespace Ical.Net.Utility
         public static DateTime GetSimpleDateTimeData(ImmutableCalDateTime dt)
             => DateTime.SpecifyKind(dt.Value, dt.IsUtc ? DateTimeKind.Utc : DateTimeKind.Local);
 
-        public static DateTime SimpleDateTimeToMatch(ImmutableCalDateTime dt, ImmutableCalDateTime toMatch)
-        {
-            if (toMatch.IsUtc && dt.IsUtc)
-            {
-                return dt.Value;
-            }
-            if (toMatch.IsUtc)
-            {
-                return dt.Value.ToUniversalTime();
-            }
-            if (dt.IsUtc)
-            {
-                return dt.Value.ToLocalTime();
-            }
-            return dt.Value;
-        }
-
         public static ImmutableCalDateTime MatchTimeZone(ImmutableCalDateTime dt1, ImmutableCalDateTime dt2)
         {
             // Associate the date/time with the first.
