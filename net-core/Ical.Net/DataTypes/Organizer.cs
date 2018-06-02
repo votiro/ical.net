@@ -1,67 +1,73 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Mail;
+using System.Runtime.Serialization;
 using Ical.Net.Serialization.DataTypes;
 
 namespace Ical.Net.DataTypes
 {
     /// <summary>
-    /// A class that represents the organizer of an event/todo/journal.
+    /// A class that represents the organizer of a VEVENT, VTODO, or VJOURNAL
     /// </summary>
     [DebuggerDisplay("{Value}")]
     public class Organizer : EncodableDataType
     {
-        public virtual Uri SentBy
+        /// <summary>
+        /// Represents an RFC-5545 ORGANIZER.
+        /// </summary>
+        /// <param name="commonName">The display name of the organizer</param>
+        /// <param name="email">An optional email address for the organizer</param>
+        /// <param name="uri">An optional URI for the organizer</param>
+        /// <param name="sentBy">The individual acting on behalf of the calendar owner</param>
+        public Organizer(string commonName, string email, string uri, string sentBy)
         {
-            get => new Uri(Parameters.Get("SENT-BY"));
-            set
+            var mailAddress = GetEmailAddress(email);
+            CommonName = commonName ?? mailAddress.DisplayName;
+            SentBy = Uri.TryCreate(sentBy, UriKind.RelativeOrAbsolute, out var sentByResult)
+                ? sentByResult
+                : null;
+
+
+        }
+        
+
+        public Organizer(string commonName)
+            : this(commonName, null, null, null) { }
+
+        private static MailAddress GetEmailAddress(string email)
+        {
+            try
             {
-                if (value != null)
-                {
-                    Parameters.Set("SENT-BY", value.OriginalString);
-                }
-                else
-                {
-                    Parameters.Set("SENT-BY", (string) null);
-                }
+                return new MailAddress(email);
             }
+            catch (Exception) { }
+            return null;
         }
 
-        public virtual string CommonName
-        {
-            get => Parameters.Get("CN");
-            set => Parameters.Set("CN", value);
-        }
+        public string CommonNameKey => "CN";
+        public string CommonName { get; }
 
-        public virtual Uri DirectoryEntry
-        {
-            get => new Uri(Parameters.Get("DIR"));
-            set
-            {
-                if (value != null)
-                {
-                    Parameters.Set("DIR", value.OriginalString);
-                }
-                else
-                {
-                    Parameters.Set("DIR", (string) null);
-                }
-            }
-        }
+        public string DirectoryEntryKey => "DIR";
+        public Uri DirectoryEntry { get; }
+
+        public string SentByKey => "SENT-BY";
+        public Uri SentBy { get; }
+
+        public string EmailAddress { get; }
 
         public virtual Uri Value { get; set; }
 
-        public Organizer() {}
-
-        public Organizer(string value) : this()
+        public static Organizer Parse(string rfcOrganizer)
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                return;
-            }
+            throw new NotImplementedException();
+            //if (string.IsNullOrWhiteSpace(rfcOrganizer))
+            //{
+            //    return null;
+            //}
 
-            var serializer = new OrganizerSerializer();
-            CopyFrom(serializer.Deserialize(new StringReader(value)) as ICopyable);
+            //var serializer = new OrganizerSerializer();
+            //CopyFrom(serializer.Deserialize(new StringReader(rfcOrganizer)) as ICopyable);
         }
 
         protected bool Equals(Organizer other) => Equals(Value, other.Value);

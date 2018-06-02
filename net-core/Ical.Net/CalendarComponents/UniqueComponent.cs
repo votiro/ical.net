@@ -2,15 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Ical.Net.DataTypes;
-using Ical.Net.Utility;
 
 namespace Ical.Net.CalendarComponents
 {
     /// <summary>
-    /// Represents a unique component, a component with a unique UID,
-    /// which can be used to uniquely identify the component.    
+    /// Represents a unique component, which has a UID, which can be used to uniquely identify the component.    
     /// </summary>
-    public class UniqueComponent : CalendarComponent, IUniqueComponent, IComparable<UniqueComponent>
+    public class UniqueComponent : CalendarComponent, IComparable<UniqueComponent>
     {
         // TODO: Add AddRelationship() public method.
         // This method will add the UID of a related component
@@ -38,49 +36,25 @@ namespace Ical.Net.CalendarComponents
 
             // NOTE: removed setting the 'CREATED' property here since it breaks serialization.
             // See https://sourceforge.net/projects/dday-ical/forums/forum/656447/topic/3754354
-            if (DtStamp == null)
-            {
-                // icalendar RFC doesn't care about sub-second time resolution, so shave off everything smaller than seconds.
-                var utcNow = DateTime.UtcNow.Truncate(TimeSpan.FromSeconds(1));
-                DtStamp = new CalDateTime(utcNow, "UTC");
-            }
         }
 
-        public virtual IList<Attendee> Attendees
-        {
-            get => Properties.GetMany<Attendee>("ATTENDEE");
-            set => Properties.Set("ATTENDEE", value);
-        }
+        public string AttendeeKey => "ATTENDEE";
+        public virtual IReadOnlyList<Attendee> Attendees { get; }
 
-        public virtual IList<string> Comments
-        {
-            get => Properties.GetMany<string>("COMMENT");
-            set => Properties.Set("COMMENT", value);
-        }
+        public string CommentKey => "COMMENT";
+        public virtual IReadOnlyList<string> Comments { get; }
 
-        public virtual ImmutableCalDateTime DtStamp
-        {
-            get => Properties.Get<ImmutableCalDateTime>("DTSTAMP");
-            set => Properties.Set("DTSTAMP", value);
-        }
+        public string DtStampKey => "DTSTAMP";
+        public ImmutableCalDateTime DtStamp { get; }
 
-        public virtual Organizer Organizer
-        {
-            get => Properties.Get<Organizer>("ORGANIZER");
-            set => Properties.Set("ORGANIZER", value);
-        }
+        public string OrganizerKey => "ORGANIZER";
+        public virtual Organizer Organizer { get; }
 
-        public virtual IList<RequestStatus> RequestStatuses
-        {
-            get => Properties.GetMany<RequestStatus>("REQUEST-STATUS");
-            set => Properties.Set("REQUEST-STATUS", value);
-        }
+        public string RequestStatusesKey => "REQUEST-STATUS";
+        public IReadOnlyList<string> RequestStatuses { get; }
 
-        public virtual Uri Url
-        {
-            get => Properties.Get<Uri>("URL");
-            set => Properties.Set("URL", value);
-        }
+        public string UrlKey => "URL";
+        public Uri Url { get; }
 
         protected override void OnDeserialized(StreamingContext context)
         {
@@ -108,10 +82,7 @@ namespace Ical.Net.CalendarComponents
 
         public override int GetHashCode() => Uid?.GetHashCode() ?? base.GetHashCode();
 
-        public virtual string Uid
-        {
-            get => Properties.Get<string>("UID");
-            set => Properties.Set("UID", value);
-        }
+        public string UidKey => "UID";
+        public string Uid { get; }
     }
 }

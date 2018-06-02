@@ -6,13 +6,13 @@ namespace Ical.Net.CalendarComponents
 {
     public interface IUniqueComponent : ICalendarComponent
     {
-        string Uid { get; set; }
+        string Uid { get; }
 
-        IList<Attendee> Attendees { get; set; }
-        IList<string> Comments { get; set; }
-        ImmutableCalDateTime DtStamp { get; set; }
-        Organizer Organizer { get; set; }
-        IList<RequestStatus> RequestStatuses { get; set; }
-        Uri Url { get; set; }
+        IList<Attendee> Attendees { get; }
+        IList<string> Comments { get; }
+        ImmutableCalDateTime DtStamp { get; }
+        Organizer Organizer { get; }
+        IReadOnlyList<RequestStatus> RequestStatuses { get; }
+        Uri Url { get; }
     }
 }

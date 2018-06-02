@@ -1,191 +1,106 @@
 using System;
 using Ical.Net.Serialization.DataTypes;
+using NodaTime;
 
 namespace Ical.Net.DataTypes
 {
     /// <summary> Represents an iCalendar period of time. </summary>    
-    public class Period : EncodableDataType, IComparable<Period>
+    public class Period :
+        //EncodableDataType,
+        IComparable<Period>
     {
-        public Period() { }
+        public ImmutableCalDateTime Start { get; }
+        public ImmutableCalDateTime End { get; }
+        public Duration Duration => End - Start;
+        public TimeSpan DurationSpan => Duration.ToTimeSpan();
 
         public Period(ImmutableCalDateTime occurs)
             : this(occurs, default(TimeSpan)) {}
 
         public Period(ImmutableCalDateTime start, ImmutableCalDateTime end)
         {
-            if (end != null && end.LessThanOrEqual(start))
+            if (end <= start)
             {
                 throw new ArgumentException($"Start time ( {start} ) must come before the end time ( {end} )");
             }
 
-            StartTime = start;
-            if (end == null)
-            {
-                return;
-            }
-            EndTime = end;
-            Duration = end.Subtract(start);
+            Start = start;
+            End = end;
         }
 
-        public Period(ImmutableCalDateTime start, TimeSpan duration)
+        public Period(ImmutableCalDateTime start, Duration duration)
         {
-            if (duration < TimeSpan.Zero)
+            if (duration < Duration.Zero)
             {
                 throw new ArgumentException($"Duration ( ${duration} ) cannot be less than zero");
             }
 
-            StartTime = start;
-            if (duration == default(TimeSpan))
-            {
-                return;
-            }
-
-            Duration = duration;
-            EndTime = start.Add(duration);
+            Start = start;
+            End = start + duration;
         }
 
-        public override void CopyFrom(ICopyable obj)
-        {
-            base.CopyFrom(obj);
+        public Period(ImmutableCalDateTime start, TimeSpan durationSpan)
+            : this(start, Duration.FromTimeSpan(durationSpan)) { }
 
-            var p = obj as Period;
-            if (p == null)
-            {
-                return;
-            }
-            StartTime = p.StartTime;
-            EndTime = p.EndTime;
-            Duration = p.Duration;
-        }
+        public Period Clone(Period obj)
+            => new Period(obj.Start, obj.End);
 
-        protected bool Equals(Period other) => Equals(StartTime, other.StartTime) && Equals(EndTime, other.EndTime) && Duration.Equals(other.Duration);
+        public bool Equals(Period other)
+            => Start == other.Start && End == other.End;
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((Period) obj);
+            return obj.GetType() == GetType() && Equals((Period)obj);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                var hashCode = StartTime?.GetHashCode() ?? 0;
-                hashCode = (hashCode * 397) ^ (EndTime?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ Duration.GetHashCode();
-                return hashCode;
+                return Start.GetHashCode() * 397 ^ End.GetHashCode();
             }
         }
 
         public override string ToString()
-        {
-            var periodSerializer = new PeriodSerializer();
-            return periodSerializer.SerializeToString(this);
-        }
+            => new PeriodSerializer().SerializeToString(this);
 
-        private void ExtrapolateTimes()
-        {
-            if (EndTime == null && StartTime != null && Duration != default(TimeSpan))
-            {
-                EndTime = StartTime.Add(Duration);
-            }
-            else if (Duration == default(TimeSpan) && StartTime != null && EndTime != null)
-            {
-                Duration = EndTime.Subtract(StartTime);
-            }
-            else if (StartTime == null && Duration != default(TimeSpan) && EndTime != null)
-            {
-                StartTime = EndTime.Subtract(Duration);
-            }
-        }
+        /// <summary>
+        /// Start is inclusive, End is exclusive.
+        /// </summary>
+        public bool Contains(ImmutableCalDateTime dt)
+            => Start >= dt && End < dt;
 
-        private ImmutableCalDateTime _startTime;
-        public virtual ImmutableCalDateTime StartTime
+        /// <summary>
+        /// Returns true if one period overlaps with another
+        /// </summary>
+        public bool OverlapsWith(Period otherPeriod)
         {
-            get => _startTime.HasTime
-                ? _startTime
-                : new CalDateTime(new DateTime(_startTime.Value.Year, _startTime.Value.Month, _startTime.Value.Day, 0, 0, 0), _startTime.TzId);
-            set
-            {
-                if (Equals(_startTime, value))
-                {
-                    return;
-                }
-                _startTime = value;
-                ExtrapolateTimes();
-            }
-        }
-
-        private ImmutableCalDateTime _endTime;
-        public virtual ImmutableCalDateTime EndTime
-        {
-            get => _endTime;
-            set
-            {
-                if (Equals(_endTime, value))
-                {
-                    return;
-                }
-                _endTime = value;
-                ExtrapolateTimes();
-            }
-        }
-
-        private TimeSpan _duration;
-        public virtual TimeSpan Duration
-        {
-            get
-            {
-                if (StartTime != null
-                    && EndTime == null
-                    && StartTime.Value.TimeOfDay == TimeSpan.Zero)
-                {
-                    return TimeSpan.FromDays(1);
-                }
-                return _duration;
-            }
-            set
-            {
-                if (Equals(_duration, value))
-                {
-                    return;
-                }
-                _duration = value;
-                ExtrapolateTimes();
-            }
-        }
-
-        public virtual bool Contains(ImmutableCalDateTime dt)
-        {
-            // Start time is inclusive
-            if (dt == null || StartTime == null || !StartTime.LessThanOrEqual(dt))
+            if (otherPeriod == null)
             {
                 return false;
             }
 
-            // End time is exclusive
-            return EndTime == null || EndTime.GreaterThan(dt);
+            return Contains(otherPeriod.Start) || Contains(otherPeriod.End);
         }
 
-        public virtual bool CollidesWith(Period period) => period != null
-            && ((period.StartTime != null && Contains(period.StartTime)) || (period.EndTime != null && Contains(period.EndTime)));
-
+        /// <summary>
+        /// Compares the Start value of each Period
+        /// </summary>
         public int CompareTo(Period other)
         {
-            if (StartTime.Equals(other.StartTime))
-            {
-                return 0;
-            }
-            if (StartTime.LessThan(other.StartTime))
-            {
-                return -1;
-            }
-            if (StartTime.GreaterThan(other.StartTime))
+            if (Start > other.Start)
             {
                 return 1;
             }
-            throw new Exception("An error occurred while comparing two Periods.");
+
+            if (Start < other.Start)
+            {
+                return -1;
+            }
+
+            return 0;
         }
     }
 }

@@ -3,8 +3,7 @@
     public interface ICopyable
     {
         /// <summary>
-        /// Copies all relevant fields/properties from
-        /// the target object to the current one.
+        /// Copies all relevant fields/properties from the target object to the current one.
         /// </summary>
         void CopyFrom(ICopyable obj);
 

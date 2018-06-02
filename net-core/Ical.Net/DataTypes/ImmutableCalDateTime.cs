@@ -104,10 +104,10 @@ namespace Ical.Net.DataTypes
             return new ImmutableCalDateTime(newZonedValue, left.HasTime);
         }
 
-        public static ImmutableCalDateTime operator -(ImmutableCalDateTime left, ImmutableCalDateTime right)
+        public static Duration operator -(ImmutableCalDateTime left, ImmutableCalDateTime right)
         {
             var duration = left.Value - right.Value;
-            return left - duration;
+            return duration;
         }
 
         public static ImmutableCalDateTime operator +(ImmutableCalDateTime left, TimeSpan right)

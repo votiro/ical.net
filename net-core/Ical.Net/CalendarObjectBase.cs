@@ -12,8 +12,7 @@ namespace Ical.Net
         }
 
         /// <summary>
-        /// Copies values from the target object to the
-        /// current object.
+        /// Copies values from the target object to the current object.
         /// </summary>
         public virtual void CopyFrom(ICopyable c) {}
 
