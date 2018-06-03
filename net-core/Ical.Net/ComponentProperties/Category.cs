@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Ical.Net.ComponentProperties
@@ -17,23 +16,7 @@ namespace Ical.Net.ComponentProperties
         /// <param name="comparerOverride">Default StringComparer is OrdinalIgnoreCase</param>
         public Category(IEnumerable<string> categories, StringComparer comparerOverride)
         {
-            if (categories == null)
-            {
-                return;
-            }
-
-            var intermediate = categories
-                .Distinct(comparerOverride)
-                .Where(c => !string.IsNullOrEmpty(c))
-                .OrderBy(c => c, comparerOverride)
-                .ToList();
-
-            if (intermediate.Count == 0)
-            {
-                return;
-            }
-
-            Categories = intermediate.AsReadOnly();
+            Categories = ComponentPropertiesUtilities.GetNormalizedStringCollection(categories, comparerOverride);
         }
 
         public Category(IEnumerable<string> categories)
@@ -55,10 +38,11 @@ namespace Ical.Net.ComponentProperties
 
         public static Category FromString(string serializedCategory)
         {
-            if (string.IsNullOrWhiteSpace(serializedCategory))
-            {
-                return null;
-            }
+            return null;
+            //if (string.IsNullOrWhiteSpace(serializedCategory))
+            //{
+            //    return null;
+            //}
 
             // This can probably be implemented in terms of Span<T>...
         }
