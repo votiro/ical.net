@@ -15,9 +15,16 @@ namespace Ical.Net.ComponentProperties
 
         public static string GetToString(IComponentProperty componentProperty)
         {
-            return componentProperty?.Value == null
-                ? null
-                : $"{componentProperty.Name}:{componentProperty.Value}";
+            if (componentProperty?.Value == null)
+            {
+                return null;
+            }
+
+            var builder = new StringBuilder();
+            builder.Append(componentProperty.Name);
+            AppendProperties(componentProperty.Properties, builder);
+            builder.Append($":{componentProperty.Value}");
+            return builder.ToString();
         }
 
         private static readonly StringComparer _defaultComparer = StringComparer.Ordinal;
@@ -41,6 +48,22 @@ namespace Ical.Net.ComponentProperties
             return normalized.Count == 0
                 ? null
                 : normalized.AsReadOnly();
+        }
+
+        /// <summary>
+        /// {Foo,Bar,Baz} becomes ";Foo;Bar;Baz". If the collection is null or empty, nothing is appended.
+        /// </summary>
+        public static void AppendProperties(IEnumerable<string> additionalProperties, StringBuilder builder)
+        {
+            if (additionalProperties == null)
+            {
+                return;
+            }
+
+            foreach (var property in additionalProperties)
+            {
+                builder.Append($";{property}");
+            }
         }
     }
 }

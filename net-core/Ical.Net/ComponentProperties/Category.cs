@@ -5,18 +5,27 @@ using System.Text;
 namespace Ical.Net.ComponentProperties
 {
     public class Category
+        : IComponentProperty
     {
         public string Name => "CATEGORIES";
+
+        /// <summary>
+        /// A Category's Value is always null because Categories are where the notional values go.
+        /// </summary>
+        public string Value => null;
+
         public IReadOnlyList<string> Categories { get; }
+        public IReadOnlyList<string> Properties { get; }
 
         /// <summary>
         /// Category constructor. Categories that are null or whitespace will be filtered out.
         /// </summary>
-        /// <param name="categories"></param>
-        /// <param name="comparerOverride">Default StringComparer is OrdinalIgnoreCase</param>
-        public Category(IEnumerable<string> categories, StringComparer comparerOverride)
+        /// <param name="comparerOverride">Default StringComparer is OrdinalIgnoreCase. This comparer has no effect on how the additional properties are
+        /// de-duplicated or ordered.</param>
+        public Category(IEnumerable<string> categories, StringComparer comparerOverride, IEnumerable<string> additionalProperties = null)
         {
             Categories = ComponentPropertiesUtilities.GetNormalizedStringCollection(categories, comparerOverride);
+            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
         public Category(IEnumerable<string> categories)

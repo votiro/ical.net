@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Ical.Net.ComponentProperties
 {
@@ -15,14 +13,16 @@ namespace Ical.Net.ComponentProperties
     {
         public string Name => "COMMENT";
         public string Value { get; }
+        public IReadOnlyList<string> Properties { get; }
 
-        public Comment(string comment)
+        public Comment(string comment, IEnumerable<string> additionalProperties)
         {
             Value = string.IsNullOrWhiteSpace(comment)
                 ? null
                 : comment;
+            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
-        public override string ToString() => Value == null ? null : $"{Name}:{Value}";
+        public override string ToString() => ComponentPropertiesUtilities.GetToString(this);
     }
 }

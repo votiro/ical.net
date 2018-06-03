@@ -5,7 +5,7 @@
     ///
     /// https://tools.ietf.org/html/rfc5545#section-3.7.3
     /// </summary>
-    public struct ProdId : ICalendarProperty
+    public class ProdId : ICalendarProperty
     {
         public string Name => "PRODID";
         public string Value { get; }

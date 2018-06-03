@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Ical.Net.ComponentProperties
 {
@@ -15,11 +13,12 @@ namespace Ical.Net.ComponentProperties
     {
         public string Name => "DESCRIPTION";
         public string Value { get; }
+        public IReadOnlyList<string> Properties { get; }
 
-        public Description(string description, IEnumerable<string> optionalProperties)
+        public Description(string description, IEnumerable<string> additionalProperties)
         {
             Value = ComponentPropertiesUtilities.GetNormalizedValue(description);
-
+            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
         public Description(string description)

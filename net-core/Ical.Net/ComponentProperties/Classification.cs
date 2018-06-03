@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Ical.Net.ComponentProperties
 {
@@ -15,13 +14,14 @@ namespace Ical.Net.ComponentProperties
         public string Name => "CLASS";
         public string Value { get; }
         public string DefaultValue => "PUBLIC";
+        public IReadOnlyList<string> Properties { get; }
 
         private static readonly HashSet<string> _allowedValues = new HashSet<string>(StringComparer.Ordinal) {"PUBLIC", "PRIVATE", "CONFIDENTIAL",};
 
         /// <summary>
         /// Allowed values are PUBLIC, PRIVATE, and CONFIDENTIAL
         /// </summary>
-        public Classification(string value = null)
+        public Classification(string value = null, IEnumerable<string> additionalProperties = null)
         {
             if (value == null)
             {
@@ -31,10 +31,14 @@ namespace Ical.Net.ComponentProperties
             {
                 Value = value;
             }
+            else
+            {
+                throw new ArgumentException($"Allowed {nameof(Classification)} values are {string.Join(", ", _allowedValues)}");
+            }
 
-            throw new ArgumentException($"Allowed {nameof(Classification)} values are {string.Join(", ", _allowedValues)}");
+            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
-        public override string ToString() => $"{Name}:{Value}";
+        public override string ToString() => ComponentPropertiesUtilities.GetToString(this);
     }
 }
