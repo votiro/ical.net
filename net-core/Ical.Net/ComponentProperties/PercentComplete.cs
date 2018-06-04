@@ -12,20 +12,24 @@ namespace Ical.Net.ComponentProperties
         IComponentProperty
     {
         public string Name { get; }
-        public string Value => CompletionPercent.ToString();
-        public int CompletionPercent { get; }
+        public string Value => PercentValue.ToString();
+        public int PercentValue { get; }
         public IReadOnlyList<string> Properties { get; }
 
-        /// <param name="completionPercent">Must be between 0 and 100</param>
-        public PercentComplete(int completionPercent)
+        /// <param name="percent">Must be between 0 and 100</param>
+        public PercentComplete(int percent, IEnumerable<string> additionalProperties = null)
         {
-            if (completionPercent < 0 || completionPercent > 100)
+            if (percent < 0 || percent > 100)
             {
                 throw new ArgumentException("Value must be between 0 and 100");
             }
 
-            CompletionPercent = completionPercent;
+            PercentValue = percent;
+            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
         }
+
+        public PercentComplete(int percent)
+            : this(percent, null) { }
 
         /// <summary>
         /// PERCENT-COMPLETE:39 would indicate that the VTODO is 39% complete
