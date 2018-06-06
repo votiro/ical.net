@@ -8,10 +8,12 @@
     /// This property is typically optional.
     /// </summary>
     /// <remarks>This property is typically optional, except in binary attachments</remarks>
-    public struct InlineEncoding
+    public struct InlineEncoding :
+        IValueType
     {
         public string Name => "ENCODING";
         public string Value { get; }
+        public bool IsEmpty => Value == null;
 
         public InlineEncoding(string encoding = null)
         {

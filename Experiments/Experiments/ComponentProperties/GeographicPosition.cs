@@ -27,7 +27,7 @@ namespace Experiments.ComponentProperties
         /// <summary>
         /// Returns the formatted latitude and longitude rounded to a precision of 6 decimal places
         /// </summary>
-        public string Value => FormatValue();
+        public string Value { get; }
         public IReadOnlyList<string> Properties { get; }
 
         /// <summary>
@@ -50,21 +50,13 @@ namespace Experiments.ComponentProperties
 
             Latitude = latitude;
             Longitude = longitude;
+
+            var builder = new StringBuilder(27);
+            builder.Append($"{Math.Round(Latitude, 6, MidpointRounding.AwayFromZero)}");
+            builder.Append($";{Math.Round(Longitude, 6, MidpointRounding.AwayFromZero)}");
+            Value = builder.ToString();
+
             Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
-        }
-
-        private string _value;
-        private string FormatValue()
-        {
-            if (_value == null)
-            {
-                var builder = new StringBuilder(27);
-                builder.Append($"{Math.Round(Latitude, 6, MidpointRounding.AwayFromZero)}");
-                builder.Append($";{Math.Round(Longitude, 6, MidpointRounding.AwayFromZero)}");
-                _value = builder.ToString();
-            }
-
-            return _value;
         }
 
         public override string ToString() => ComponentPropertiesUtilities.GetToString(this);

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace Experiments.PropertyParameters
 {
@@ -8,10 +7,12 @@ namespace Experiments.PropertyParameters
     ///
     /// https://tools.ietf.org/html/rfc4288#section-4.2
     /// </summary>
-    public struct FmtType
+    public struct FmtType :
+        IValueType
     {
         public string Name => "FMTTYPE";
         public string Value { get; }
+        public bool IsEmpty => Value == null;
 
         public FmtType(string mimeType)
         {
@@ -27,10 +28,15 @@ namespace Experiments.PropertyParameters
                 return false;
             }
 
-            var split = mimeType.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
-            return split.Length == 2 && split.All(w => w.Length > 0);
+            var slashLocation = mimeType.IndexOf("/", StringComparison.Ordinal);
+            if (slashLocation > 0 && slashLocation < mimeType.Length - 1)
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        public override string ToString() => Value == null ? null : $"{Name}={Value}";
+        public override string ToString() => ValueTypeUtilities.GetToString(this);
     }
 }
