@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Experiments.Utilities;
 
 namespace Experiments.ComponentProperties
 {
@@ -24,6 +25,7 @@ namespace Experiments.ComponentProperties
             builder.Append(componentProperty.Name);
             AppendProperties(componentProperty.Properties, builder);
             builder.Append($":{componentProperty.Value}");
+            builder.Append(SerializationConstants.LineBreak);
             return builder.ToString();
         }
 

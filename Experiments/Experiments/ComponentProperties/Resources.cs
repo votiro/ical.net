@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Experiments.PropertyParameters;
+using Experiments.Utilities;
 
 namespace Experiments.ComponentProperties
 {
@@ -10,10 +11,7 @@ namespace Experiments.ComponentProperties
     {
         public string Name => "RESOURCES";
 
-        /// <summary>
-        /// Always null
-        /// </summary>
-        public string Value => null;
+        public string Value => string.Join(",", ResourceList);
         public IReadOnlyList<string> Properties { get; }
         public IReadOnlyList<string> ResourceList { get; }
         public AltRep AltRep { get; }
@@ -57,6 +55,11 @@ namespace Experiments.ComponentProperties
 
         public override string ToString()
         {
+            if (ResourceList == null || ResourceList.Count == 0)
+            {
+                return "";
+            }
+
             var builder = new StringBuilder();
             builder.Append($"{Name}");
 
@@ -70,8 +73,9 @@ namespace Experiments.ComponentProperties
             {
                 builder.Append($";{Language.ToString()}");
             }
+
             ComponentPropertiesUtilities.AppendProperties(Properties, builder);
-            builder.Append($":{Value}");
+            builder.Append($":{Value}{SerializationConstants.LineBreak}");
             return builder.ToString();
         }
     }
