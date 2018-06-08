@@ -10,7 +10,7 @@ namespace Experiments.ComponentProperties
     /// https://tools.ietf.org/html/rfc5545#section-3.8.1.11
     /// </summary>
     public class Status :
-        IComponentProperty
+        INameValueProperty
     {
         public string Name => "STATUS";
         public string Value { get; }

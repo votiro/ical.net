@@ -10,7 +10,7 @@ namespace Experiments.ComponentProperties
     /// https://tools.ietf.org/html/rfc5545#section-3.8.1.6
     /// </summary>
     public class GeographicPosition
-        : IComponentProperty
+        : INameValueProperty
     {
         /// <summary>
         /// Must be between -90 and +90

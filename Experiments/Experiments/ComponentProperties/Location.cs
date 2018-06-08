@@ -15,7 +15,7 @@ namespace Experiments.ComponentProperties
     /// https://tools.ietf.org/html/rfc5545#section-3.8.1.7
     /// </summary>
     public class Location
-        : IComponentProperty
+        : INameValueProperty
     {
         public string Name => "LOCATION";
         public string Value { get; }

@@ -7,7 +7,7 @@ using Experiments.Utilities;
 namespace Experiments.ComponentProperties
 {
     public class Resources :
-        IComponentProperty
+        INameValueProperty
     {
         public string Name => "RESOURCES";
 

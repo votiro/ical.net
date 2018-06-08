@@ -5,27 +5,26 @@ using NodaTime.Extensions;
 
 namespace Experiments.ValueTypes
 {
-    public struct ImmutableCalDateTime :
-        IComparable<ImmutableCalDateTime>
-        //, ImmutableCalDateTime
+    public struct CalDateTime :
+        IComparable<CalDateTime>
     {
         private DateTimeKind Kind => Value.Zone == DateTimeZone.Utc ? DateTimeKind.Utc : DateTimeKind.Local;
         public ZonedDateTime Value { get; }
 
-        public ImmutableCalDateTime(DateTime dateTime, string timeZone, bool hasTime = true)
+        public CalDateTime(DateTime dateTime, string timeZone, bool hasTime = true)
             : this(
                 zonedDateTime: DateUtil.ToZonedDateTimeLeniently(dateTime, DateUtil.GetZone(timeZone, useLocalIfNotFound: false)),
                 hasTime: hasTime) { }
 
-        public ImmutableCalDateTime(DateTimeOffset dateTimeOffset, string timeZone, bool hasTime = true)
+        public CalDateTime(DateTimeOffset dateTimeOffset, string timeZone, bool hasTime = true)
             : this(
                 zonedDateTime: DateUtil.ToZonedDateTimeLeniently(dateTimeOffset, DateUtil.GetZone(timeZone, useLocalIfNotFound: false)),
                 hasTime: hasTime) { }
 
-        public ImmutableCalDateTime(DateTime dateTime, bool hasTime = true)
+        public CalDateTime(DateTime dateTime, bool hasTime = true)
             : this(DateUtil.ToZonedDateTimeLeniently(dateTime, DateUtil.SystemTimeZone), hasTime) { }
 
-        private ImmutableCalDateTime(
+        private CalDateTime(
             ZonedDateTime zonedDateTime,
             bool hasTime)
         {
@@ -63,68 +62,80 @@ namespace Experiments.ValueTypes
         public LocalTime LocalTime => Value.TimeOfDay;
         public TimeSpan Time => Value.ToDateTimeUnspecified().TimeOfDay;
 
-        public ImmutableCalDateTime ToTimeZone(DateTimeZone newTimeZone)
-            => new ImmutableCalDateTime(Value.WithZone(newTimeZone), HasTime);
+        public CalDateTime ToTimeZone(DateTimeZone newTimeZone)
+            => new CalDateTime(Value.WithZone(newTimeZone), HasTime);
 
-        public ImmutableCalDateTime ToTimeZone(string newTimeZone)
-            => new ImmutableCalDateTime(Value.WithZone(DateUtil.GetZone(newTimeZone, useLocalIfNotFound: false)), HasTime);
+        public CalDateTime ToTimeZone(string newTimeZone)
+            => new CalDateTime(Value.WithZone(DateUtil.GetZone(newTimeZone, useLocalIfNotFound: false)), HasTime);
 
-        public static bool operator <(ImmutableCalDateTime left, ImmutableCalDateTime right)
+        public static bool operator <(CalDateTime left, CalDateTime right)
             => left.Value.ToInstant() < right.Value.ToInstant();
 
-        public static bool operator <=(ImmutableCalDateTime left, ImmutableCalDateTime right)
+        public static bool operator <=(CalDateTime left, CalDateTime right)
             => left.Value.ToInstant() <= right.Value.ToInstant();
 
-        public static bool operator >(ImmutableCalDateTime left, ImmutableCalDateTime right)
+        public static bool operator >(CalDateTime left, CalDateTime right)
             => left.Value.ToInstant() > right.Value.ToInstant();
 
-        public static bool operator >=(ImmutableCalDateTime left, ImmutableCalDateTime right)
+        public static bool operator >=(CalDateTime left, CalDateTime right)
             => left.Value.ToInstant() >= right.Value.ToInstant();
 
-        public static bool operator ==(ImmutableCalDateTime left, ImmutableCalDateTime right)
+        public bool Equals(CalDateTime other) => this == other;
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is CalDateTime time && Equals(time);
+        }
+
+        public static bool operator ==(CalDateTime left, CalDateTime right)
             => left.Equals(right);
 
-        public static bool operator !=(ImmutableCalDateTime left, ImmutableCalDateTime right)
+        public static bool operator !=(CalDateTime left, CalDateTime right)
             => !(left == right);
 
-        public static ImmutableCalDateTime operator -(ImmutableCalDateTime left, TimeSpan right)
+        public static CalDateTime operator -(CalDateTime left, TimeSpan right)
         {
             var duration = Duration.FromTimeSpan(right);
             var newZonedValue = left.Value - duration;
-            return new ImmutableCalDateTime(newZonedValue, left.HasTime);
+            return new CalDateTime(newZonedValue, left.HasTime);
         }
 
-        public static ImmutableCalDateTime operator -(ImmutableCalDateTime left, Duration duration)
+        public static CalDateTime operator -(CalDateTime left, Duration duration)
         {
             var newZonedValue = left.Value - duration;
-            return new ImmutableCalDateTime(newZonedValue, left.HasTime);
+            return new CalDateTime(newZonedValue, left.HasTime);
         }
 
-        public static Duration operator -(ImmutableCalDateTime left, ImmutableCalDateTime right)
+        public static Duration operator -(CalDateTime left, CalDateTime right)
         {
             var duration = left.Value - right.Value;
             return duration;
         }
 
-        public static ImmutableCalDateTime operator +(ImmutableCalDateTime left, TimeSpan right)
+        public static CalDateTime operator +(CalDateTime left, TimeSpan right)
         {
             var asDuration = Duration.FromTimeSpan(right);
             var newZonedValue = left.Value + asDuration;
-            return new ImmutableCalDateTime(newZonedValue, left.HasTime);
+            return new CalDateTime(newZonedValue, left.HasTime);
         }
 
-        public static ImmutableCalDateTime operator +(ImmutableCalDateTime left, Duration duration)
+        public static CalDateTime operator +(CalDateTime left, Duration duration)
         {
             var newZonedValue = left.Value + duration;
-            return new ImmutableCalDateTime(newZonedValue, left.HasTime);
+            return new CalDateTime(newZonedValue, left.HasTime);
         }
 
-        public ImmutableCalDateTime Add(TimeSpan timespan) => this + timespan;
-        public ImmutableCalDateTime Add(Duration duration) => this + duration;
-        public ImmutableCalDateTime Subtract(TimeSpan timespan) => this - timespan;
-        public ImmutableCalDateTime Subtract(Duration duration) => this - duration;
+        public CalDateTime Add(TimeSpan timespan) => this + timespan;
+        public CalDateTime Add(Duration duration) => this + duration;
+        public CalDateTime Subtract(TimeSpan timespan) => this - timespan;
+        public CalDateTime Subtract(Duration duration) => this - duration;
 
-        public int CompareTo(ImmutableCalDateTime other)
+        public int CompareTo(CalDateTime other)
         {
             if (this == other)
             {
@@ -135,8 +146,6 @@ namespace Experiments.ValueTypes
                 ? -1
                 : 1;
         }
-
-        public bool Equals(ImmutableCalDateTime other) => HasTime == other.HasTime && Value.Equals(other.Value);
 
         public override int GetHashCode()
         {

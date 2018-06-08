@@ -5,7 +5,7 @@ using System.Text;
 namespace Experiments.ComponentProperties
 {
     public class Category
-        : IComponentProperty
+        : INameValueProperty
     {
         public string Name => "CATEGORIES";
 

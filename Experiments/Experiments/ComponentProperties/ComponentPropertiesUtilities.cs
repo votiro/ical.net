@@ -14,17 +14,17 @@ namespace Experiments.ComponentProperties
         /// <param name="value"></param>
         public static string GetNormalizedValue(string value) => string.IsNullOrWhiteSpace(value) ? null : value;
 
-        public static string GetToString(IComponentProperty componentProperty)
+        public static string GetToString(INameValueProperty nameValueProperty)
         {
-            if (componentProperty?.Value == null)
+            if (nameValueProperty?.Value == null)
             {
                 return null;
             }
 
             var builder = new StringBuilder();
-            builder.Append(componentProperty.Name);
-            AppendProperties(componentProperty.Properties, builder);
-            builder.Append($":{componentProperty.Value}");
+            builder.Append(nameValueProperty.Name);
+            AppendProperties(nameValueProperty.Properties, builder);
+            builder.Append($":{nameValueProperty.Value}");
             builder.Append(SerializationConstants.LineBreak);
             return builder.ToString();
         }

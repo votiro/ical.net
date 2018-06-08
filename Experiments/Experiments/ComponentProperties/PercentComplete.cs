@@ -9,7 +9,7 @@ namespace Experiments.ComponentProperties
     /// https://tools.ietf.org/html/rfc5545#section-3.8.1.8
     /// </summary>
     public class PercentComplete :
-        IComponentProperty
+        INameValueProperty
     {
         public string Name { get; }
         public string Value => PercentValue.ToString();

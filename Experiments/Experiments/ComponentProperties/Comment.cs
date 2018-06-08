@@ -9,7 +9,7 @@ namespace Experiments.ComponentProperties
     /// https://tools.ietf.org/html/rfc5545#section-3.8.1.4
     /// </summary>
     public class Comment :
-        IComponentProperty
+        INameValueProperty
     {
         public string Name => "COMMENT";
         public string Value { get; }

@@ -13,7 +13,7 @@ namespace Experiments.ComponentProperties
     /// https://tools.ietf.org/html/rfc5545#section-3.8.1.12
     /// </summary>
     public class Summary :
-        IComponentProperty
+        INameValueProperty
     {
         public string Name => "SUMMARY";
         public string Value { get; }

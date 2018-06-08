@@ -14,7 +14,7 @@ namespace Experiments.ComponentProperties
     /// https://tools.ietf.org/html/rfc5545#section-3.8.1.1
     /// </summary>
     public class Attachment
-        : IComponentProperty
+        : INameValueProperty
     {
         public string Name => "ATTACH";
         public Uri Uri { get; }

@@ -2,7 +2,7 @@
 
 namespace Experiments.ComponentProperties
 {
-    public interface IComponentProperty
+    public interface INameValueProperty
     {
         /// <summary>
         /// Every property has a name like ATTACH or COMMENT which is the identifier for the type being serialized or deserialized.

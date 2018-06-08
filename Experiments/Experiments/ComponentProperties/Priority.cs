@@ -12,7 +12,7 @@ namespace Experiments.ComponentProperties
     /// https://tools.ietf.org/html/rfc5545#section-3.8.1.9
     /// </summary>
     public class Priority :
-        IComponentProperty,
+        INameValueProperty,
         IComparable<Priority>
     {
         public string Name => "PRIORITY";
