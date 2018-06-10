@@ -18,7 +18,7 @@ namespace Experiments.ComponentProperties
         {
             if (nameValueProperty?.Value == null)
             {
-                return null;
+                return "";
             }
 
             var builder = new StringBuilder();

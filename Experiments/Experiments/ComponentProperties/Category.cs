@@ -35,7 +35,7 @@ namespace Experiments.ComponentProperties
         {
             if (Categories == null)
             {
-                return null;
+                return "";
             }
 
             var builder = new StringBuilder();
@@ -43,17 +43,6 @@ namespace Experiments.ComponentProperties
             builder.Append(string.Join(",", Categories));
             builder.Append("\r\n");
             return builder.ToString();
-        }
-
-        public static Category FromString(string serializedCategory)
-        {
-            return null;
-            //if (string.IsNullOrWhiteSpace(serializedCategory))
-            //{
-            //    return null;
-            //}
-
-            // This can probably be implemented in terms of Span<T>...
         }
     }
 }

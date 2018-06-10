@@ -22,6 +22,6 @@ namespace Experiments.PropertyParameters
         /// ALTREP="http://example.com/foo/bar"
         /// </summary>
         /// <returns></returns>
-        public override string ToString() => Value == null ? null : $"{Name}:\"{Value}\"";
+        public override string ToString() => Value == null ? "" : $"{Name}:\"{Value}\"";
     }
 }

@@ -22,7 +22,7 @@
                 : encoding;
         }
 
-        public override string ToString() => Value == null ? null : $"{Name}={Value}";
+        public override string ToString() => Value == null ? "" : $"{Name}={Value}";
 
         public static string Base64 => "BASE64";
         public static string Default => EightBit;

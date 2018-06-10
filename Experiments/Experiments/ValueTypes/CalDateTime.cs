@@ -156,5 +156,14 @@ namespace Experiments.ValueTypes
                 return hashCode;
             }
         }
+
+        public override string ToString()
+        {
+            return "";
+            //Down to the second
+            //Z if UTC, TZID=tzId if zoned, unspecified if the same as the local system zone
+            //DATE if HasTime = false, DATE-TIME if HasTime = true
+            //
+        }
     }
 }

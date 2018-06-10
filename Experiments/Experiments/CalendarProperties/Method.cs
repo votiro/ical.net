@@ -21,11 +21,6 @@
                 : value;
         }
 
-        public override string ToString()
-        {
-            return Value == null
-                ? null
-                : $"{Name}:{Value}";
-        }
+        public override string ToString() => Value == null ? "" : $"{Name}:{Value}";
     }
 }
