@@ -1,5 +1,4 @@
-﻿using System;
-using Experiments.Utilities;
+﻿using Experiments.Utilities;
 using NodaTime;
 
 namespace Experiments.ComponentProperties
@@ -12,15 +11,18 @@ namespace Experiments.ComponentProperties
         public string Value => $"{Name}:{TzId}";
         public bool IsSystemLocal => DateUtil.SystemTimeZone == TimeZone;
         public bool HasValue => TimeZone != null;
+        private bool ShouldSerialize { get; }
 
         public Tzid(DateTimeZone timeZone)
         {
             TimeZone = timeZone;
+            ShouldSerialize = timeZone != null;
         }
 
         public Tzid(string timeZoneIdentifier)
             : this(DateUtil.GetZone(timeZoneIdentifier)) { }
 
-        public override string ToString() => HasValue ? Value : "";
+        public override string ToString()
+            => HasValue && !IsSystemLocal ? $"{Value}\r\n" : "";
     }
 }

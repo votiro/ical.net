@@ -7,7 +7,7 @@ using NodaTime.TimeZones;
 
 namespace Experiments.Utilities
 {
-    internal static class DateUtil
+    public static class DateUtil
     {
         private static readonly Lazy<Dictionary<string, string>> _windowsMapping
             = new Lazy<Dictionary<string, string>>(InitializeWindowsMappings, LazyThreadSafetyMode.PublicationOnly);
@@ -27,7 +27,7 @@ namespace Experiments.Utilities
         /// <param name="tzId">A BCL, IANA, or serialization time zone identifier</param>
         /// <param name="useLocalIfNotFound">If true, this method will return the system local time zone if tzId doesn't match a known time zone identifier.
         /// Otherwise, it will throw an exception.</param>
-        public static DateTimeZone GetZone(string tzId, bool useLocalIfNotFound = true)
+        public static DateTimeZone GetZone(string tzId)
         {
             if (string.IsNullOrWhiteSpace(tzId))
             {
@@ -80,11 +80,6 @@ namespace Experiments.Utilities
             foreach (var providerId in DateTimeZoneProviders.Serialization.Ids.Where(tzId.Contains))
             {
                 return DateTimeZoneProviders.Serialization.GetZoneOrNull(providerId);
-            }
-
-            if (useLocalIfNotFound)
-            {
-                return SystemTimeZone;
             }
 
             throw new ArgumentException($"Unrecognized time zone id {tzId}");

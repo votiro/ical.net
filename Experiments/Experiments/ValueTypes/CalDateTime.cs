@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Experiments.Utilities;
 using NodaTime;
 using NodaTime.Extensions;
@@ -11,26 +12,23 @@ namespace Experiments.ValueTypes
         private DateTimeKind Kind => Value.Zone == DateTimeZone.Utc ? DateTimeKind.Utc : DateTimeKind.Local;
         public ZonedDateTime Value { get; }
 
-        public CalDateTime(DateTime dateTime, string timeZone, bool hasTime = true)
-            : this(
-                zonedDateTime: DateUtil.ToZonedDateTimeLeniently(dateTime, DateUtil.GetZone(timeZone, useLocalIfNotFound: false)),
-                hasTime: hasTime) { }
-
-        public CalDateTime(DateTimeOffset dateTimeOffset, string timeZone, bool hasTime = true)
-            : this(
-                zonedDateTime: DateUtil.ToZonedDateTimeLeniently(dateTimeOffset, DateUtil.GetZone(timeZone, useLocalIfNotFound: false)),
-                hasTime: hasTime) { }
-
-        public CalDateTime(DateTime dateTime, bool hasTime = true)
-            : this(DateUtil.ToZonedDateTimeLeniently(dateTime, DateUtil.SystemTimeZone), hasTime) { }
-
-        private CalDateTime(
-            ZonedDateTime zonedDateTime,
-            bool hasTime)
+        public CalDateTime(ZonedDateTime zonedDateTime, bool hasTime = true)
         {
             Value = zonedDateTime;
             HasTime = hasTime;
         }
+
+        public CalDateTime(LocalDateTime localDateTime, bool hasTime = true)
+            : this(localDateTime.InZoneLeniently(DateUtil.SystemTimeZone), hasTime) { }
+
+        public CalDateTime(DateTime dateTime, string timeZone, bool hasTime = true)
+            : this(DateUtil.ToZonedDateTimeLeniently(dateTime, DateUtil.GetZone(timeZone)), hasTime) { }
+
+        public CalDateTime(DateTimeOffset dateTimeOffset, string timeZone, bool hasTime = true)
+            : this(DateUtil.ToZonedDateTimeLeniently(dateTimeOffset, DateUtil.GetZone(timeZone)), hasTime) { }
+
+        public CalDateTime(DateTime dateTime, bool hasTime = true)
+            : this(DateUtil.ToZonedDateTimeLeniently(dateTime, DateUtil.SystemTimeZone), hasTime) { }
 
         public string TzId => Value.Zone.Id;
         public DateTimeZone TimeZone => Value.Zone;
@@ -52,7 +50,7 @@ namespace Experiments.ValueTypes
         public int Millisecond => Value.Millisecond;
 
         public IsoDayOfWeek IsoDayOfWeek => Value.DayOfWeek;
-        public DayOfWeek DayOfWeek => Value.DayOfWeek.ToIsoDayOfWeek();
+        public DayOfWeek DayOfWeek => Value.DayOfWeek.ToDayOfWeek();
         public int DayOfYear => Value.DayOfYear;
 
         public DateTime LocalDateTime => DateTime.SpecifyKind(Value.ToDateTimeUnspecified(), Kind);
@@ -66,7 +64,7 @@ namespace Experiments.ValueTypes
             => new CalDateTime(Value.WithZone(newTimeZone), HasTime);
 
         public CalDateTime ToTimeZone(string newTimeZone)
-            => new CalDateTime(Value.WithZone(DateUtil.GetZone(newTimeZone, useLocalIfNotFound: false)), HasTime);
+            => new CalDateTime(Value.WithZone(DateUtil.GetZone(newTimeZone)), HasTime);
 
         public static bool operator <(CalDateTime left, CalDateTime right)
             => left.Value.ToInstant() < right.Value.ToInstant();

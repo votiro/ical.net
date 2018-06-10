@@ -39,6 +39,7 @@ namespace Experiments.ValueTypes
 
         public override string ToString()
         {
+            return "";
             // Start and end: 19970101T180000Z/19970102T070000Z
             // Start and duration: 19970101T180000Z/PT5H30M
 
@@ -46,8 +47,8 @@ namespace Experiments.ValueTypes
                 ? Start.Value.LocalDateTime.ToString()
                 : Start.Value.ToString();
 
-            return _specifiedDuration
-                ? Start.Value.LocalDateTime
+            //return _specifiedDuration
+            //    ? Start.Value.LocalDateTime
         }
     }
 }
