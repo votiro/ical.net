@@ -34,7 +34,7 @@ namespace Experiments.ComponentProperties
         {
             Uri = uri;
             FormatType = formatType;
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
         public Attachment(byte[] data, IEnumerable<string> additionalProperties = null)
@@ -47,7 +47,7 @@ namespace Experiments.ComponentProperties
             Data = data;
             Encoding = new InlineEncoding(InlineEncoding.Base64);
             Value = "BINARY";
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
         public override string ToString()
@@ -62,7 +62,7 @@ namespace Experiments.ComponentProperties
                 builder.Append($";{formatType}");
             }
 
-            ComponentPropertiesUtilities.AppendProperties(Properties, builder);
+            SerializationUtilities.AppendProperties(Properties, builder);
 
             if (Uri != null)
             {

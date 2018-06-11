@@ -25,7 +25,7 @@ namespace Experiments.ComponentProperties
             }
 
             PercentValue = percent;
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
         public PercentComplete(int percent)
@@ -34,6 +34,6 @@ namespace Experiments.ComponentProperties
         /// <summary>
         /// PERCENT-COMPLETE:39 would indicate that the VTODO is 39% complete
         /// </summary>
-        public override string ToString() => ComponentPropertiesUtilities.GetToString(this);
+        public override string ToString() => SerializationUtilities.GetToString(this);
     }
 }

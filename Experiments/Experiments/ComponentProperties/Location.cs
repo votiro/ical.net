@@ -54,8 +54,8 @@ namespace Experiments.ComponentProperties
 
         public Location(string location, IEnumerable<string> additionalProperties = null)
         {
-            Value = ComponentPropertiesUtilities.GetNormalizedValue(location);
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
+            Value = SerializationUtilities.GetNormalizedValue(location);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
         public Location(string location)
@@ -76,7 +76,7 @@ namespace Experiments.ComponentProperties
             {
                 builder.Append($";{Language.ToString()}");
             }
-            ComponentPropertiesUtilities.AppendProperties(Properties, builder);
+            SerializationUtilities.AppendProperties(Properties, builder);
             builder.Append($":{Value}");
             return builder.ToString();
         }

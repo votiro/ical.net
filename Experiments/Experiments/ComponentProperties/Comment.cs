@@ -20,9 +20,9 @@ namespace Experiments.ComponentProperties
             Value = string.IsNullOrWhiteSpace(comment)
                 ? null
                 : comment;
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
-        public override string ToString() => ComponentPropertiesUtilities.GetToString(this);
+        public override string ToString() => SerializationUtilities.GetToString(this);
     }
 }

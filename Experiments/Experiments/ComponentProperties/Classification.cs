@@ -36,9 +36,9 @@ namespace Experiments.ComponentProperties
                 throw new ArgumentException($"Allowed {nameof(Classification)} values are {string.Join(", ", _allowedValues)}");
             }
 
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
-        public override string ToString() => ComponentPropertiesUtilities.GetToString(this);
+        public override string ToString() => SerializationUtilities.GetToString(this);
     }
 }

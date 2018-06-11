@@ -10,7 +10,7 @@ namespace Experiments.ComponentProperties
         public string TzId => TimeZone.Id;
         public string Value => $"{Name}:{TzId}";
         public bool IsSystemLocal => DateUtil.SystemTimeZone == TimeZone;
-        public bool HasValue => TimeZone != null;
+        public bool None => Value == null;
         private bool ShouldSerialize { get; }
 
         public Tzid(DateTimeZone timeZone)
@@ -23,6 +23,6 @@ namespace Experiments.ComponentProperties
             : this(DateUtil.GetZone(timeZoneIdentifier)) { }
 
         public override string ToString()
-            => HasValue && !IsSystemLocal ? $"{Value}\r\n" : "";
+            => None || IsSystemLocal ? "" : $"{Value}\r\n";
     }
 }

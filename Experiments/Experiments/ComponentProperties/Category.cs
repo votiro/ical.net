@@ -24,8 +24,8 @@ namespace Experiments.ComponentProperties
         /// de-duplicated or ordered.</param>
         public Category(IEnumerable<string> categories, StringComparer comparerOverride, IEnumerable<string> additionalProperties = null)
         {
-            Categories = ComponentPropertiesUtilities.GetNormalizedStringCollection(categories, comparerOverride);
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
+            Categories = SerializationUtilities.GetNormalizedStringCollection(categories, comparerOverride);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
         public Category(IEnumerable<string> categories)

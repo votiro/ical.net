@@ -32,7 +32,7 @@ namespace Experiments.ComponentProperties
             }
 
             PriorityValue = priority;
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalParameters);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalParameters);
         }
 
         public Priority(int priority)
@@ -61,6 +61,6 @@ namespace Experiments.ComponentProperties
             return 0;
         }
 
-        public override string ToString() => ComponentPropertiesUtilities.GetToString(this);
+        public override string ToString() => SerializationUtilities.GetToString(this);
     }
 }

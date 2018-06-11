@@ -31,7 +31,7 @@ namespace Experiments.ComponentProperties
             AltRep = altRep;
             Language = language;
             Value = summary;
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
         public Summary(string summary, Language language)
@@ -72,7 +72,7 @@ namespace Experiments.ComponentProperties
             {
                 builder.Append($";{Language.ToString()}");
             }
-            ComponentPropertiesUtilities.AppendProperties(Properties, builder);
+            SerializationUtilities.AppendProperties(Properties, builder);
             builder.Append($":{Value}{SerializationConstants.LineBreak}");
             return builder.ToString();
         }

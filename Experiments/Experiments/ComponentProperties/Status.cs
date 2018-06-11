@@ -31,13 +31,13 @@ namespace Experiments.ComponentProperties
             }
 
             Value = status;
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);
         }
         
         public Status(string status)
             : this(status, null) { }
 
-        public override string ToString() => ComponentPropertiesUtilities.GetToString(this);
+        public override string ToString() => SerializationUtilities.GetToString(this);
     }
 
     /// <summary>

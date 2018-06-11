@@ -17,13 +17,13 @@ namespace Experiments.ComponentProperties
 
         public Description(string description, IEnumerable<string> additionalProperties)
         {
-            Value = ComponentPropertiesUtilities.GetNormalizedValue(description);
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
+            Value = SerializationUtilities.GetNormalizedValue(description);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
         public Description(string description)
             : this(description, null) { }
 
-        public override string ToString() => ComponentPropertiesUtilities.GetToString(this);
+        public override string ToString() => SerializationUtilities.GetToString(this);
     }
 }

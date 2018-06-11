@@ -31,7 +31,7 @@ namespace Experiments.ComponentProperties
             }
 
             Duration = duration;
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
         public CalDuration(Duration duration)
@@ -43,6 +43,6 @@ namespace Experiments.ComponentProperties
         public CalDuration(TimeSpan timeSpan)
             : this(timeSpan, null) { }
 
-        public override string ToString() => ComponentPropertiesUtilities.GetToString(this);
+        public override string ToString() => SerializationUtilities.GetToString(this);
     }
 }

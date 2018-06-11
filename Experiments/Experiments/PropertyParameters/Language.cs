@@ -14,7 +14,7 @@ namespace Experiments.PropertyParameters
 
         public Language(string language)
         {
-            Value = ComponentPropertiesUtilities.GetNormalizedValue(language);
+            Value = SerializationUtilities.GetNormalizedValue(language);
         }
 
         public override string ToString() => ValueTypeUtilities.GetToString(this);

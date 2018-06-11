@@ -29,7 +29,7 @@ namespace Experiments.ValueTypes
                 ? zonedDateTime
                 : zonedDateTime.WithZone(DateTimeZone.Utc);
 
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);  
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);  
         }
 
         /// <param name="zonedDateTime">If specified with a time zone other than UTC, the value will be converted to UTC during construction</param>
@@ -57,6 +57,6 @@ namespace Experiments.ValueTypes
         public Completed(DateTime dateTime)
             : this(dateTime, null) { }
 
-        public override string ToString() => ComponentPropertiesUtilities.GetToString(this);
+        public override string ToString() => SerializationUtilities.GetToString(this);
     }
 }

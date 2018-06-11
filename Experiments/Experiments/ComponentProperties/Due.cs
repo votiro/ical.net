@@ -17,12 +17,12 @@ namespace Experiments.ComponentProperties
         public Due(CalDateTime end, IEnumerable<string> additionalProperties = null)
         {
             CalDateTime = end;
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
         public Due(CalDateTime start)
             : this(start, null) { }
 
-        public override string ToString() => ComponentPropertiesUtilities.GetToString(this);
+        public override string ToString() => SerializationUtilities.GetToString(this);
     }
 }

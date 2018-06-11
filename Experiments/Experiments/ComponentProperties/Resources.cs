@@ -22,8 +22,8 @@ namespace Experiments.ComponentProperties
         {
             AltRep = altRep;
             Language = language;
-            ResourceList = ComponentPropertiesUtilities.GetNormalizedStringCollection(resources, comparerOverride);
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
+            ResourceList = SerializationUtilities.GetNormalizedStringCollection(resources, comparerOverride);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
         public Resources(IEnumerable<string> resources, StringComparer comparerOverride, IEnumerable<string> additionalProperties = null)
@@ -74,7 +74,7 @@ namespace Experiments.ComponentProperties
                 builder.Append($";{Language.ToString()}");
             }
 
-            ComponentPropertiesUtilities.AppendProperties(Properties, builder);
+            SerializationUtilities.AppendProperties(Properties, builder);
             builder.Append($":{Value}{SerializationConstants.LineBreak}");
             return builder.ToString();
         }

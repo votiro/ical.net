@@ -56,9 +56,9 @@ namespace Experiments.ComponentProperties
             builder.Append($";{Math.Round(Longitude, 6, MidpointRounding.AwayFromZero)}");
             Value = builder.ToString();
 
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
-        public override string ToString() => ComponentPropertiesUtilities.GetToString(this);
+        public override string ToString() => SerializationUtilities.GetToString(this);
     }
 }

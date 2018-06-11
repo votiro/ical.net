@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Experiments.Utilities;
+using Experiments.ValueTypes;
+using NodaTime;
 
 namespace Experiments.ComponentProperties
 {
-    public static class ComponentPropertiesUtilities
+    public static class SerializationUtilities
     {
         /// <summary>
         /// Returns null if the value is null or whitespace, otherwise returns the value.
@@ -67,5 +69,33 @@ namespace Experiments.ComponentProperties
                 builder.Append($";{property}");
             }
         }
+
+        public static void AppendDateTime(StringBuilder builder, IDateTime dt)
+        {
+            var dateOrDateTime = dt.HasTime ? "DATE-TIME" : "DATE";
+            builder.Append($"{dt.Name};VALUE={dateOrDateTime}");
+
+            // DATEs are, by definition, don't have time zones.
+            // If the time zone is UTC, we must serialize it with a Z instead of a TZID parameter
+            if (dt.HasTime && dt.TimeZone != null && dt.TimeZone != DateTimeZone.Utc)
+            {
+                builder.Append($"{dt.TzIdKey}={dt.TimeZoneName}");
+            }
+
+            AppendProperties(dt.Properties, builder);
+            var formattedDateOrDateTime = dt.HasTime
+                ? $"{LocalDateTimeToString(dt.Date, dt.Time)}"
+                : $"{LocalDateToString(dt.Date)}";
+            builder.Append($";{formattedDateOrDateTime}");
+        }
+
+        public static string LocalDateToString(LocalDate localDate)
+            => $"{localDate.Year:0000}{localDate.Month:00}{localDate.Day:00}";
+
+        public static string LocalTimeToString(LocalTime localTime)
+            => $"{localTime.Hour:00}{localTime.Minute:00}{localTime.Second:00}";
+        
+        public static string LocalDateTimeToString(LocalDate localDate, LocalTime localTime)
+            => $"{LocalDateToString(localDate)}T{LocalTimeToString(localTime)}";
     }
 }

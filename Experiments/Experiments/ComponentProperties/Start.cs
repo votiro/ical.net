@@ -21,12 +21,12 @@ namespace Experiments.ComponentProperties
         public Start(CalDateTime start, IEnumerable<string> additionalProperties = null)
         {
             CalDateTime = start;
-            Properties = ComponentPropertiesUtilities.GetNormalizedStringCollection(additionalProperties);
+            Properties = SerializationUtilities.GetNormalizedStringCollection(additionalProperties);
         }
 
         public Start(CalDateTime start)
             : this(start, null) { }
 
-        public override string ToString() => ComponentPropertiesUtilities.GetToString(this);
+        public override string ToString() => SerializationUtilities.GetToString(this);
     }
 }
