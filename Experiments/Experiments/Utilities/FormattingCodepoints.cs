@@ -32,5 +32,10 @@
         /// Forward-slash (SOLIDUS)
         /// </summary>
         public const string Solidus = "/";
+
+        /// <summary>
+        /// The line break mandated by the spec ( \r\n )
+        /// </summary>
+        public const string LineBreak = "\r\n";
     }
 }

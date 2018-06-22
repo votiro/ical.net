@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NodaTime;
+using NodaTime.Text;
 
 namespace Experiments.ComponentProperties
 {
@@ -18,7 +19,7 @@ namespace Experiments.ComponentProperties
         INameValueProperty
     {
         public string Name => "DURATION";
-        public string Value => Period.FromTicks(Duration.BclCompatibleTicks).ToString();
+        public string Value => PeriodPattern.NormalizingIso.Format(Period.FromTicks(Duration.BclCompatibleTicks));//Period.FromTicks(Duration.BclCompatibleTicks).ToString();
         public Duration Duration { get; }
         public TimeSpan DurationSpan => Duration.ToTimeSpan();
         public IReadOnlyList<string> Properties { get; }
