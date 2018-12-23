@@ -68,5 +68,15 @@ namespace Experiments.Utilities
 
         public static bool Contains(this string haystack, string needle, StringComparison stringComparison)
             => haystack.IndexOf(needle, stringComparison) >= 0;
+
+        /// <summary>
+        /// Taken from StackOverflow: https://stackoverflow.com/q/6309379
+        /// </summary>
+        /// <param name="haystack"></param>
+        /// <returns></returns>
+        public static bool IsBase64(this string haystack)
+            => (haystack.Length % 4 == 0) && _base64Regex.IsMatch(haystack);
+
+        private static readonly Regex _base64Regex = new Regex(@"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.Compiled);
     }
 }

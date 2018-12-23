@@ -23,6 +23,11 @@ namespace Experiments.ComponentProperties
 
         public Summary(string summary, AltRep altRep, Language language, IEnumerable<string> additionalProperties)
         {
+            if (!altRep.IsEmpty)
+            {
+                AltRep.VerifyAltRep(altRep, summary, nameof(summary));
+            }
+
             if (string.IsNullOrWhiteSpace(summary))
             {
                 return;

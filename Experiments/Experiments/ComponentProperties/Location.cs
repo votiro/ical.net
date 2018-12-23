@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Experiments.PropertyParameters;
 
@@ -28,6 +29,10 @@ namespace Experiments.ComponentProperties
         {
             if (!altRep.IsEmpty)
             {
+                if (string.IsNullOrWhiteSpace(location))
+                {
+                    throw new ArgumentException("Alternative representations MUST include a default string parameter", nameof(location));
+                }
                 AltRep = altRep;
             }
         }
@@ -48,6 +53,7 @@ namespace Experiments.ComponentProperties
             }
             if (!altRep.IsEmpty)
             {
+                AltRep.VerifyAltRep(altRep, location, nameof(location));
                 AltRep = altRep;
             }
         }

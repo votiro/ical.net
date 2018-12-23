@@ -19,7 +19,7 @@ namespace Experiments.ComponentProperties
         INameValueProperty
     {
         public string Name => "DURATION";
-        public string Value => PeriodPattern.NormalizingIso.Format(Period.FromTicks(Duration.BclCompatibleTicks));//Period.FromTicks(Duration.BclCompatibleTicks).ToString();
+        public string Value => PeriodPattern.NormalizingIso.Format(Period.FromTicks(Duration.BclCompatibleTicks));
         public Duration Duration { get; }
         public TimeSpan DurationSpan => Duration.ToTimeSpan();
         public IReadOnlyList<string> Properties { get; }
