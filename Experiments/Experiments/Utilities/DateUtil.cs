@@ -156,5 +156,8 @@ namespace Experiments.Utilities
                 : 1;
             return (int) Math.Floor(d.Day / 7.0) + offset;
         }
+
+        public static LocalTime ToLocalTime(this DateTime dateTime)
+            => LocalTime.FromTicksSinceMidnight(dateTime.TimeOfDay.Ticks);
     }
 }

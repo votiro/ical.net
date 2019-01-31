@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
+using System.Text;
 using Experiments.ComponentProperties;
 
 namespace Experiments.PropertyValues
@@ -11,22 +13,71 @@ namespace Experiments.PropertyValues
     ///
     /// https://tools.ietf.org/html/rfc5545#section-3.3.3
     /// </summary>
-    public struct CalAddress :
+    public class CalAddress :
         INameValueProperty
     {
         public string Name => "CAL-ADDRESS";
         public Uri UriValue { get; }
-        public string Value => UriValue.AbsoluteUri;
+        public string Value => ToString();
+        public string CommonName { get; }
+        public string CalendarUserType { get; }
         public IReadOnlyList<string> Properties => null;
 
-        public CalAddress(Uri uri)
+        public CalAddress(Uri uri, string commonName, string calendarUserType)
         {
             UriValue = uri;
+            CommonName = commonName;
+            CalendarUserType = calendarUserType;
         }
 
-        /// <summary>
-        /// PERCENT-COMPLETE:39 would indicate that the VTODO is 39% complete
-        /// </summary>
-        public override string ToString() => UriValue.AbsoluteUri;
+        public CalAddress(Uri uri)
+            : this(uri, commonName: null, calendarUserType: null) { }
+
+        public CalAddress(Uri uri, string commonName)
+            : this(uri, commonName: commonName, calendarUserType: null) { }
+
+        public CalAddress(Uri uri, string calendarUserType)
+            : this(uri, commonName: null, calendarUserType: calendarUserType) { }
+
+
+        //Uri
+        //Uri + CN
+        //URI + cut
+        //URI + CN + cut
+
+        public CalAddress(Uri uri, )
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+            if (!string.IsNullOrWhiteSpace(CommonName))
+            {
+                builder.Append($"CN=\"{CommonName}\":");
+            }
+
+            builder.Append(UriValue.AbsoluteUri);
+            return builder.ToString();
+        }
+    }
+
+    /// <summary>
+    /// Represents valid status values for a VEVENT, which are TENTATIVE, CONFIRMED, or CANCELLED
+    /// </summary>
+    public static class CalendarUserTypes
+    {
+        public static string Default => Individual;
+        public static string Individual => "INDIVIDUAL";
+        public static string Group => "GROUP";
+        public static string Resource => "RESOURCE";
+        public static string Room => "ROOM";
+        public static string Unknown => "UNKNOWN";
+
+        private static readonly HashSet<string> _allowedValues = new HashSet<string>(StringComparer.Ordinal)
+        {
+            Individual, Group, Resource, Room, Unknown,
+        };
+
+        public static bool IsValid(string userType)
+            => userType.StartsWith("X-", StringComparison.Ordinal) || _allowedValues.Contains(userType);
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using Experiments.ComponentProperties;
+using Experiments.Utilities;
 using NodaTime;
 
 namespace Experiments.PropertyValues
@@ -59,21 +61,61 @@ namespace Experiments.PropertyValues
     public struct Time :
         INameValueProperty
     {
-        public string Name => "DATE";
-        public string Value => TimeValue.ToString("yyyyMMdd", CultureInfo.CurrentCulture);
-        public LocalTime TimeValue { get;}
+        public string Name => "TIME";
+        private const string _pattern = "HHmmss";
+        private static readonly CultureInfo _culture = CultureInfo.InvariantCulture;
+        public string Value => ToString();
+        public DateTimeZone TimeZone { get; }
+        public LocalTime TimeValue { get; }
         public IReadOnlyList<string> Properties => null;
 
-        public Time(LocalDate localTime)
+        /// <summary>
+        /// Initializes a Time struct using the TimeOfDay property of the .NET DateTime struct. The time zone identifier is used to set the underlying time
+        /// zone, but no time zone *conversions* are performed.
+        /// </summary>
+        public Time(LocalTime localTime, string tzId)
         {
+            TimeZone = string.IsNullOrWhiteSpace(tzId)
+                ? null
+                : DateUtil.GetZone(tzId);
             TimeValue = localTime;
         }
 
         /// <summary>
-        /// Initializes a Date struct using the Date property of the .NET DateTime struct. No conversion to any time zone is performed.
+        /// Initializes a Time struct using the Time property of the .NET DateTime struct, with a floating time zone.
         /// </summary>
-        public Time(DateTime localDate)
-            : this(LocalDate.FromDateTime(localDate)) { }
+        public Time(LocalTime localTime)
+            : this(localTime, tzId: null) { }
 
-        public override string ToString() => Value;
+        /// <summary>
+        /// Initializes a Time struct using the Time property of the .NET DateTime struct, with a floating time zone.
+        /// </summary>
+        public Time(DateTime localDateTime)
+            : this(DateUtil.ToLocalTime(localDateTime), tzId: null) { }
+
+        /// <summary>
+        /// Initializes a Time struct using the TimeOfDay property of the .NET DateTime struct. The time zone identifier is used to set the underlying time
+        /// zone, but no time zone *conversions* are performed.
+        /// </summary>
+        public Time(DateTime localDateTime, string tzId)
+            : this(DateUtil.ToLocalTime(localDateTime), tzId) { }
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+            if (TimeZone != null && TimeZone != DateTimeZone.Utc)
+            {
+                builder.Append($"TZID={TimeZone}");
+            }
+
+            builder.Append(TimeValue.ToString(_pattern, CultureInfo.InvariantCulture));
+
+            if (TimeZone == DateTimeZone.Utc)
+            {
+                builder.Append("Z");
+            }
+
+            return builder.ToString();
+        }
     }
+}
