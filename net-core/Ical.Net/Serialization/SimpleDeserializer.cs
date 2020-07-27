@@ -64,7 +64,9 @@ namespace Ical.Net.Serialization
             var name = $"(?<{_nameGroup}>{identifier})";
             // value         = *VALUE-CHAR
             var value = $"(?<{_valueGroup}>[^\\x00-\\x08\\x0E-\\x1F\\x7F]*)";
-            var contentLine = $"^{name}(;{param})*:{value}$";
+
+            //Skip whitespaces and tabs after semicolon - continue to parse
+            var contentLine = $"^{name}(;[ \t]*{param})*:{value}$";
             return contentLine;
         }
 
