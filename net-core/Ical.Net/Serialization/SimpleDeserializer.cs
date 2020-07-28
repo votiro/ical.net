@@ -58,7 +58,7 @@ namespace Ical.Net.Serialization
             // param         = param-name "=" param-value *("," param-value)
             // param-name    = iana-token / x-name
             var paramName = $"(?<{_paramNameGroup}>{identifier})";
-            var param = $"{paramName}={paramValue}(,{paramValue})*";
+            var param = $"{paramName}={{0,}}{paramValue}(,{paramValue})*";
 
             // contentline   = name *(";" param ) ":" value CRLF
             var name = $"(?<{_nameGroup}>{identifier})";
@@ -88,7 +88,9 @@ namespace Ical.Net.Serialization
                 {
                     if (current == null)
                     {
-                        throw new SerializationException($"Expected 'BEGIN', found '{contentLine.Name}'");
+                        //throw new SerializationException($"Expected 'BEGIN', found '{contentLine.Name}'");
+                        //Don't throw continue parse
+                        continue;
                     }
                     if (string.Equals(contentLine.Name, "END", StringComparison.OrdinalIgnoreCase))
                     {
@@ -191,39 +193,25 @@ namespace Ical.Net.Serialization
                     break;
                 }
 
+
+
                 if (nextLine.Length <= 0)
                 {
                     continue;
                 }
 
-                var contentLineMatch = _contentLineRegex.Match(nextLine);
+                if (!KnownTokens.IsKnownToken(nextLine))
+                {
+                    if (!currentLine.ToString().StartsWith("END"))
+                    {
+                        nextLine = " " + nextLine;
+                    }
+                }
 
 
                 if ((nextLine[0] == ' ' || nextLine[0] == '\t'))
                 {
                     currentLine.Append(nextLine, 1, nextLine.Length - 1);
-                }
-                else if (!contentLineMatch.Success)
-                {
-                    currentLine.Append(nextLine);
-                }
-                else if (contentLineMatch.Success)
-                {
-                    var name = contentLineMatch.Groups[_nameGroup].Value;
-                    if (KnownTokens.Tokens.Contains(name.ToUpper()))
-                    {
-                        if (currentLine.Length > 0)
-                        {
-                            yield return currentLine.ToString();
-                        }
-
-                        currentLine.Clear();
-                        currentLine.Append(nextLine);
-                    }
-                    else
-                    {
-                        currentLine.Append(nextLine);
-                    }
                 }
                 else
                 {

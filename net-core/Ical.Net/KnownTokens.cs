@@ -4,7 +4,7 @@ namespace Ical.Net
 {
     internal static class KnownTokens
     {
-       public static readonly HashSet<string> Tokens = new HashSet<string>(new []
+       private static readonly HashSet<string> Tokens = new HashSet<string>(new []
        {
            "BEGIN",
            "END",
@@ -25,6 +25,7 @@ namespace Ical.Net
            "VERSION",
            "ATTACH",
            "CATEGORIES",
+           "CATEGORY",
            "CLASS",
            "COMMENT",
            "DESCRIPTION",
@@ -58,6 +59,7 @@ namespace Ical.Net
            "EXRULE",
            "RDATE",
            "RRULE",
+           "RULE",
            "ACTION",
            "REPEAT",
            "TRIGGER",
@@ -77,5 +79,21 @@ namespace Ical.Net
            "IMAGE",
            "CONFERENCE"
        });
+
+       public static bool IsKnownToken(string token)
+       {
+           string normalized = token.ToUpper();
+
+           if (normalized.StartsWith("X-") || normalized.StartsWith(" ") || normalized.StartsWith("\t"))
+               return true;
+
+           foreach (string knownToken in Tokens)
+           {
+               if (normalized.StartsWith(knownToken))
+                   return true;
+           }
+
+           return false;
+       }
     }
 }
