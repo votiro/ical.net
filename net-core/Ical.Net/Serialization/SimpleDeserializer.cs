@@ -127,8 +127,14 @@ namespace Ical.Net.Serialization
             var match = _contentLineRegex.Match(input);
             if (!match.Success)
             {
-                throw new SerializationException($"Could not parse line: '{input}'");
+                input = input.Replace("\"", "");
+
+                match = _contentLineRegex.Match(input);
+
+                if(!match.Success)
+                    throw new SerializationException($"Could not parse line: '{input}'");
             }
+
             var name = match.Groups[_nameGroup].Value;
             var value = match.Groups[_valueGroup].Value.Trim(' ').Trim('\t');
             var paramNames = match.Groups[_paramNameGroup].Captures;
