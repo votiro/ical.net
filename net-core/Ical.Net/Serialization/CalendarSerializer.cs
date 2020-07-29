@@ -28,8 +28,8 @@ namespace Ical.Net.Serialization
             {
                 // If we're serializing a calendar, we should indicate that we're using ical.net to do the work
                 var calendar = (Calendar) obj;
-                calendar.Version = LibraryMetadata.Version;
-                calendar.ProductId = LibraryMetadata.ProdId;
+               // calendar.Version = LibraryMetadata.Version;
+               // calendar.ProductId = LibraryMetadata.ProdId;
 
                 return base.SerializeToString(calendar);
             }
