@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
+using MimeKit.Encodings;
 
 namespace Ical.Net.Serialization
 {
@@ -42,6 +44,28 @@ namespace Ical.Net.Serialization
             }
         }
 
+        protected byte[] DecodeQuotedPrintable(string input)
+        {
+            try
+            {
+                QuotedPrintableDecoder encoder = new QuotedPrintableDecoder(false);
+
+                byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+
+                byte[] outputBytes = new byte[encoder.EstimateOutputLength(inputBytes.Length)];
+
+                int length = encoder.Decode(inputBytes, 0, inputBytes.Length, outputBytes);
+
+                return outputBytes.Take(length).ToArray();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+
         protected byte[] DecodeBase64(string value)
         {
             try
@@ -63,6 +87,8 @@ namespace Ical.Net.Serialization
 
             switch (encoding.ToUpper())
             {
+                case "QUOTED-PRINTABLE":
+                    return DecodeQuotedPrintable;
                 case "7BIT":
                     return Decode7Bit;
                 case "8BIT":
@@ -71,6 +97,24 @@ namespace Ical.Net.Serialization
                     return DecodeBase64;
                 default:
                     return null;
+            }
+        }
+
+        protected string EncodeQuotedPrintable(byte[] inputBytes)
+        {
+            try
+            {
+                QuotedPrintableEncoder encoder = new QuotedPrintableEncoder();
+
+                byte[] outputBytes = new byte[encoder.EstimateOutputLength(inputBytes.Length)];
+
+                int length = encoder.Encode(inputBytes, 0, inputBytes.Length, outputBytes);
+
+                return Encoding.UTF8.GetString(outputBytes.Take(length).ToArray());
+            }
+            catch
+            {
+                return null;
             }
         }
 

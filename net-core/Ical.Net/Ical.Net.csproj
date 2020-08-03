@@ -1,20 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.3;net46</TargetFrameworks>
-    <Version>4.1.8</Version>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>4.1.8.1</Version>
     <Authors>Rian Stockbower, Douglas Day</Authors>
-    <Company />
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\IcalNetStrongnameKey.snk</AssemblyOriginatorKeyFile>
     <DebugSymbols Condition=" '$(TargetFramework)' == 'net46' ">true</DebugSymbols>
     <DebugType Condition=" '$(TargetFramework)' == 'net46' ">full</DebugType>
+    <AssemblyName>Votiro.Ical.Net</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\Ical.Net.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NodaTime" Version="2.0.2" />
-    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.1.0" />
+    <PackageReference Include="MimeKitLite" Version="2.9.1" />
+    <PackageReference Include="NodaTime" Version="3.0.0" />
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>

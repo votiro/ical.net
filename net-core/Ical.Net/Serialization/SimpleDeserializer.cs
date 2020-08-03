@@ -58,13 +58,15 @@ namespace Ical.Net.Serialization
             // param         = param-name "=" param-value *("," param-value)
             // param-name    = iana-token / x-name
             var paramName = $"(?<{_paramNameGroup}>{identifier})";
-            var param = $"{paramName}={paramValue}(,{paramValue})*";
+            var param = $"{paramName}={{0,}}{paramValue}(,{paramValue})*";
 
             // contentline   = name *(";" param ) ":" value CRLF
             var name = $"(?<{_nameGroup}>{identifier})";
             // value         = *VALUE-CHAR
             var value = $"(?<{_valueGroup}>[^\\x00-\\x08\\x0E-\\x1F\\x7F]*)";
-            var contentLine = $"^{name}(;{param})*:{value}$";
+
+            //Skip whitespaces and tabs after semicolon - continue to parse
+            var contentLine = $"^{name}(;[ \t]*{param})*:{value}$";
             return contentLine;
         }
 
@@ -86,7 +88,9 @@ namespace Ical.Net.Serialization
                 {
                     if (current == null)
                     {
-                        throw new SerializationException($"Expected 'BEGIN', found '{contentLine.Name}'");
+                        //throw new SerializationException($"Expected 'BEGIN', found '{contentLine.Name}'");
+                        //Don't throw continue parse
+                        continue;
                     }
                     if (string.Equals(contentLine.Name, "END", StringComparison.OrdinalIgnoreCase))
                     {
@@ -123,10 +127,16 @@ namespace Ical.Net.Serialization
             var match = _contentLineRegex.Match(input);
             if (!match.Success)
             {
-                throw new SerializationException($"Could not parse line: '{input}'");
+                input = input.Replace("\"", "");
+
+                match = _contentLineRegex.Match(input);
+
+                if(!match.Success)
+                    throw new SerializationException($"Could not parse line: '{input}'");
             }
+
             var name = match.Groups[_nameGroup].Value;
-            var value = match.Groups[_valueGroup].Value;
+            var value = match.Groups[_valueGroup].Value.Trim(' ').Trim('\t');
             var paramNames = match.Groups[_paramNameGroup].Captures;
             var paramValues = match.Groups[_paramValueGroup].Captures;
 
@@ -178,7 +188,7 @@ namespace Ical.Net.Serialization
             }
         }
 
-        private static IEnumerable<string> GetContentLines(TextReader reader)
+         private static IEnumerable<string> GetContentLines(TextReader reader)
         {
             var currentLine = new StringBuilder();
             while (true)
@@ -189,10 +199,21 @@ namespace Ical.Net.Serialization
                     break;
                 }
 
+
+
                 if (nextLine.Length <= 0)
                 {
                     continue;
                 }
+
+                if (!KnownTokens.IsKnownToken(nextLine))
+                {
+                    if (!currentLine.ToString().StartsWith("END"))
+                    {
+                        nextLine = " " + nextLine;
+                    }
+                }
+
 
                 if ((nextLine[0] == ' ' || nextLine[0] == '\t'))
                 {
